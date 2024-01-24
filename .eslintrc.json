@@ -1,0 +1,9 @@
+{
+  "extends": "next/core-web-vitals",
+  "ignorePatterns": ["temp.js", "**/vendor/*.js"],
+  "rules": {
+    "eqeqeq": "off",
+    "quotes": ["warn", "double"],
+    "no-unused-vars": "warn"
+  }
+}
