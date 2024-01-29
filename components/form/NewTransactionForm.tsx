@@ -1,15 +1,6 @@
 "use client";
+import Spinner from "@/components/spinner";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import {
-  NewTransactionSchema,
-  type NewTransactionSchemaType,
-} from "@/lib/form-schema/new-transaction-schema";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as VisuallyHidden from "@radix-ui/react-visually-hidden";
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { NumericFormat } from "react-number-format";
 import {
   Form,
   FormControl,
@@ -18,8 +9,19 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "../ui/form";
-import { Switch } from "../ui/switch";
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch";
+import {
+  NewTransactionSchema,
+  type NewTransactionSchemaType,
+} from "@/lib/form-schema/new-transaction-schema";
+import { wait } from "@/lib/utils";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as VisuallyHidden from "@radix-ui/react-visually-hidden";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { NumericFormat } from "react-number-format";
 
 export default function NewTransactionForm() {
   const MAX_AMOUNT_LIMIT = 1_00_00_000;
@@ -37,6 +39,7 @@ export default function NewTransactionForm() {
   });
 
   async function onFormSubmit(data: NewTransactionSchemaType) {
+    await wait(1300);
     console.log(data);
   }
 
@@ -148,10 +151,11 @@ export default function NewTransactionForm() {
           disabled={form.formState.isSubmitting}
           className="text-sm"
         >
-          {form.formState.isSubmitting
-            ? "Loading..."
-            : // <Spinner size={15} />
-              `Add ${transactionTypeText}`}
+          {form.formState.isSubmitting ? (
+            <Spinner size={15} />
+          ) : (
+            `Add ${transactionTypeText}`
+          )}
         </Button>
       </form>
     </Form>
