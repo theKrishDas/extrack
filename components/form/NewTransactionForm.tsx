@@ -1,5 +1,8 @@
 "use client";
 import Spinner from "@/components/spinner";
+import { CalendarIcon } from "@radix-ui/react-icons";
+import * as VisuallyHidden from "@radix-ui/react-visually-hidden";
+
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -12,15 +15,22 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
+import { Calendar } from "../ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+
+import { cn, wait } from "@/lib/utils";
+
 import {
   NewTransactionSchema,
   type NewTransactionSchemaType,
 } from "@/lib/form-schema/new-transaction-schema";
-import { wait } from "@/lib/utils";
+
 import { zodResolver } from "@hookform/resolvers/zod";
-import * as VisuallyHidden from "@radix-ui/react-visually-hidden";
-import { useState } from "react";
 import { useForm } from "react-hook-form";
+
+import { useState } from "react";
+
+import { format } from "date-fns";
 import { NumericFormat } from "react-number-format";
 
 export default function NewTransactionForm() {
@@ -141,6 +151,51 @@ export default function NewTransactionForm() {
                   Statistics.
                 </FormDescription>
               </VisuallyHidden.Root>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        {/* //? ------------------ Date Field ------------------  */}
+        <FormField
+          control={form.control}
+          name="date"
+          render={({ field }) => (
+            <FormItem className="space-y-0">
+              <Popover>
+                <PopoverTrigger asChild>
+                  <FormControl>
+                    <Button
+                      variant="secondary"
+                      className={cn(
+                        "h-12",
+                        "w-fit",
+                        "w-full justify-start text-left font-normal",
+                        "font-medium text-muted-foreground",
+                      )}
+                    >
+                      <CalendarIcon className="h-4 w-4" />
+                      {field.value ? (
+                        format(field.value, "PPP")
+                      ) : (
+                        <span>Pick a date</span>
+                      )}
+                    </Button>
+                  </FormControl>
+                </PopoverTrigger>
+
+                <PopoverContent className="w-auto p-0" align="start">
+                  <Calendar
+                    mode="single"
+                    selected={field.value}
+                    onSelect={field.onChange}
+                    disabled={(date) =>
+                      date > new Date() || date < new Date("1900-01-01")
+                    }
+                    initialFocus
+                  />
+                </PopoverContent>
+              </Popover>
               <FormMessage />
             </FormItem>
           )}
