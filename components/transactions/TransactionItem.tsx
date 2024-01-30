@@ -30,18 +30,18 @@ export default function TransactionItem({
             {transaction.label ? (
               <h6 className="font-semibold">{transaction.label}</h6>
             ) : (
-              <small className="text-content3 italic">Add label</small>
+              <small className="italic text-foreground/40">Add label</small>
             )}
 
-            <p className="text-content4 text-sm">{transactionDate}</p>
+            <p className="text-xs text-foreground/60">{transactionDate}</p>
           </div>
         </div>
 
         <div className="flex items-center gap-2">
           <p
             className={cn(
-              "text-default-500 text-sm",
-              !transaction.isExpense && "text-success-500",
+              "text-sm text-foreground",
+              !transaction.isExpense && "text-success",
             )}
           >
             {/* //TODO: Format the amount */}
