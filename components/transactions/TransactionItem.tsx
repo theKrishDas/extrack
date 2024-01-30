@@ -8,10 +8,21 @@ export default function TransactionItem({
 }: {
   transaction: transactionSchemaType;
 }) {
+  const LOCALE = "en-IN";
+
   const transactionDate = new Date(transaction.date).toLocaleDateString(
-    "en-IN",
+    LOCALE,
     { month: "short", day: "numeric" },
   );
+
+  const amountFormat = new Intl.NumberFormat(LOCALE, {
+    style: "currency",
+    currency: "INR",
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 2,
+  });
+
+  const formattedAmount = amountFormat.format(transaction.amount);
 
   return (
     <>
@@ -45,7 +56,7 @@ export default function TransactionItem({
             )}
           >
             {/* //TODO: Format the amount */}
-            {transaction.amount}
+            {formattedAmount}
           </p>
 
           <TbSquareArrowRight strokeWidth={1.5} />
