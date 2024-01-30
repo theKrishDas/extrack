@@ -10,15 +10,7 @@ import { revalidatePath } from "next/cache";
 
 export async function getTransactions() {
   try {
-    const data = await db
-      .select({
-        id: transax.id,
-        amount: transax.amount,
-        label: transax.label,
-        isExpense: transax.isExpense,
-        date: transax.date,
-      })
-      .from(transax);
+    const data = await db.select().from(transax);
 
     const transactions =
       data &&
