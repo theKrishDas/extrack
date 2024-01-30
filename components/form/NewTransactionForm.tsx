@@ -18,7 +18,7 @@ import { Switch } from "@/components/ui/switch";
 import { Calendar } from "../ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 
-import { cn, wait } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 
 import {
   NewTransactionSchema,
@@ -29,6 +29,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 import { format } from "date-fns";
 import { NumericFormat } from "react-number-format";
@@ -40,6 +41,8 @@ export default function NewTransactionForm() {
   const [isExpense, setIsExpense] = useState(DEFAULT_TRANSACTION_IS_EXPENSE);
   const transactionTypeText = isExpense ? "Expense" : "Income";
 
+  const router = useRouter();
+
   const form = useForm<NewTransactionSchemaType>({
     resolver: zodResolver(NewTransactionSchema),
     defaultValues: {
@@ -49,8 +52,16 @@ export default function NewTransactionForm() {
   });
 
   async function onFormSubmit(data: NewTransactionSchemaType) {
-    await wait(1300);
-    console.log(data);
+    const insertTransactions = await import(
+      "@/actions/handle-transaction"
+    ).then((_) => _.insertTransactions);
+
+    const res = await insertTransactions(data);
+
+    // TODO: Render alert
+    if (res.error) console.error(res.error);
+
+    if (res.success) router.push("/");
   }
 
   return (
