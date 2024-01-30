@@ -5,10 +5,8 @@ import {
   NewTransactionSchema,
   NewTransactionSchemaType,
 } from "@/lib/form-schema/new-transaction-schema";
-import { auth } from "@clerk/nextjs";
+import { currentUser } from "@clerk/nextjs";
 import { revalidatePath } from "next/cache";
-
-const { userId } = auth();
 
 export async function getTransactions() {
   try {
@@ -37,15 +35,16 @@ export async function getTransactions() {
 
 export async function insertTransactions(formData: NewTransactionSchemaType) {
   try {
-    const validatedData = NewTransactionSchema.safeParse(formData);
+    const user = await currentUser();
+    if (!user) return { error: "You must be signed in to add transaction" };
 
+    const validatedData = NewTransactionSchema.safeParse(formData);
     if (!validatedData.success) return { error: "Error parsing input values" };
-    if (!userId) return { error: "Unauthenticated user" };
 
     const { amount, label, is_expense, date } = validatedData.data;
 
     const newTransactionData: transactionInsertSchemaType = {
-      userId,
+      userId: user.id,
       amount: is_expense ? amount * -100 : amount * 100,
       label: label,
       isExpense: is_expense,
@@ -56,6 +55,7 @@ export async function insertTransactions(formData: NewTransactionSchemaType) {
 
     await db.insert(transax).values(newTransactionData);
 
+    // TODO: Use revalidate tag instead
     revalidatePath("/");
 
     return { success: "Add new transaction" };
