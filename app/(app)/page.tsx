@@ -1,8 +1,10 @@
-import { db } from "@/db";
-import { transax } from "@/db/drizzle/schema";
+import { getTransactions } from "@/actions/handle-transaction";
 
 export default async function Home() {
-  const transactions = await db.select().from(transax);
+  const { data: transactions, error } = await getTransactions();
+
+  // TODO: Build a custom error messege component
+  if (error) return <p>{error}</p>;
 
   return (
     <>
