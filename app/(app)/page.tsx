@@ -1,7 +1,7 @@
 import { getTransactions } from "@/actions/handle-transaction";
 
 export default async function Home() {
-  const { data: transactions, error } = await getTransactions();
+  const { transactions, error } = await getTransactions();
 
   // TODO: Build a custom error messege component
   if (error) return <p>{error}</p>;

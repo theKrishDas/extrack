@@ -12,9 +12,24 @@ const { userId } = auth();
 
 export async function getTransactions() {
   try {
-    const data = await db.select().from(transax);
+    const data = await db
+      .select({
+        id: transax.id,
+        amount: transax.amount,
+        label: transax.label,
+        isExpense: transax.isExpense,
+        date: transax.date,
+      })
+      .from(transax);
 
-    return { data };
+    const transactions =
+      data &&
+      data.map(({ ...transaction }) => ({
+        ...transaction,
+        amount: transaction.amount / 100,
+      }));
+
+    return { transactions };
   } catch (error) {
     return { error: "An error occured while fetching transactions" };
   }
