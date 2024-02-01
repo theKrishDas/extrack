@@ -6,6 +6,7 @@ import {
   NewTransactionSchemaType,
 } from "@/lib/form-schema/new-transaction-schema";
 import { currentUser } from "@clerk/nextjs";
+import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
 export async function getTransactions() {
@@ -20,6 +21,26 @@ export async function getTransactions() {
       }));
 
     return { transactions };
+  } catch (error) {
+    return { error: "An error occured while fetching transactions" };
+  }
+}
+
+export async function getTransactionById(transactionId: string) {
+  try {
+    const data = await db
+      .selectDistinct()
+      .from(transax)
+      .where(eq(transax.id, transactionId));
+
+    const transaction =
+      data &&
+      data.map(({ ...transaction }) => ({
+        ...transaction,
+        amount: transaction.amount / 100,
+      }));
+
+    return { transaction };
   } catch (error) {
     return { error: "An error occured while fetching transactions" };
   }
