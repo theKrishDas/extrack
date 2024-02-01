@@ -76,3 +76,21 @@ export async function insertTransactions(formData: NewTransactionSchemaType) {
     return { error: "An error occured while adding new transaction" };
   }
 }
+
+export async function deleteTransaction(transactionId: string) {
+  try {
+    const { transaction, error } = await getTransactionById(transactionId);
+
+    if (error || !transaction || transaction.length === 0)
+      return { error: "This transaction does not exists" };
+
+    await db.delete(transax).where(eq(transax.id, transactionId));
+
+    // TODO: Use revalidate tag instead
+    revalidatePath("/");
+
+    return { success: "Transaction is successfully deleted!" };
+  } catch (err) {
+    return { error: "Unable to delete the transaction" };
+  }
+}

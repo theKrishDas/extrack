@@ -1,4 +1,5 @@
 import { getTransactionById } from "@/actions/handle-transaction";
+import DeleteTransactionButton from "@/components/transactions/DeleteTransactionButton";
 import TransactionDetail from "@/components/transactions/TransactionDetail";
 import { notFound } from "next/navigation";
 
@@ -22,6 +23,7 @@ export default async function TransactionDetailPage({
   return (
     <>
       <TransactionDetail transaction={transaction[0]} />
+      <DeleteTransactionButton transactionId={_id} />
     </>
   );
 }
