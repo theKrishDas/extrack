@@ -1,4 +1,5 @@
 import { getTransactionById } from "@/actions/handle-transaction";
+import AppNavigateBack from "@/components/navigation/AppNavigateBack";
 import DeleteTransactionButton from "@/components/transactions/DeleteTransactionButton";
 import TransactionDetail from "@/components/transactions/TransactionDetail";
 import { notFound } from "next/navigation";
@@ -8,7 +9,7 @@ export default async function TransactionDetailPage({
 }: {
   params: { id: string };
 }) {
-  const { transaction, error } = await getTransactionById(_id);
+  const { transaction: data, error } = await getTransactionById(_id);
 
   // TODO: Handle this error Properly
   /**
@@ -18,12 +19,18 @@ export default async function TransactionDetailPage({
    * - `!transaction` is true when the transaction is undefined.
    * - `transaction.length === 0` is true when the transaction array is empty.
    */
-  if (error || !transaction || transaction.length === 0) return notFound();
+  if (error || !data || data.length === 0) return notFound();
+
+  // TODO: Return the data as object instead of array.
+  const transaction = data[0];
 
   return (
     <>
-      <TransactionDetail transaction={transaction[0]} />
-      <DeleteTransactionButton transactionId={_id} />
+      <AppNavigateBack heading={transaction.label || "Details"}>
+        <DeleteTransactionButton transactionId={_id} />
+      </AppNavigateBack>
+
+      <TransactionDetail transaction={transaction} />
     </>
   );
 }
