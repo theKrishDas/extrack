@@ -27,7 +27,7 @@ export default function TransactionItem({
   return (
     <>
       <Link
-        href={`/app/transactions/${transaction.id}`}
+        href={`/transactions/${transaction.id}`}
         className="flex items-center justify-between rounded-md bg-secondary p-4 transition hover:bg-accent hover:text-accent-foreground"
       >
         <div className="flex items-start gap-2">
