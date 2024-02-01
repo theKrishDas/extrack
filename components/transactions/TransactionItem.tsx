@@ -55,7 +55,6 @@ export default function TransactionItem({
               !transaction.isExpense && "text-success",
             )}
           >
-            {/* //TODO: Format the amount */}
             {formattedAmount}
           </p>
 
