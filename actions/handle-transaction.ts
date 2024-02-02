@@ -66,14 +66,12 @@ export async function insertTransactions(formData: NewTransactionSchemaType) {
       date: date?.toISOString(),
     };
 
-    console.log(newTransactionData);
-
     await db.insert(transax).values(newTransactionData);
 
     // TODO: Use revalidate tag instead
     revalidatePath("/");
 
-    return { success: "Add new transaction" };
+    return { success: "Added new transaction" };
   } catch (error) {
     return { error: "An error occured while adding new transaction" };
   }
