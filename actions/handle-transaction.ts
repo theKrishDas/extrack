@@ -6,7 +6,10 @@ import {
   NewTransactionSchemaType,
 } from "@/lib/form-schema/new-transaction-schema";
 import { currentUser } from "@clerk/nextjs";
+import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
+
+// TODO: Return Drizzle error instance instead.
 
 export async function getTransactions() {
   try {
@@ -20,6 +23,26 @@ export async function getTransactions() {
       }));
 
     return { transactions };
+  } catch (error) {
+    return { error: "An error occured while fetching transactions" };
+  }
+}
+
+export async function getTransactionById(transactionId: string) {
+  try {
+    const data = await db
+      .selectDistinct()
+      .from(transax)
+      .where(eq(transax.id, transactionId));
+
+    const transaction =
+      data &&
+      data.map(({ ...transaction }) => ({
+        ...transaction,
+        amount: transaction.amount / 100,
+      }));
+
+    return { transaction };
   } catch (error) {
     return { error: "An error occured while fetching transactions" };
   }
@@ -53,5 +76,27 @@ export async function insertTransactions(formData: NewTransactionSchemaType) {
     return { success: "Add new transaction" };
   } catch (error) {
     return { error: "An error occured while adding new transaction" };
+  }
+}
+
+export async function deleteTransaction(transactionId: string) {
+  try {
+    const { transaction, error } = await getTransactionById(transactionId);
+
+    if (error) return { error };
+
+    if (!transaction) return { error: "Unable to retrieve the transaction" };
+
+    if (transaction.length === 0)
+      return { error: "This transaction does not exists" };
+
+    await db.delete(transax).where(eq(transax.id, transactionId));
+
+    // TODO: Use revalidate tag instead
+    revalidatePath("/");
+
+    return { success: "Transaction is successfully deleted!" };
+  } catch (err) {
+    return { error: "Unable to delete the transaction" };
   }
 }
