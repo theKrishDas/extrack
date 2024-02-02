@@ -11,7 +11,6 @@ export default async function TransactionDetailPage({
 }) {
   const { transaction: data, error } = await getTransactionById(_id);
 
-  // TODO: Handle this error Properly
   /**
    * Check for error, undefined transaction, or empty transaction array.
    * If any of these conditions is true, return a "not found" response.
@@ -19,7 +18,10 @@ export default async function TransactionDetailPage({
    * - `!transaction` is true when the transaction is undefined.
    * - `transaction.length === 0` is true when the transaction array is empty.
    */
-  if (error || !data || data.length === 0) return notFound();
+  // TODO: Handle this error Properly
+  if (error) return <p>{error}</p>;
+
+  if (!data) return notFound();
 
   // TODO: Return the data as object instead of array.
   const transaction = data[0];

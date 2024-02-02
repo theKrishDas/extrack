@@ -9,6 +9,8 @@ import { currentUser } from "@clerk/nextjs";
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
+// TODO: Return Drizzle error instance instead.
+
 export async function getTransactions() {
   try {
     const data = await db.select().from(transax);
@@ -81,7 +83,11 @@ export async function deleteTransaction(transactionId: string) {
   try {
     const { transaction, error } = await getTransactionById(transactionId);
 
-    if (error || !transaction || transaction.length === 0)
+    if (error) return { error };
+
+    if (!transaction) return { error: "Unable to retrieve the transaction" };
+
+    if (transaction.length === 0)
       return { error: "This transaction does not exists" };
 
     await db.delete(transax).where(eq(transax.id, transactionId));
