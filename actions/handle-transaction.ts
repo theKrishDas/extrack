@@ -35,12 +35,10 @@ export async function getTransactionById(transactionId: string) {
       .from(transax)
       .where(eq(transax.id, transactionId));
 
-    const transaction =
-      data &&
-      data.map(({ ...transaction }) => ({
-        ...transaction,
-        amount: transaction.amount / 100,
-      }));
+    const transaction = data.map(({ ...transaction }) => ({
+      ...transaction,
+      amount: transaction.amount / 100,
+    }));
 
     return { transaction };
   } catch (error) {
@@ -81,14 +79,9 @@ export async function insertTransactions(formData: NewTransactionSchemaType) {
 
 export async function deleteTransaction(transactionId: string) {
   try {
-    const { transaction, error } = await getTransactionById(transactionId);
+    const { error } = await getTransactionById(transactionId);
 
     if (error) return { error };
-
-    if (!transaction) return { error: "Unable to retrieve the transaction" };
-
-    if (transaction.length === 0)
-      return { error: "This transaction does not exists" };
 
     await db.delete(transax).where(eq(transax.id, transactionId));
 
