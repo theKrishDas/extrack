@@ -30,9 +30,10 @@ export default function DeleteTransactionButton({
         // TODO: Handle error and success
         if (error) {
           console.error(error);
-        } else {
-          router.push("/");
+          return;
         }
+
+        router.push("/");
       }}
     >
       {isDeletingTransaction ? <Spinner size={14} /> : <IoTrashBinOutline />}
