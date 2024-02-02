@@ -28,7 +28,7 @@ export default async function TransactionDetailPage({
 
   return (
     <>
-      <AppNavigateBack heading={transaction.label || "Details"}>
+      <AppNavigateBack heading={transaction?.label || "Details"}>
         <DeleteTransactionButton transactionId={_id} />
       </AppNavigateBack>
 
