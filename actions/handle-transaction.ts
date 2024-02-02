@@ -81,9 +81,10 @@ export async function insertTransactions(formData: NewTransactionSchemaType) {
 
 export async function deleteTransaction(transactionId: string) {
   try {
-    const { error } = await getTransactionById(transactionId);
+    const { transaction, error } = await getTransactionById(transactionId);
 
     if (error) return { error };
+    if (!transaction) return { error: "Transaction does not exists" };
 
     await db.delete(transax).where(eq(transax.id, transactionId));
 
@@ -91,7 +92,7 @@ export async function deleteTransaction(transactionId: string) {
     revalidatePath("/");
 
     return { success: "Transaction is successfully deleted!" };
-  } catch (err) {
+  } catch (error) {
     return { error: "Unable to delete the transaction" };
   }
 }
