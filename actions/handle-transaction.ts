@@ -35,14 +35,16 @@ export async function getTransactionById(transactionId: string) {
       .from(transax)
       .where(eq(transax.id, transactionId));
 
-    const transaction = data.map(({ ...transaction }) => ({
-      ...transaction,
-      amount: transaction.amount / 100,
-    }));
+    if (data.length === 0) return { transaction: undefined };
+
+    const transaction = {
+      ...data[0],
+      amount: data[0].amount / 100,
+    };
 
     return { transaction };
   } catch (error) {
-    return { error: "An error occured while fetching transactions" };
+    return { error: "Unable to fetch the rquested transaction" };
   }
 }
 

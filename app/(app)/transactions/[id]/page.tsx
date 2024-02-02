@@ -9,7 +9,7 @@ export default async function TransactionDetailPage({
 }: {
   params: { id: string };
 }) {
-  const { transaction: data, error } = await getTransactionById(_id);
+  const { transaction, error } = await getTransactionById(_id);
 
   /**
    * Check for error, undefined transaction, or empty transaction array.
@@ -21,10 +21,7 @@ export default async function TransactionDetailPage({
   // TODO: Handle this error Properly
   if (error) return <p>{error}</p>;
 
-  if (!data) return notFound();
-
-  // TODO: Return the data as object instead of array.
-  const transaction = data[0];
+  if (!transaction) return notFound();
 
   return (
     <>
