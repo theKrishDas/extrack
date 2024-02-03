@@ -1,6 +1,7 @@
 "use client";
 
-import { Button } from "../ui/button";
+import { deleteTransaction } from "@/actions/handle-transaction";
+import Spinner from "@/components/spinner";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -9,6 +10,9 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export default function DeleteTransactionDialog({
   transactionId,
@@ -21,6 +25,9 @@ export default function DeleteTransactionDialog({
   // eslint-disable-next-line no-unused-vars
   setShowDeleteDialog: (v: boolean) => void;
 }) {
+  const router = useRouter();
+  const [isDeletingTransaction, setDeletingTransaction] = useState(false);
+
   return (
     <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
       <AlertDialogContent>
@@ -29,13 +36,26 @@ export default function DeleteTransactionDialog({
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
+
           <Button
             variant="destructive"
-            onClick={() => {
-              alert(transactionId);
+            onClick={async () => {
+              setDeletingTransaction(true);
+
+              const { error } = await deleteTransaction(transactionId);
+
+              // TODO: Handle error and success
+              if (error) {
+                setDeletingTransaction(false);
+
+                console.error(error);
+                return;
+              }
+
+              router.push("/");
             }}
           >
-            Delete
+            {isDeletingTransaction ? <Spinner size={14} /> : "Delete"}
           </Button>
         </AlertDialogFooter>
       </AlertDialogContent>
