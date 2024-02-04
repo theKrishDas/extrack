@@ -6,14 +6,14 @@ import {
   NewTransactionSchemaType,
 } from "@/lib/form-schema/new-transaction-schema";
 import { currentUser } from "@clerk/nextjs";
-import { eq, and } from "drizzle-orm";
+import { eq, and, desc } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
 // TODO: Return Drizzle error instance instead.
 
 export async function getTransactions() {
   try {
-    const data = await db.select().from(transax);
+    const data = await db.select().from(transax).orderBy(desc(transax.date));
 
     const transactions =
       data &&
