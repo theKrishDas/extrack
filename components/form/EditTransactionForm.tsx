@@ -129,7 +129,8 @@ export default function TransactionForm({
 
                     if (
                       floatValue !== undefined &&
-                      floatValue < MAX_AMOUNT_LIMIT
+                      floatValue < MAX_AMOUNT_LIMIT &&
+                      floatValue >= 0
                     ) {
                       onChange(floatValue);
                       return true;
