@@ -13,6 +13,7 @@ import { DotsHorizontalIcon } from "@radix-ui/react-icons";
 import { useState } from "react";
 import { IoTrashBinOutline } from "react-icons/io5";
 import DeleteTransactionDialog from "./DeleteTransactionDialog";
+import Link from "next/link";
 
 export default function TransactionDropdown({
   transaction,
@@ -40,7 +41,9 @@ export default function TransactionDropdown({
           <DropdownMenuGroup>
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>Edit</DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link href={`/edit/?id=${transaction.id}`}>Edit</Link>
+            </DropdownMenuItem>
             <DropdownMenuItem>Add as preset</DropdownMenuItem>
           </DropdownMenuGroup>
 
