@@ -64,15 +64,15 @@ export default function TransactionForm({
       (_) => _.updateTransaction,
     );
 
-    const { success, error } = await updateTransaction(
-      initialTransactionData.id,
-      data,
-    );
+    const { error } = await updateTransaction(initialTransactionData.id, data);
 
     // TODO: Render alert
-    if (error) console.error(error);
+    if (error) {
+      console.error(error);
+      return;
+    }
 
-    // router.push("/");
+    router.push("/");
   }
 
   return (
@@ -231,7 +231,7 @@ export default function TransactionForm({
           {form.formState.isSubmitting ? (
             <Spinner size={15} />
           ) : (
-            `Add ${transactionTypeText}`
+            `Update ${transactionTypeText}`
           )}
         </Button>
       </form>
