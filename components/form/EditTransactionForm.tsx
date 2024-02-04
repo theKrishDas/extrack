@@ -60,13 +60,19 @@ export default function TransactionForm({
   });
 
   async function onFormSubmit(data: NewTransactionSchemaType) {
-    // const insertTransactions = await import(
-    //   "@/actions/handle-transaction"
-    // ).then((_) => _.insertTransactions);
-    // const res = await insertTransactions(data);
+    const updateTransaction = await import("@/actions/handle-transaction").then(
+      (_) => _.updateTransaction,
+    );
+
+    const { success, error } = await updateTransaction(
+      initialTransactionData.id,
+      data,
+    );
+
     // TODO: Render alert
-    // if (res.error) console.error(res.error);
-    // if (res.success) router.push("/");
+    if (error) console.error(error);
+
+    // router.push("/");
   }
 
   return (

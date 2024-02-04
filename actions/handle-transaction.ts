@@ -77,6 +77,39 @@ export async function insertTransactions(formData: NewTransactionSchemaType) {
   }
 }
 
+export async function updateTransaction(
+  transactionId: string,
+  formData: NewTransactionSchemaType,
+) {
+  try {
+    const user = await currentUser();
+    if (!user) return { error: "You must be signed in to add transaction" };
+
+    const validatedData = NewTransactionSchema.safeParse(formData);
+    if (!validatedData.success) return { error: "Error parsing input values" };
+
+    const { amount, label, is_expense, date } = validatedData.data;
+
+    const newTransactionData: transactionInsertSchemaType = {
+      userId: user.id,
+      amount: is_expense ? amount * -100 : amount * 100,
+      label: label,
+      isExpense: is_expense,
+      date: date?.toISOString(),
+    };
+
+    // await db.insert(transax).values(newTransactionData);
+
+    // TODO: Use revalidate tag instead
+    // revalidatePath("/");
+
+    console.log({ transactionId }, { newTransactionData });
+    return { success: "Updated the transaction" };
+  } catch (error) {
+    return { error: "An error occured while adding new transaction" };
+  }
+}
+
 export async function deleteTransaction(transactionId: string) {
   try {
     const { transaction, error } = await getTransactionById(transactionId);
