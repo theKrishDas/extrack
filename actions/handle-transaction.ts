@@ -35,16 +35,16 @@ export async function getTransactionById(transactionId: string) {
       .from(transax)
       .where(eq(transax.id, transactionId));
 
-    const transaction =
-      data &&
-      data.map(({ ...transaction }) => ({
-        ...transaction,
-        amount: transaction.amount / 100,
-      }));
+    if (data.length === 0) return { transaction: undefined };
+
+    const transaction = {
+      ...data[0],
+      amount: data[0].amount / 100,
+    };
 
     return { transaction };
   } catch (error) {
-    return { error: "An error occured while fetching transactions" };
+    return { error: "Unable to fetch the rquested transaction" };
   }
 }
 
@@ -66,14 +66,12 @@ export async function insertTransactions(formData: NewTransactionSchemaType) {
       date: date?.toISOString(),
     };
 
-    console.log(newTransactionData);
-
     await db.insert(transax).values(newTransactionData);
 
     // TODO: Use revalidate tag instead
     revalidatePath("/");
 
-    return { success: "Add new transaction" };
+    return { success: "Added new transaction" };
   } catch (error) {
     return { error: "An error occured while adding new transaction" };
   }
@@ -84,11 +82,7 @@ export async function deleteTransaction(transactionId: string) {
     const { transaction, error } = await getTransactionById(transactionId);
 
     if (error) return { error };
-
-    if (!transaction) return { error: "Unable to retrieve the transaction" };
-
-    if (transaction.length === 0)
-      return { error: "This transaction does not exists" };
+    if (!transaction) return { error: "Transaction does not exists" };
 
     await db.delete(transax).where(eq(transax.id, transactionId));
 
@@ -96,7 +90,7 @@ export async function deleteTransaction(transactionId: string) {
     revalidatePath("/");
 
     return { success: "Transaction is successfully deleted!" };
-  } catch (err) {
+  } catch (error) {
     return { error: "Unable to delete the transaction" };
   }
 }
