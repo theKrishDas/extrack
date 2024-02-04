@@ -1,7 +1,7 @@
 import { getTransactionById } from "@/actions/handle-transaction";
 import AppNavigateBack from "@/components/navigation/AppNavigateBack";
-import DeleteTransactionButton from "@/components/transactions/DeleteTransactionButton";
 import TransactionDetail from "@/components/transactions/TransactionDetail";
+import TransactionDropdown from "@/components/transactions/TransactionDropdown";
 import { notFound } from "next/navigation";
 
 export default async function TransactionDetailPage({
@@ -19,7 +19,7 @@ export default async function TransactionDetailPage({
   return (
     <>
       <AppNavigateBack heading={transaction?.label || "Details"}>
-        <DeleteTransactionButton transactionId={_id} />
+        <TransactionDropdown transaction={transaction} />
       </AppNavigateBack>
 
       <TransactionDetail transaction={transaction} />
