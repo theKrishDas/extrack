@@ -60,7 +60,7 @@ export async function insertTransactions(formData: NewTransactionSchemaType) {
 
     const newTransactionData: transactionInsertSchemaType = {
       userId: user.id,
-      amount: is_expense ? amount * -100 : amount * 100,
+      amount: is_expense ? Math.abs(amount) * -100 : Math.abs(amount * 100),
       label: label,
       isExpense: is_expense,
       date: date?.toISOString(),
