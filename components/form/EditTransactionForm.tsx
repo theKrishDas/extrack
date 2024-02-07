@@ -28,13 +28,17 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 
-import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 import { format } from "date-fns";
 import { NumericFormat } from "react-number-format";
 
-export default function NewTransactionForm() {
+export default function TransactionForm({
+  initialTransactionData,
+}: {
+  initialTransactionData: transactionSchemaType;
+}) {
   const MAX_AMOUNT_LIMIT = 1_00_00_000;
   const DEFAULT_TRANSACTION_IS_EXPENSE = true;
 
@@ -43,25 +47,32 @@ export default function NewTransactionForm() {
 
   const router = useRouter();
 
+  const defaultValues = {
+    amount: Math.abs(initialTransactionData.amount),
+    date: new Date(initialTransactionData.date),
+    is_expense: initialTransactionData.isExpense,
+    label: initialTransactionData.label || "",
+  };
+
   const form = useForm<NewTransactionSchemaType>({
     resolver: zodResolver(NewTransactionSchema),
-    defaultValues: {
-      label: "",
-      is_expense: DEFAULT_TRANSACTION_IS_EXPENSE,
-    },
+    defaultValues,
   });
 
   async function onFormSubmit(data: NewTransactionSchemaType) {
-    const insertTransactions = await import(
-      "@/actions/handle-transaction"
-    ).then((_) => _.insertTransactions);
+    const updateTransaction = await import("@/actions/handle-transaction").then(
+      (_) => _.updateTransaction,
+    );
 
-    const res = await insertTransactions(data);
+    const { error } = await updateTransaction(initialTransactionData.id, data);
 
     // TODO: Render alert
-    if (res.error) console.error(res.error);
+    if (error) {
+      console.error(error);
+      return;
+    }
 
-    if (res.success) router.push("/");
+    router.push("/");
   }
 
   return (
@@ -221,7 +232,7 @@ export default function NewTransactionForm() {
           {form.formState.isSubmitting ? (
             <Spinner size={15} />
           ) : (
-            `Add ${transactionTypeText}`
+            `Update ${transactionTypeText}`
           )}
         </Button>
       </form>
