@@ -6,14 +6,24 @@ import {
   NewTransactionSchemaType,
 } from "@/lib/form-schema/new-transaction-schema";
 import { currentUser } from "@clerk/nextjs";
-import { eq, and, desc } from "drizzle-orm";
+import { and, desc, eq, sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
-
-// TODO: Return Drizzle error instance instead.
 
 export async function getTransactions() {
   try {
-    const data = await db.select().from(transax).orderBy(desc(transax.date));
+    const user = await currentUser();
+    if (!user) return { error: "You must be signed in to add transaction" };
+
+    const userId = user.id;
+
+    const prepareGetTransaction = db
+      .select()
+      .from(transax)
+      .where(eq(transax.userId, sql.placeholder("userId")))
+      .orderBy(desc(transax.date))
+      .prepare("prepareGetTransaction");
+
+    const data = await prepareGetTransaction.execute({ userId });
 
     const transactions =
       data &&
@@ -99,10 +109,18 @@ export async function updateTransaction(
       date: date?.toISOString(),
     };
 
-    await db
+    const prepareUpdateTransaction = db
       .update(transax)
       .set(updateTransactionData)
-      .where(and(eq(transax.userId, userId), eq(transax.id, updateId)));
+      .where(
+        and(
+          eq(transax.userId, sql.placeholder("userId")),
+          eq(transax.id, sql.placeholder("updateId")),
+        ),
+      )
+      .prepare("prepareUpdateTransaction");
+
+    await prepareUpdateTransaction.execute({ userId, updateId });
 
     // TODO: Use revalidate tag instead
     revalidatePath("/");
@@ -115,12 +133,27 @@ export async function updateTransaction(
 
 export async function deleteTransaction(transactionId: string) {
   try {
+    const user = await currentUser();
+    if (!user) return { error: "You must be signed in to add transaction" };
+
+    const userId = user.id;
+
     const { transaction, error } = await getTransactionById(transactionId);
 
     if (error) return { error };
     if (!transaction) return { error: "Transaction does not exists" };
 
-    await db.delete(transax).where(eq(transax.id, transactionId));
+    const prepareDeleteTransaction = db
+      .delete(transax)
+      .where(
+        and(
+          eq(transax.id, sql.placeholder("transactionId")),
+          eq(transax.userId, sql.placeholder("userId")),
+        ),
+      )
+      .prepare("prepareDeleteTransaction");
+
+    await prepareDeleteTransaction.execute({ transactionId, userId });
 
     // TODO: Use revalidate tag instead
     revalidatePath("/");
