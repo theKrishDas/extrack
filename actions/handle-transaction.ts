@@ -115,12 +115,19 @@ export async function updateTransaction(
 
 export async function deleteTransaction(transactionId: string) {
   try {
+    const user = await currentUser();
+    if (!user) return { error: "You must be signed in to add transaction" };
+
+    const userId = user.id;
+
     const { transaction, error } = await getTransactionById(transactionId);
 
     if (error) return { error };
     if (!transaction) return { error: "Transaction does not exists" };
 
-    await db.delete(transax).where(eq(transax.id, transactionId));
+    await db
+      .delete(transax)
+      .where(and(eq(transax.id, transactionId), eq(transax.userId, userId)));
 
     // TODO: Use revalidate tag instead
     revalidatePath("/");
