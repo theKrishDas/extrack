@@ -13,7 +13,16 @@ import { revalidatePath } from "next/cache";
 
 export async function getTransactions() {
   try {
-    const data = await db.select().from(transax).orderBy(desc(transax.date));
+    const user = await currentUser();
+    if (!user) return { error: "You must be signed in to add transaction" };
+
+    const userId = user.id;
+
+    const data = await db
+      .select()
+      .from(transax)
+      .where(eq(transax.userId, userId))
+      .orderBy(desc(transax.date));
 
     const transactions =
       data &&
