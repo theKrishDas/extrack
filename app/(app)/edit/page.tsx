@@ -1,6 +1,8 @@
 import { getTransactionById } from "@/actions/handle-transaction";
 import TransactionForm from "@/components/form/EditTransactionForm";
+import AppNavigateBack from "@/components/navigation/AppNavigateBack";
 import { notFound, redirect } from "next/navigation";
+import { IoCloseSharp } from "react-icons/io5";
 
 export default async function AddTransactionPage({
   searchParams,
@@ -20,7 +22,7 @@ export default async function AddTransactionPage({
 
   return (
     <>
-      <h1>Add New transaction</h1>
+      <AppNavigateBack heading="Edit" icon={<IoCloseSharp />} />
       <TransactionForm initialTransactionData={transaction} />
     </>
   );

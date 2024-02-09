@@ -1,9 +1,12 @@
 import NewTransactionForm from "@/components/form/NewTransactionForm";
+import AppNavigateBack from "@/components/navigation/AppNavigateBack";
+import { IoCloseSharp } from "react-icons/io5";
 
 export default function NewTransactionPage() {
   return (
     <>
-      <h1>Add New transaction</h1>
+      <AppNavigateBack heading="Add new" icon={<IoCloseSharp />} />
+
       <NewTransactionForm />
     </>
   );
