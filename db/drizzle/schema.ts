@@ -1,4 +1,4 @@
-import { pgTable, text, timestamp, foreignKey, uuid, varchar, boolean, bigint } from "drizzle-orm/pg-core"
+import { pgTable, text, timestamp, bigint, foreignKey, uuid, varchar, boolean } from "drizzle-orm/pg-core"
   import { sql } from "drizzle-orm"
 
 
@@ -6,6 +6,8 @@ import { pgTable, text, timestamp, foreignKey, uuid, varchar, boolean, bigint } 
 export const preference = pgTable("preference", {
 	userId: text("user_id").primaryKey().notNull(),
 	joinedAt: timestamp("joined_at", { withTimezone: true, mode: 'string' }).defaultNow().notNull(),
+	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
+	initialBalance: bigint("initial_balance", { mode: "number" }).default(0).notNull(),
 });
 
 export const category = pgTable("category", {
