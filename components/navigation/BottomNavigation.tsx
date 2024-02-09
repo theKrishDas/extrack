@@ -8,14 +8,12 @@ const navContent: BottomNavContentType[] = [
   {
     name: "Home",
     href: "/",
-    is_active: true,
     activeIcon: <GoHomeFill />,
     inActiveIcon: <GoHome />,
   },
   {
     name: "",
     href: "/new",
-    is_active: false,
     activeIcon: <TbSquareRoundedPlusFilled className="text-4xl" />,
     inActiveIcon: (
       <TbSquareRoundedPlus className="text-4xl" strokeWidth={1.3} />
@@ -24,7 +22,6 @@ const navContent: BottomNavContentType[] = [
   {
     name: "Action",
     href: "/",
-    is_active: false,
     activeIcon: <IoFlash />,
     inActiveIcon: <IoFlashOutline />,
   },
