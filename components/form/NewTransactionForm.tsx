@@ -56,12 +56,15 @@ export default function NewTransactionForm() {
       "@/actions/handle-transaction"
     ).then((_) => _.insertTransactions);
 
-    const res = await insertTransactions(data);
+    const { error } = await insertTransactions(data);
 
     // TODO: Render alert
-    if (res.error) console.error(res.error);
+    if (error) {
+      console.error(error);
+      return;
+    }
 
-    if (res.success) router.push("/");
+    router.push("/");
   }
 
   return (

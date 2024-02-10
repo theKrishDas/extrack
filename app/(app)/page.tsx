@@ -1,12 +1,12 @@
+import AppHeader from "@/components/app/AppHeader";
+import TotalBalance from "@/components/app/TotalBalance";
 import TransactionDisplay from "@/components/transactions/TransactionDisplay";
 
 export default function Home() {
   return (
     <>
-      <h1>
-        Welcome to <span className="font-mono font-semibold">PJO-24</span>
-      </h1>
-
+      <AppHeader />
+      <TotalBalance />
       <TransactionDisplay />
     </>
   );
