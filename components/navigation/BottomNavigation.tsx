@@ -21,7 +21,7 @@ const navContent: BottomNavContentType[] = [
   },
   {
     name: "Action",
-    href: "/",
+    href: "/action",
     activeIcon: <IoFlash />,
     inActiveIcon: <IoFlashOutline />,
   },
