@@ -25,3 +25,12 @@ export function formatCurrency(amount: number) {
 
   return formattedCurrency;
 }
+
+export function formatDate(date: Date | string) {
+  const formattedDate = new Date(date).toLocaleDateString(LOCALE, {
+    month: "short",
+    day: "numeric",
+  });
+
+  return formattedDate;
+}
