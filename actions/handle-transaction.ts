@@ -124,6 +124,7 @@ export async function updateTransaction(
 
     // TODO: Use revalidate tag instead
     revalidatePath("/");
+    revalidatePath(`/transactions/${updateId}`);
 
     return { success: "Updated the transaction" };
   } catch (error) {
@@ -157,6 +158,7 @@ export async function deleteTransaction(transactionId: string) {
 
     // TODO: Use revalidate tag instead
     revalidatePath("/");
+    revalidatePath(`/transactions/${transactionId}`);
 
     return { success: "Transaction is successfully deleted!" };
   } catch (error) {
