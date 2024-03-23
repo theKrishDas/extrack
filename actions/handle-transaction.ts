@@ -10,7 +10,12 @@ import { and, desc, eq, sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { cache } from "react";
 
-export async function getTransactions() {
+const DISPLAY_FETCH_LIMIT = 5;
+const MAX_FETCH_LIMIT = 12;
+
+export async function getTransactions(hasAllTransactions?: boolean) {
+  const fetchLimit = hasAllTransactions ? MAX_FETCH_LIMIT : DISPLAY_FETCH_LIMIT;
+
   try {
     const user = await currentUser();
     if (!user) return { error: "You must be signed in to add transaction" };
@@ -21,6 +26,7 @@ export async function getTransactions() {
       .select()
       .from(transax)
       .where(eq(transax.userId, sql.placeholder("userId")))
+      .limit(fetchLimit)
       .orderBy(desc(transax.date))
       .prepare("prepareGetTransaction");
 

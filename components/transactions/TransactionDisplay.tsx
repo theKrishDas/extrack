@@ -4,12 +4,12 @@ import InlineNavigation from "../navigation/InlineNavigation";
 import EmptyTransaction from "./EmptyTransaction";
 
 export default async function TransactionDisplay({
-  hasAllTransactions,
+  hasAllTransactions = true,
 }: {
   hasAllTransactions?: boolean;
 }) {
   // TODO: Limit the transactions
-  const { transactions, error } = await getTransactions();
+  const { transactions, error } = await getTransactions(hasAllTransactions);
 
   // TODO: Build custom components for following cases
   if (error) return <p>{error}</p>;
