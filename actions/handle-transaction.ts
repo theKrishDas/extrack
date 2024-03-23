@@ -8,6 +8,7 @@ import {
 import { currentUser } from "@clerk/nextjs";
 import { and, desc, eq, sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
+import { cache } from "react";
 
 export async function getTransactions() {
   try {
@@ -38,6 +39,27 @@ export async function getTransactions() {
   }
 }
 
+export const getCachedTransactionById = cache(async (transactionId: string) => {
+  try {
+    const data = await db
+      .selectDistinct()
+      .from(transax)
+      .where(eq(transax.id, transactionId));
+
+    if (data.length === 0) return { transaction: undefined };
+
+    const transaction = {
+      ...data[0],
+      amount: data[0].amount / 100,
+    };
+
+    return { transaction };
+  } catch (error) {
+    return { error: "Unable to fetch the rquested transaction" };
+  }
+});
+
+// TODO: Replace the getCachedTransactionById function with the chached version
 export async function getTransactionById(transactionId: string) {
   try {
     const data = await db
