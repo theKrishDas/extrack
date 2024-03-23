@@ -1,5 +1,6 @@
 import { getTransactions } from "@/actions/handle-transaction";
 import TransactionItem from "./TransactionItem";
+import InlineNavigation from "../navigation/InlineNavigation";
 
 export default async function TransactionDisplay() {
   const { transactions, error } = await getTransactions();
@@ -9,15 +10,22 @@ export default async function TransactionDisplay() {
   if (!transactions) return <p>Unable to load transactions</p>;
 
   return (
-    <div className="space-y-1">
+    <section className="flex flex-col justify-center gap-2">
+      <InlineNavigation
+        heading="Recent transactions"
+        href="/transactions"
+        linkText="View all"
+      />
+
       {transactions.length === 0 ? (
-        // TODO: Build component for this
-        <p>No transactions</p>
+        <p>Empty</p>
       ) : (
-        transactions.map((transaction) => (
-          <TransactionItem key={transaction.id} transaction={transaction} />
-        ))
+        <div className="space-y-1">
+          {transactions.map((transaction) => (
+            <TransactionItem key={transaction.id} transaction={transaction} />
+          ))}
+        </div>
       )}
-    </div>
+    </section>
   );
 }
