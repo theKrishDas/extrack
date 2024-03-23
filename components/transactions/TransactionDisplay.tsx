@@ -3,7 +3,12 @@ import TransactionItem from "./TransactionItem";
 import InlineNavigation from "../navigation/InlineNavigation";
 import EmptyTransaction from "./EmptyTransaction";
 
-export default async function TransactionDisplay() {
+export default async function TransactionDisplay({
+  hasAllTransactions,
+}: {
+  hasAllTransactions?: boolean;
+}) {
+  // TODO: Limit the transactions
   const { transactions, error } = await getTransactions();
 
   // TODO: Build custom components for following cases
@@ -12,11 +17,13 @@ export default async function TransactionDisplay() {
 
   return (
     <section className="flex flex-col justify-center gap-2">
-      <InlineNavigation
-        heading="Recent transactions"
-        href="/transactions"
-        linkText="View all"
-      />
+      {!hasAllTransactions && (
+        <InlineNavigation
+          heading="Recent transactions"
+          href="/transactions"
+          linkText="View all"
+        />
+      )}
 
       {transactions.length === 0 ? (
         <EmptyTransaction />

@@ -1,7 +1,11 @@
+import BackNavigation from "@/components/navigation/AppNavigateBack";
+import TransactionDisplay from "@/components/transactions/TransactionDisplay";
+
 export default function AllTransactionsPage() {
   return (
     <>
-      <h1>All you transactions</h1>
+      <BackNavigation heading="All transactions" />
+      <TransactionDisplay hasAllTransactions={true} />
     </>
   );
 }
