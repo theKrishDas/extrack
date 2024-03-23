@@ -1,6 +1,7 @@
 import { getTransactions } from "@/actions/handle-transaction";
 import TransactionItem from "./TransactionItem";
 import InlineNavigation from "../navigation/InlineNavigation";
+import EmptyTransaction from "./EmptyTransaction";
 
 export default async function TransactionDisplay() {
   const { transactions, error } = await getTransactions();
@@ -18,7 +19,7 @@ export default async function TransactionDisplay() {
       />
 
       {transactions.length === 0 ? (
-        <p>Empty</p>
+        <EmptyTransaction />
       ) : (
         <div className="space-y-1">
           {transactions.map((transaction) => (
