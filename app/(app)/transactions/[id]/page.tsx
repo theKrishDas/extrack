@@ -1,4 +1,4 @@
-import { getTransactionById } from "@/actions/handle-transaction";
+import { getCachedTransactionById } from "@/actions/handle-transaction";
 import AppNavigateBack from "@/components/navigation/AppNavigateBack";
 import TransactionDetail from "@/components/transactions/TransactionDetail";
 import TransactionDropdown from "@/components/transactions/TransactionDropdown";
@@ -9,7 +9,7 @@ export default async function TransactionDetailPage({
 }: {
   params: { id: string };
 }) {
-  const { transaction, error } = await getTransactionById(_id);
+  const { transaction, error } = await getCachedTransactionById(_id);
 
   // TODO: Handle this error Properly
   if (error) return <p>{error}</p>;

@@ -7,7 +7,7 @@ export default function Home() {
     <>
       <AppHeader />
       <TotalBalance />
-      <TransactionDisplay />
+      <TransactionDisplay hasAllTransactions={false} />
     </>
   );
 }

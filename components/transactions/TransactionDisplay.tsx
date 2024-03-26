@@ -1,23 +1,39 @@
 import { getTransactions } from "@/actions/handle-transaction";
 import TransactionItem from "./TransactionItem";
+import InlineNavigation from "../navigation/InlineNavigation";
+import EmptyTransaction from "./EmptyTransaction";
 
-export default async function TransactionDisplay() {
-  const { transactions, error } = await getTransactions();
+export default async function TransactionDisplay({
+  hasAllTransactions = true,
+}: {
+  hasAllTransactions?: boolean;
+}) {
+  // TODO: Limit the transactions
+  const { transactions, error } = await getTransactions(hasAllTransactions);
 
   // TODO: Build custom components for following cases
   if (error) return <p>{error}</p>;
   if (!transactions) return <p>Unable to load transactions</p>;
 
   return (
-    <div className="space-y-1">
-      {transactions.length === 0 ? (
-        // TODO: Build component for this
-        <p>No transactions</p>
-      ) : (
-        transactions.map((transaction) => (
-          <TransactionItem key={transaction.id} transaction={transaction} />
-        ))
+    <section className="flex flex-col justify-center gap-2">
+      {!hasAllTransactions && (
+        <InlineNavigation
+          heading="Recent transactions"
+          href="/transactions"
+          linkText="View all"
+        />
       )}
-    </div>
+
+      {transactions.length === 0 ? (
+        <EmptyTransaction />
+      ) : (
+        <div className="space-y-1">
+          {transactions.map((transaction) => (
+            <TransactionItem key={transaction.id} transaction={transaction} />
+          ))}
+        </div>
+      )}
+    </section>
   );
 }
