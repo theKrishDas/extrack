@@ -10,14 +10,14 @@ export default authMiddleware({
   afterAuth(auth, req) {
     // If the user is not signed-in, send them to HOME_ROUTE
     if (!auth.userId && !auth.isPublicRoute) {
-      const orgSelection = new URL(HOME_ROUTE, req.url);
-      return NextResponse.redirect(orgSelection);
+      const homeRoute = new URL(HOME_ROUTE, req.url);
+      return NextResponse.redirect(homeRoute);
     }
 
     // If the user is signed-in, send them to app-page
     if (auth.userId && req.nextUrl.pathname === "/home") {
-      const orgSelection = new URL("/", req.url);
-      return NextResponse.redirect(orgSelection);
+      const appRoute = new URL("/", req.url);
+      return NextResponse.redirect(appRoute);
     }
 
     // Else retun the rquested route
