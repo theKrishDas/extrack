@@ -5,7 +5,7 @@ import { authMiddleware } from "@clerk/nextjs";
 const HOME_ROUTE = "/home";
 
 export default authMiddleware({
-  publicRoutes: ["/api/clerk", HOME_ROUTE],
+  publicRoutes: ["/webhook/clerk", HOME_ROUTE],
 
   afterAuth(auth, req) {
     // If the user is not signed-in, send them to HOME_ROUTE

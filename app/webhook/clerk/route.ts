@@ -21,6 +21,6 @@ export async function POST(request: Request) {
 }
 
 export async function GET() {
-  console.clear();
+  console.log("Endpoint Hit");
   return NextResponse.json({ message: "Why are you here?" });
 }
