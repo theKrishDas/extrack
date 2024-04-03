@@ -8,8 +8,14 @@ import {
 import { currentUser } from "@clerk/nextjs";
 import { and, desc, eq, sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
+import { cache } from "react";
 
-export async function getTransactions() {
+const DISPLAY_FETCH_LIMIT = 5;
+const MAX_FETCH_LIMIT = 12;
+
+export async function getTransactions(hasAllTransactions?: boolean) {
+  const fetchLimit = hasAllTransactions ? MAX_FETCH_LIMIT : DISPLAY_FETCH_LIMIT;
+
   try {
     const user = await currentUser();
     if (!user) return { error: "You must be signed in to add transaction" };
@@ -20,6 +26,7 @@ export async function getTransactions() {
       .select()
       .from(transax)
       .where(eq(transax.userId, sql.placeholder("userId")))
+      .limit(fetchLimit)
       .orderBy(desc(transax.date))
       .prepare("prepareGetTransaction");
 
@@ -38,6 +45,27 @@ export async function getTransactions() {
   }
 }
 
+export const getCachedTransactionById = cache(async (transactionId: string) => {
+  try {
+    const data = await db
+      .selectDistinct()
+      .from(transax)
+      .where(eq(transax.id, transactionId));
+
+    if (data.length === 0) return { transaction: undefined };
+
+    const transaction = {
+      ...data[0],
+      amount: data[0].amount / 100,
+    };
+
+    return { transaction };
+  } catch (error) {
+    return { error: "Unable to fetch the rquested transaction" };
+  }
+});
+
+// TODO: Replace the getCachedTransactionById function with the chached version
 export async function getTransactionById(transactionId: string) {
   try {
     const data = await db
@@ -80,6 +108,7 @@ export async function insertTransactions(formData: NewTransactionSchemaType) {
 
     // TODO: Use revalidate tag instead
     revalidatePath("/");
+    revalidatePath("/transactions");
 
     return { success: "Added new transaction" };
   } catch (error) {
@@ -124,6 +153,7 @@ export async function updateTransaction(
 
     // TODO: Use revalidate tag instead
     revalidatePath("/");
+    revalidatePath("/transactions");
     revalidatePath(`/transactions/${updateId}`);
 
     return { success: "Updated the transaction" };
@@ -158,6 +188,7 @@ export async function deleteTransaction(transactionId: string) {
 
     // TODO: Use revalidate tag instead
     revalidatePath("/");
+    revalidatePath("/transactions");
     revalidatePath(`/transactions/${transactionId}`);
 
     return { success: "Transaction is successfully deleted!" };
