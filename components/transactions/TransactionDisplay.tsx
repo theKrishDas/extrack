@@ -2,6 +2,7 @@ import { getTransactions } from "@/actions/handle-transaction";
 import TransactionItem from "./TransactionItem";
 import InlineNavigation from "../navigation/InlineNavigation";
 import EmptyTransaction from "./EmptyTransaction";
+import EndOfTransaction from "./EndOfTransaction";
 
 export default async function TransactionDisplay({
   hasAllTransactions = true,
@@ -34,6 +35,7 @@ export default async function TransactionDisplay({
           ))}
         </div>
       )}
+      {hasAllTransactions && <EndOfTransaction />}
     </section>
   );
 }
