@@ -89,7 +89,8 @@
   * {
     @apply border-border;
   }
+
   body {
-    @apply bg-background text-foreground;
+    @apply h-[100dvh] overflow-y-scroll bg-background text-foreground;
   }
 }
