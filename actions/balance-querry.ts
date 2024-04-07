@@ -4,6 +4,28 @@ import { preference, transax } from "@/db/drizzle/schema";
 import { currentUser } from "@clerk/nextjs";
 import { eq, sum } from "drizzle-orm";
 
+export async function getInitialBalance() {
+  try {
+    const user = await currentUser();
+    if (!user) return { error: "You must be signed in to add transaction" };
+
+    const userId = user.id;
+
+    const balanceInfo = await db
+      .select({ initialBalance: preference.initialBalance })
+      .from(preference)
+      .where(eq(preference.userId, userId));
+
+    if (!balanceInfo) return { error: "Unable retrieve initial balance" };
+
+    const initialBalance = balanceInfo[0].initialBalance / 100;
+
+    return { initialBalance };
+  } catch (error) {
+    return { error: "An error occured while fetching transactions" };
+  }
+}
+
 export async function getTotalBalance() {
   try {
     const user = await currentUser();
