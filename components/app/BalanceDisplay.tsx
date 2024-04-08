@@ -1,12 +1,13 @@
 import InitialBalancePrompt from "@/components/initialBalance/InitialBalancePrompt";
 import TotalBalance from "@/components/app/TotalBalance";
+import { getInitialBalance } from "@/actions/balance-querry";
 
 export default async function BalanceDisplay() {
-  const { initialBalance } = await import("@/actions/balance-querry").then(
-    (_) => _.getInitialBalance(),
-  );
+  const { initialBalance, error } = await getInitialBalance();
 
-  // TODO: Build component for this
+  // TODO: Build components for this
+  if (error) return <p>{error}</p>;
+
   if (initialBalance === undefined)
     return <p>Unable to fetch starting balance!</p>;
 
