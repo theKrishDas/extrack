@@ -46,7 +46,7 @@ export async function getTotalBalance(initialBalance: number) {
       totalTransactionData[0].totalTransactionAmount || "0",
     );
 
-    const totalBalance = (initialBalance + totalTransactionAmount) / 100;
+    const totalBalance = initialBalance + totalTransactionAmount / 100;
 
     return { totalBalance };
   } catch (error) {
