@@ -6,10 +6,13 @@ export default async function BalanceDisplay() {
     (_) => _.getInitialBalance(),
   );
 
-  console.log("Initial Balance: ", initialBalance);
+  // TODO: Build component for this
+  if (initialBalance === undefined)
+    return <p>Unable to fetch starting balance!</p>;
+
   return (
     <>
-      <InitialBalancePrompt />
+      <InitialBalancePrompt initialBalance={initialBalance} />
       <TotalBalance />
     </>
   );

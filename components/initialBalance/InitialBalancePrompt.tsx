@@ -3,10 +3,17 @@
 import { useState } from "react";
 import InitialBalanceForm from "../initialBalance/InitialBalanceForm";
 import InitialBalanceRemider from "../initialBalance/InitialBalanceRemider";
+import { MINIMUM_SARTING_BALANCE } from "@/defaultValues";
 
-export default function StartingBalancePrompt() {
+export default function StartingBalancePrompt({
+  initialBalance,
+}: {
+  initialBalance: number;
+}) {
   const [isButtonClicked, setButtonClicked] = useState(false);
-  const [isStartingBalanceValid, setStartingBalanceValid] = useState(false);
+  const [isStartingBalanceValid, setStartingBalanceValid] = useState(
+    initialBalance >= MINIMUM_SARTING_BALANCE,
+  );
 
   return (
     <>
