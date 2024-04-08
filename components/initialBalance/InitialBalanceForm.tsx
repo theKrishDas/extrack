@@ -22,7 +22,10 @@ export default function InitialBalanceForm({
       "@/actions/handleStartingBalance"
     ).then((_) => _.addStartingBalance);
 
-    await addStartingBalance(data.amount);
+    const { error } = await addStartingBalance(data.amount);
+
+    // TODO: Render alert
+    if (error) window.alert(error);
   };
 
   return (
