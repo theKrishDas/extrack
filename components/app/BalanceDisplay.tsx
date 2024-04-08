@@ -13,7 +13,7 @@ export default async function BalanceDisplay() {
   return (
     <>
       <InitialBalancePrompt initialBalance={initialBalance} />
-      <TotalBalance />
+      <TotalBalance initialBalance={initialBalance} />
     </>
   );
 }

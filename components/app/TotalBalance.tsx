@@ -1,8 +1,12 @@
 import { getTotalBalance } from "@/actions/balance-querry";
 import { formatCurrency } from "@/lib/utils";
 
-export default async function TotalBalance() {
-  const { totalBalance, error } = await getTotalBalance();
+export default async function TotalBalance({
+  initialBalance,
+}: {
+  initialBalance: number;
+}) {
+  const { totalBalance, error } = await getTotalBalance(initialBalance);
 
   // TODO: Build custom components for following cases
   if (error) return <p>{error}</p>;
