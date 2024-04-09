@@ -13,6 +13,17 @@ export default function InitialBalanceSettings({
 }) {
   const [isEditingInitialBalance, setIsEditingInitialBalance] = useState(false);
 
+  const handleEditStart = () => {
+    setIsEditingInitialBalance(true);
+  };
+
+  const handleEditEnd = () => {
+    // Send the data to back-end
+
+    // Remove input
+    setIsEditingInitialBalance(false);
+  };
+
   return (
     <div className="flex flex-col gap-7 rounded-3xl bg-card p-5">
       {/* Header */}
@@ -32,15 +43,13 @@ export default function InitialBalanceSettings({
           variant="ghost"
           size="icon"
           disabled={isEditingInitialBalance}
-          onClick={() => {
-            setIsEditingInitialBalance(true);
-          }}
+          onClick={() => handleEditStart()}
         >
           <RxPencil1 />
         </Button>
       </div>
       {isEditingInitialBalance ? (
-        <TheInput setIsEditingInitialBalance={setIsEditingInitialBalance} />
+        <TheInput handleEditEnd={handleEditEnd} />
       ) : (
         <p className="inline-flex items-start text-3xl tracking-tight text-foreground/70">
           <span className="pr-1 text-xl font-light text-foreground/40">₹</span>
@@ -51,11 +60,7 @@ export default function InitialBalanceSettings({
   );
 }
 
-function TheInput({
-  setIsEditingInitialBalance,
-}: {
-  setIsEditingInitialBalance: (_: boolean) => void;
-}) {
+function TheInput({ handleEditEnd }: { handleEditEnd: () => void }) {
   return (
     <CurrencyInput
       autoFocus
@@ -63,7 +68,7 @@ function TheInput({
       allowNegativeValue={false}
       maxLength={8}
       placeholder="New Balance"
-      onBlur={() => setIsEditingInitialBalance(false)}
+      onBlur={() => handleEditEnd()}
     />
   );
 }
