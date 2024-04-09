@@ -5,7 +5,7 @@ import { RxPencil1 } from "react-icons/rx";
 export default function SettingsPage() {
   return (
     <>
-      <p>Settings page</p>
+      <h1 className="pt-12 text-5xl font-light tracking-tight">Settings</h1>
       <InitialBalanceSettings />
     </>
   );
@@ -34,8 +34,8 @@ function InitialBalanceSettings() {
           <RxPencil1 />
         </Button>
       </div>
-      <p className="inline-flex items-start text-5xl tracking-tight text-foreground/70">
-        <span className="pr-1 text-3xl font-light text-foreground/40">₹</span>
+      <p className="inline-flex items-start text-3xl tracking-tight text-foreground/70">
+        <span className="pr-1 text-xl font-light text-foreground/40">₹</span>
         95,100
       </p>
     </div>
