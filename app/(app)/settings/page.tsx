@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import { IoBag } from "react-icons/io5";
 import { RxPencil1 } from "react-icons/rx";
 
@@ -25,9 +26,13 @@ function InitialBalanceSettings() {
         </div>
 
         {/* Icon */}
-        <div className="inline-grid h-12 w-12 place-content-center rounded-full bg-none text-lg text-card-foreground/40">
+        <Button
+          className="h-12 w-12 rounded-full text-lg"
+          variant="ghost"
+          size="icon"
+        >
           <RxPencil1 />
-        </div>
+        </Button>
       </div>
       <p className="inline-flex items-start text-5xl tracking-tight text-foreground/70">
         <span className="pr-1 text-3xl font-light text-foreground/40">₹</span>
