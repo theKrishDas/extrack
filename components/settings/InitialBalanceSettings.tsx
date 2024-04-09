@@ -2,7 +2,11 @@ import { Button } from "@/components/ui/button";
 import { IoBag } from "react-icons/io5";
 import { RxPencil1 } from "react-icons/rx";
 
-export default function InitialBalanceSettings() {
+export default function InitialBalanceSettings({
+  initialBalance,
+}: {
+  initialBalance: number;
+}) {
   return (
     <div className="flex flex-col gap-7 rounded-3xl bg-card p-5">
       {/* Header */}
@@ -27,7 +31,7 @@ export default function InitialBalanceSettings() {
       </div>
       <p className="inline-flex items-start text-3xl tracking-tight text-foreground/70">
         <span className="pr-1 text-xl font-light text-foreground/40">₹</span>
-        95,100
+        {initialBalance}
       </p>
     </div>
   );
