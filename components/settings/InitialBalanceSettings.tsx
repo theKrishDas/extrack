@@ -1,5 +1,6 @@
 "use client";
 
+import { MINIMUM_SARTING_BALANCE } from "@/defaultValues";
 import { Button } from "@/components/ui/button";
 import { IoBag, IoCloseSharp, IoCheckmarkSharp } from "react-icons/io5";
 import { RxPencil1 } from "react-icons/rx";
@@ -20,6 +21,9 @@ export default function InitialBalanceSettings({
 
   const handleEditEnd = () => {
     // Send the data to back-end
+
+    // Resets the inpu value if not valid
+    if (inputValue < MINIMUM_SARTING_BALANCE) setInputValue(initialBalance);
 
     // Remove input
     setIsEditingInitialBalance(false);
@@ -54,12 +58,16 @@ export default function InitialBalanceSettings({
         {/* Input / display */}
         {isEditingInitialBalance ? (
           <TheInput
+            initialBalance={initialBalance}
             handleEditEnd={handleEditEnd}
             inputValue={inputValue}
             setInputValue={setInputValue}
           />
         ) : (
-          <p className="inline-flex w-full items-start text-3xl tracking-tight text-foreground/70">
+          <p
+            className="inline-flex w-full items-start text-3xl tracking-tight text-foreground/70"
+            onClick={handleEditStart}
+          >
             <span className="pr-1 text-xl font-light text-foreground/40">
               ₹
             </span>
@@ -88,12 +96,14 @@ export default function InitialBalanceSettings({
 }
 
 function TheInput({
-  handleEditEnd,
+  initialBalance,
   inputValue,
+  handleEditEnd,
   setInputValue,
 }: {
-  handleEditEnd: () => void;
+  initialBalance: number;
   inputValue: number;
+  handleEditEnd: () => void;
   setInputValue: (_: number) => void; // eslint-disable-line no-unused-vars
 }) {
   return (
@@ -104,8 +114,10 @@ function TheInput({
       maxLength={8}
       placeholder="New Balance"
       className="inline-flex w-full items-start border-none text-3xl tracking-tight text-foreground/70 outline-none"
-      value={inputValue}
-      onValueChange={(value) => setInputValue(value)}
+      defaultValue={inputValue || initialBalance}
+      onValueChange={(_, __, values) => {
+        setInputValue(values?.float ?? initialBalance);
+      }}
       onBlur={() => handleEditEnd()}
     />
   );
