@@ -61,7 +61,7 @@ export default function InitialBalanceSettings({
           className="h-12 w-12 rounded-full text-lg"
           variant="ghost"
           size="icon"
-          // disabled={isEditingInitialBalance}
+          disabled={isEditingInitialBalance}
           onClick={handleEditStart}
         >
           <RxPencil1 />
