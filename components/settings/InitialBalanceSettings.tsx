@@ -21,13 +21,26 @@ export default function InitialBalanceSettings({
   };
 
   const handleEditEnd = () => {
-    // Send the data to back-end
-
     // Resets the inpu value if not valid
     if (inputValue < MINIMUM_SARTING_BALANCE) setInputValue(initialBalance);
 
     // Remove input
     setIsEditingInitialBalance(false);
+  };
+
+  const handleSaveEdit = async () => {
+    console.log(inputValue);
+
+    // TODO: Do safe Parsing with zod
+
+    const addStartingBalance = await import(
+      "@/actions/handleStartingBalance"
+    ).then((_) => _.addStartingBalance);
+
+    const { error } = await addStartingBalance(inputValue);
+
+    // TODO: Render alert
+    if (error) window.alert(error);
   };
 
   return (
@@ -87,6 +100,7 @@ export default function InitialBalanceSettings({
                 inputValue < MINIMUM_SARTING_BALANCE && "invisible",
               )}
               disabled={inputValue < MINIMUM_SARTING_BALANCE}
+              onClick={() => handleSaveEdit()}
             >
               <IoCheckmarkSharp />
             </Button>
