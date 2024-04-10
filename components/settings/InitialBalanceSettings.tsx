@@ -96,6 +96,7 @@ export default function InitialBalanceSettings({
               size="icon"
               variant="ghost"
               className="rounded-full text-lg"
+              onClick={() => setInputValue(initialBalance)}
             >
               <IoCloseSharp />
             </Button>
