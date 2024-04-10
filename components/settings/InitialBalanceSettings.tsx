@@ -15,6 +15,7 @@ export default function InitialBalanceSettings({
 }) {
   const [isEditingInitialBalance, setIsEditingInitialBalance] = useState(false);
   const [inputValue, setInputValue] = useState(initialBalance);
+  const [isInputDirty, setIsInputDirty] = useState(false);
 
   const handleEditStart = () => {
     setIsEditingInitialBalance(true);
@@ -22,15 +23,13 @@ export default function InitialBalanceSettings({
 
   const handleEditEnd = () => {
     // Resets the inpu value if not valid
-    if (inputValue < MINIMUM_SARTING_BALANCE) setInputValue(initialBalance);
+    if (inputValue < MINIMUM_SARTING_BALANCE) handleCancelEdit();
 
     // Remove input
     setIsEditingInitialBalance(false);
   };
 
   const handleSaveEdit = async () => {
-    console.log(inputValue);
-
     // TODO: Do safe Parsing with zod
 
     const addStartingBalance = await import(
@@ -41,6 +40,11 @@ export default function InitialBalanceSettings({
 
     // TODO: Render alert
     if (error) window.alert(error);
+  };
+
+  const handleCancelEdit = () => {
+    setInputValue(initialBalance);
+    setIsInputDirty(false);
   };
 
   return (
@@ -81,6 +85,7 @@ export default function InitialBalanceSettings({
             defaultValue={inputValue || initialBalance}
             onValueChange={(_, __, values) => {
               setInputValue(values?.float ?? initialBalance);
+              setIsInputDirty(values?.float != initialBalance);
             }}
             onBlur={handleEditEnd}
           />
@@ -97,7 +102,7 @@ export default function InitialBalanceSettings({
         )}
 
         {/* Controle bttons */}
-        {inputValue != initialBalance ? (
+        {isInputDirty ? (
           <div className="flex gap-1">
             {/* Save buttons */}
             <Button
@@ -112,12 +117,12 @@ export default function InitialBalanceSettings({
               <IoCheckmarkSharp />
             </Button>
 
-            {/* Clear button */}
+            {/* Cancel edit button */}
             <Button
               size="icon"
               variant="ghost"
               className="rounded-full text-lg"
-              onClick={() => setInputValue(initialBalance)}
+              onClick={handleCancelEdit}
             >
               <IoCloseSharp />
             </Button>
