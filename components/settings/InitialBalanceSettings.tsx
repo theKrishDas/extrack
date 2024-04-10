@@ -6,6 +6,7 @@ import { IoBag, IoCloseSharp, IoCheckmarkSharp } from "react-icons/io5";
 import { RxPencil1 } from "react-icons/rx";
 import CurrencyInput from "react-currency-input-field";
 import { useState } from "react";
+import { cn } from "@/lib/utils";
 
 export default function InitialBalanceSettings({
   initialBalance,
@@ -75,12 +76,22 @@ export default function InitialBalanceSettings({
           </p>
         )}
 
-        {/* Save bttons */}
+        {/* Controle bttons */}
         {inputValue != initialBalance ? (
-          <div className="flex flex-row-reverse gap-1">
-            <Button size="icon" className="rounded-full text-lg">
+          <div className="flex gap-1">
+            {/* Save buttons */}
+            <Button
+              size="icon"
+              className={cn(
+                "rounded-full text-lg",
+                inputValue < MINIMUM_SARTING_BALANCE && "invisible",
+              )}
+              disabled={inputValue < MINIMUM_SARTING_BALANCE}
+            >
               <IoCheckmarkSharp />
             </Button>
+
+            {/* Clear button */}
             <Button
               size="icon"
               variant="ghost"
