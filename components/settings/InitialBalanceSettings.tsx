@@ -12,7 +12,7 @@ export default function InitialBalanceSettings({
   initialBalance: number;
 }) {
   const [isEditingInitialBalance, setIsEditingInitialBalance] = useState(false);
-  const [isInputDirty, setIsInputDirty] = useState(false);
+  const [inputValue, setInputValue] = useState(initialBalance);
 
   const handleEditStart = () => {
     setIsEditingInitialBalance(true);
@@ -53,18 +53,22 @@ export default function InitialBalanceSettings({
       <div className="flex items-center justify-between">
         {/* Input / display */}
         {isEditingInitialBalance ? (
-          <TheInput handleEditEnd={handleEditEnd} />
+          <TheInput
+            handleEditEnd={handleEditEnd}
+            inputValue={inputValue}
+            setInputValue={setInputValue}
+          />
         ) : (
           <p className="inline-flex w-full items-start text-3xl tracking-tight text-foreground/70">
             <span className="pr-1 text-xl font-light text-foreground/40">
               ₹
             </span>
-            {initialBalance}
+            {inputValue ? inputValue : initialBalance}
           </p>
         )}
 
         {/* Save bttons */}
-        {isInputDirty ? (
+        {inputValue != initialBalance ? (
           <div className="flex flex-row-reverse gap-1">
             <Button size="icon" className="rounded-full text-lg">
               <IoCheckmarkSharp />
@@ -83,7 +87,15 @@ export default function InitialBalanceSettings({
   );
 }
 
-function TheInput({ handleEditEnd }: { handleEditEnd: () => void }) {
+function TheInput({
+  handleEditEnd,
+  inputValue,
+  setInputValue,
+}: {
+  handleEditEnd: () => void;
+  inputValue: number;
+  setInputValue: (_: number) => void; // eslint-disable-line no-unused-vars
+}) {
   return (
     <CurrencyInput
       autoFocus
@@ -91,7 +103,9 @@ function TheInput({ handleEditEnd }: { handleEditEnd: () => void }) {
       allowNegativeValue={false}
       maxLength={8}
       placeholder="New Balance"
-      className="w-full"
+      className="inline-flex w-full items-start border-none text-3xl tracking-tight text-foreground/70 outline-none"
+      value={inputValue}
+      onValueChange={(value) => setInputValue(value)}
       onBlur={() => handleEditEnd()}
     />
   );
