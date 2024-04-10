@@ -30,6 +30,12 @@ export default function InitialBalanceSettings({
   };
 
   const handleSaveEdit = async () => {
+    // Optimistic update: Remove controle buttons
+    setIsInputDirty(false);
+
+    // Just to be safe
+    if (inputValue < MINIMUM_SARTING_BALANCE) return;
+
     // TODO: Do safe Parsing with zod
 
     const addStartingBalance = await import(
