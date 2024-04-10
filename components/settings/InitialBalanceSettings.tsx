@@ -71,11 +71,18 @@ export default function InitialBalanceSettings({
       <div className="flex items-center justify-between">
         {/* Input / display */}
         {isEditingInitialBalance ? (
-          <TheInput
-            initialBalance={initialBalance}
-            handleEditEnd={handleEditEnd}
-            inputValue={inputValue}
-            setInputValue={setInputValue}
+          <CurrencyInput
+            autoFocus
+            decimalsLimit={2}
+            allowNegativeValue={false}
+            maxLength={8}
+            placeholder="New Balance"
+            className="inline-flex w-full items-start border-none text-3xl tracking-tight text-foreground/70 outline-none"
+            defaultValue={inputValue || initialBalance}
+            onValueChange={(_, __, values) => {
+              setInputValue(values?.float ?? initialBalance);
+            }}
+            onBlur={() => handleEditEnd()}
           />
         ) : (
           <p
@@ -118,33 +125,5 @@ export default function InitialBalanceSettings({
         ) : null}
       </div>
     </section>
-  );
-}
-
-function TheInput({
-  initialBalance,
-  inputValue,
-  handleEditEnd,
-  setInputValue,
-}: {
-  initialBalance: number;
-  inputValue: number;
-  handleEditEnd: () => void;
-  setInputValue: (_: number) => void; // eslint-disable-line no-unused-vars
-}) {
-  return (
-    <CurrencyInput
-      autoFocus
-      decimalsLimit={2}
-      allowNegativeValue={false}
-      maxLength={8}
-      placeholder="New Balance"
-      className="inline-flex w-full items-start border-none text-3xl tracking-tight text-foreground/70 outline-none"
-      defaultValue={inputValue || initialBalance}
-      onValueChange={(_, __, values) => {
-        setInputValue(values?.float ?? initialBalance);
-      }}
-      onBlur={() => handleEditEnd()}
-    />
   );
 }
