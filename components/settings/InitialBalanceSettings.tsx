@@ -62,7 +62,7 @@ export default function InitialBalanceSettings({
           variant="ghost"
           size="icon"
           // disabled={isEditingInitialBalance}
-          onClick={() => handleEditStart()}
+          onClick={handleEditStart}
         >
           <RxPencil1 />
         </Button>
@@ -82,7 +82,7 @@ export default function InitialBalanceSettings({
             onValueChange={(_, __, values) => {
               setInputValue(values?.float ?? initialBalance);
             }}
-            onBlur={() => handleEditEnd()}
+            onBlur={handleEditEnd}
           />
         ) : (
           <p
@@ -107,7 +107,7 @@ export default function InitialBalanceSettings({
                 inputValue < MINIMUM_SARTING_BALANCE && "invisible",
               )}
               disabled={inputValue < MINIMUM_SARTING_BALANCE}
-              onClick={() => handleSaveEdit()}
+              onClick={handleSaveEdit}
             >
               <IoCheckmarkSharp />
             </Button>
