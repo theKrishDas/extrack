@@ -85,7 +85,9 @@ export default function InitialBalanceSettings({
             defaultValue={inputValue || initialBalance}
             onValueChange={(_, __, values) => {
               setInputValue(values?.float ?? initialBalance);
-              setIsInputDirty(values?.float != initialBalance);
+              setIsInputDirty(
+                values?.float != null && values?.float !== initialBalance,
+              );
             }}
             onBlur={handleEditEnd}
           />
