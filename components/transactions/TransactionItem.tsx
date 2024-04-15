@@ -28,13 +28,13 @@ export default function TransactionItem({
     <>
       <Link
         href={`/transactions/${transaction.id}`}
-        className="flex items-center justify-between rounded-md bg-secondary p-4 transition hover:bg-accent hover:text-accent-foreground"
+        className="flex items-center justify-between rounded-md bg-card p-4 transition hover:bg-accent hover:text-accent-foreground"
       >
         <div className="flex items-start gap-2">
           {transaction.isExpense ? (
             <HiArrowDown className="text-danger mt-[0.2rem]" />
           ) : (
-            <HiArrowUp className="text-success mt-[0.2rem]" />
+            <HiArrowUp className="mt-[0.2rem] text-success" />
           )}
 
           <div>
