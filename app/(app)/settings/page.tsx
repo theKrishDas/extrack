@@ -1,5 +1,6 @@
-import InitialBalanceSettings from "@/components/settings/InitialBalanceSettings";
+// import InitialBalanceSettings from "@/components/settings/InitialBalanceSettings";
 import { getInitialBalance } from "@/actions/balance-querry";
+import TestInitialBalanceSettings from "./TestInitialBalanceSettings";
 
 export default async function SettingsPage() {
   const { initialBalance, error } = await getInitialBalance();
@@ -13,7 +14,8 @@ export default async function SettingsPage() {
   return (
     <>
       <h1 className="pt-12 text-5xl font-light tracking-tight">Settings</h1>
-      <InitialBalanceSettings initialBalance={initialBalance} />
+      {/* <InitialBalanceSettings initialBalance={initialBalance} /> */}
+      <TestInitialBalanceSettings />
     </>
   );
 }
