@@ -1,4 +1,5 @@
 "use client";
+import { testStartingBalance } from "@/actions/startingBalanceTest";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -23,8 +24,8 @@ export default function TestInitialBalanceSettings() {
     },
   });
 
-  function onSubmit(values: FormSchema) {
-    console.log(values);
+  async function onSubmit(values: FormSchema) {
+    await testStartingBalance(values.amount);
   }
 
   return (
