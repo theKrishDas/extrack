@@ -96,9 +96,15 @@ export async function insertTransactions(formData: NewTransactionSchemaType) {
 
     const { amount, label, is_expense, date } = validatedData.data;
 
+    const mappedAmount = is_expense
+      ? Math.abs(amount) * -100
+      : Math.abs(amount) * 100;
+
+    const roundedAmount = parseFloat(mappedAmount.toFixed(2));
+
     const newTransactionData: transactionInsertSchemaType = {
       userId: user.id,
-      amount: is_expense ? Math.abs(amount) * -100 : Math.abs(amount * 100),
+      amount: roundedAmount,
       label: label,
       isExpense: is_expense,
       date: date?.toISOString(),
@@ -131,8 +137,14 @@ export async function updateTransaction(
 
     const { amount, label, is_expense, date } = validatedData.data;
 
+    const mappedAmount = is_expense
+      ? Math.abs(amount) * -100
+      : Math.abs(amount) * 100;
+
+    const roundedAmount = parseFloat(mappedAmount.toFixed(2));
+
     const updateTransactionData = {
-      amount: is_expense ? amount * -100 : amount * 100,
+      amount: roundedAmount,
       label: label,
       isExpense: is_expense,
       date: date?.toISOString(),

@@ -1,6 +1,6 @@
 import type { BottomNavContentType } from "@/lib/types/bottom-nav-content";
 import { GoHome, GoHomeFill } from "react-icons/go";
-import { IoFlash, IoFlashOutline } from "react-icons/io5";
+import { IoSettingsOutline, IoSettingsSharp } from "react-icons/io5";
 import { TbSquareRoundedPlus, TbSquareRoundedPlusFilled } from "react-icons/tb";
 import BottomNavLink from "./BottonNavLink";
 
@@ -20,10 +20,10 @@ const navContent: BottomNavContentType[] = [
     ),
   },
   {
-    name: "Action",
-    href: "/action",
-    activeIcon: <IoFlash />,
-    inActiveIcon: <IoFlashOutline />,
+    name: "Settings",
+    href: "/settings",
+    activeIcon: <IoSettingsSharp />,
+    inActiveIcon: <IoSettingsOutline />,
   },
 ];
 
