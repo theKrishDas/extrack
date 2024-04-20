@@ -3,11 +3,13 @@ import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { Switch } from "@/components/ui/switch";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 export default function CreateNewCatDialog() {
   return (
@@ -23,13 +25,27 @@ export default function CreateNewCatDialog() {
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Are you absolutely sure?</DialogTitle>
-          <DialogDescription>
-            This action cannot be undone. This will permanently delete your
-            account and remove your data from our servers.
-          </DialogDescription>
+          <DialogTitle>Create new category</DialogTitle>
         </DialogHeader>
+        <CategoryForm />
       </DialogContent>
     </Dialog>
+  );
+}
+
+function CategoryForm() {
+  return (
+    <div className="flex flex-col gap-2">
+      <div className="flex items-center gap-1">
+        <Switch id="category-type" />
+        <Label htmlFor="category-type">Expense</Label>
+      </div>
+
+      <Input placeholder="name" />
+
+      <div className="h-3 w-full" />
+
+      <Button type="submit">Add</Button>
+    </div>
   );
 }

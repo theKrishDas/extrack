@@ -28,7 +28,7 @@ export default function SelectComponent({
 
         {/* --- Select items --- */}
         {categories.map((cat) => (
-          <SelectItem value={cat.id} key={cat.id}>
+          <SelectItem value={cat.id} key={cat.id} className="capitalize">
             {cat.name}
           </SelectItem>
         ))}
