@@ -1,3 +1,4 @@
+import NewTransactionComponent from "./NewTransactionComponent";
 import SelectComponent from "./SelectComponent";
 
 export type TCategories = {
@@ -15,6 +16,7 @@ const expenseCategories: TCategories[] = [
 export default function TestPage() {
   return (
     <main className="space-y-5 p-5">
+      <NewTransactionComponent />
       <SelectComponent categories={expenseCategories} />
     </main>
   );
