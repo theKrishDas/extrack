@@ -1,11 +1,11 @@
 "use client";
 
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { IoAddSharp, IoRemoveSharp } from "react-icons/io5";
 import { TCategories, TTransactionType } from "./page";
-import SelectComponent from "./SelectComponent";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
+import NewTransactionForm from "./NewTransactionForm";
 
 export default function NewTransactionComponent({
   incomeCategories,
@@ -30,12 +30,8 @@ export default function NewTransactionComponent({
           <TransactionTypeSwitchTrigger type="expense" />
         </TabsList>
 
-        <TabsContent value="income">
-          <SelectComponent categories={incomeCategories} />
-        </TabsContent>
-        <TabsContent value="expense">
-          <SelectComponent categories={expenseCategories} />
-        </TabsContent>
+        <NewTransactionForm type="income" categories={incomeCategories} />
+        <NewTransactionForm type="expense" categories={expenseCategories} />
       </Tabs>
     </>
   );
