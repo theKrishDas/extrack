@@ -23,8 +23,8 @@ export default function SelectComponent({
 
   return (
     <Select open={isSelectOpen} onOpenChange={setSelectOpen}>
-      <SelectTrigger className="">
-        <SelectValue placeholder="Category" />
+      <SelectTrigger className="w-max rounded-full border-none shadow-none outline-none focus:outline-none">
+        <SelectValue placeholder="Select Category" />
       </SelectTrigger>
       <SelectContent>
         {/* --- Create new button --- */}
