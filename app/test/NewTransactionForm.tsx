@@ -1,14 +1,13 @@
-import {
-  IoArrowUpSharp,
-  IoCalendarClearOutline,
-  IoRefreshSharp,
-} from "react-icons/io5";
+"use client";
+
+import { cn } from "@/lib/utils";
+import { IoArrowUpSharp, IoCalendarClearOutline } from "react-icons/io5";
 import SelectComponent from "./SelectComponent";
 import { TCategories, TTransactionType } from "./page";
 import { TabsContent } from "@/components/ui/tabs";
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { LuUndo2 } from "react-icons/lu";
+import CurrencyInput from "react-currency-input-field";
 
 export default function NewTransactionForm({
   type,
@@ -32,28 +31,38 @@ export default function NewTransactionForm({
       </div>
 
       {/* --- --- INPUTS --- --- */}
-      <section className="flex w-full flex-col items-start justify-center gap-6 rounded-3xl bg-card p-12">
+      <section className="flex w-full flex-col items-start justify-center gap-6 rounded-3xl bg-card p-10">
         <div className="justify-betweens inline-flex w-full items-center gap-2">
           <IoArrowUpSharp
+            size={16}
             className={cn(
               "rotate-0 text-success transition-all",
               type === "expense" && "rotate-180 text-destructive",
             )}
           />
 
-          <p className="font-semibolds flex-1 text-sm">Bought Keyboard</p>
+          <input
+            className="min-w-0 flex-1 border-none text-sm font-semibold outline-none"
+            placeholder="Add a Label"
+          />
 
           <Button
-            className="h-12 w-12 rounded-full text-base"
+            className="h-10 w-10 rounded-full text-base"
             variant="ghost"
             size="icon"
           >
-            <LuUndo2 strokeWidth={1.5} />
+            <LuUndo2 strokeWidth={1.75} />
           </Button>
         </div>
-        <div className="w-full overflow-hidden">
-          <p className="truncate text-5xl font-light">1,00,000</p>
-        </div>
+
+        <CurrencyInput
+          autoFocus
+          decimalsLimit={2}
+          allowNegativeValue={false}
+          maxLength={8}
+          placeholder="Amount"
+          className="w-full truncate border-none text-5xl font-extralight tracking-tight outline-none"
+        />
       </section>
 
       {/* --- --- BUTTON --- --- */}
