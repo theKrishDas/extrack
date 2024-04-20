@@ -1,11 +1,9 @@
-import { IoAddSharp } from "react-icons/io5";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
@@ -16,19 +14,10 @@ export default function CreateNewCatDialog({
   onOpenChange,
 }: {
   open: boolean;
-  onOpenChange: (_: boolean) => void;
+  onOpenChange: (_: boolean) => void; // eslint-disable-line no-unused-vars
 }) {
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      {/* <DialogTrigger asChild> */}
-      {/*   <Button */}
-      {/*     variant="ghost" */}
-      {/*     className="flex h-10 w-full justify-between px-2 font-semibold" */}
-      {/*   > */}
-      {/*     Create new */}
-      {/*     <IoAddSharp size={18} /> */}
-      {/*   </Button> */}
-      {/* </DialogTrigger> */}
+    <Dialog open={open} onOpenChange={onOpenChange} defaultOpen={true}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Create new category</DialogTitle>
