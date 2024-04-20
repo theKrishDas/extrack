@@ -21,18 +21,33 @@ export default function NewTransactionForm({
       <div className="inline-flex w-full items-center justify-between">
         <SelectComponent categories={categories} />
 
-        <Button
-          className="h-10 w-10 rounded-lg bg-card/50 text-base shadow-none"
-          variant="secondary"
-          size="icon"
-        >
-          <IoCalendarClearOutline />
-        </Button>
+        <div className="space-x-1">
+          <Button
+            className="h-10 w-10 rounded-lg bg-card/50 text-base shadow-none"
+            variant="secondary"
+            size="icon"
+          >
+            <IoCalendarClearOutline />
+          </Button>
+
+          <Button
+            className="h-10 w-10 rounded-lg text-base shadow-none"
+            variant="ghost"
+            size="icon"
+          >
+            <LuUndo2 strokeWidth={1.75} />
+          </Button>
+        </div>
       </div>
 
       {/* --- --- INPUTS --- --- */}
       <section className="flex w-full flex-col items-start justify-center gap-6 rounded-3xl bg-card p-10">
         <div className="justify-betweens inline-flex w-full items-center gap-2">
+          <input
+            className="min-w-0 flex-1 border-none text-sm font-semibold outline-none"
+            placeholder="Add a Label"
+          />
+
           <IoArrowUpSharp
             size={16}
             className={cn(
@@ -40,19 +55,6 @@ export default function NewTransactionForm({
               type === "expense" && "rotate-180 text-destructive",
             )}
           />
-
-          <input
-            className="min-w-0 flex-1 border-none text-sm font-semibold outline-none"
-            placeholder="Add a Label"
-          />
-
-          <Button
-            className="h-10 w-10 rounded-full text-base"
-            variant="ghost"
-            size="icon"
-          >
-            <LuUndo2 strokeWidth={1.75} />
-          </Button>
         </div>
 
         <CurrencyInput
