@@ -1,5 +1,7 @@
 "use client";
 
+import { IoAddSharp } from "react-icons/io5";
+import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
@@ -9,20 +11,35 @@ import {
 } from "@/components/ui/select";
 import CreateNewCatDialog from "./CreateNewCatDialog";
 import { TCategories } from "./page";
+import { useState } from "react";
 
 export default function SelectComponent({
   categories,
 }: {
   categories: TCategories[];
 }) {
+  const [isSelectOpen, setSelectOpen] = useState(false);
+  const [isDialogOpen, setDialogOpen] = useState(false);
+
   return (
-    <Select>
+    <Select open={isSelectOpen} onOpenChange={setSelectOpen}>
       <SelectTrigger className="">
         <SelectValue placeholder="Theme" />
       </SelectTrigger>
       <SelectContent>
         {/* --- Create new button --- */}
-        <CreateNewCatDialog />
+        <Button
+          variant="ghost"
+          className="flex h-10 w-full justify-between px-2 font-semibold"
+          onClick={() => {
+            setSelectOpen(false);
+            setDialogOpen(true);
+          }}
+        >
+          Create new
+          <IoAddSharp size={18} />
+        </Button>
+        <CreateNewCatDialog open={isDialogOpen} onOpenChange={setDialogOpen} />
 
         <hr className="mt-1 py-1" />
 

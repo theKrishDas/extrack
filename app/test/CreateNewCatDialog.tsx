@@ -11,18 +11,24 @@ import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-export default function CreateNewCatDialog() {
+export default function CreateNewCatDialog({
+  open,
+  onOpenChange,
+}: {
+  open: boolean;
+  onOpenChange: (_: boolean) => void;
+}) {
   return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <Button
-          variant="ghost"
-          className="flex h-10 w-full justify-between px-2 font-semibold"
-        >
-          Create new
-          <IoAddSharp size={18} />
-        </Button>
-      </DialogTrigger>
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      {/* <DialogTrigger asChild> */}
+      {/*   <Button */}
+      {/*     variant="ghost" */}
+      {/*     className="flex h-10 w-full justify-between px-2 font-semibold" */}
+      {/*   > */}
+      {/*     Create new */}
+      {/*     <IoAddSharp size={18} /> */}
+      {/*   </Button> */}
+      {/* </DialogTrigger> */}
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Create new category</DialogTitle>
