@@ -41,10 +41,10 @@ export default function NewTransactionForm({
       </div>
 
       {/* --- --- INPUTS --- --- */}
-      <section className="flex w-full flex-col items-start justify-center gap-6 rounded-3xl bg-card p-10">
-        <div className="justify-betweens inline-flex w-full items-center gap-2">
+      <section className="flex w-full flex-col items-start justify-center gap-8 rounded-3xl bg-card p-10">
+        <div className="justify-betweens inline-flex w-full items-center">
           <input
-            className="min-w-0 flex-1 border-none text-sm font-semibold outline-none"
+            className="min-w-0 flex-1 border-none text-lg outline-none"
             placeholder="Add a Label"
           />
 
@@ -63,7 +63,7 @@ export default function NewTransactionForm({
           allowNegativeValue={false}
           maxLength={8}
           placeholder="Amount"
-          className="w-full truncate border-none text-5xl font-extralight tracking-tight outline-none"
+          className="w-full truncate border-none text-5xl font-light tracking-tight outline-none"
         />
       </section>
 
@@ -78,7 +78,7 @@ export default function NewTransactionForm({
               : "bg-destructive text-destructive-foreground",
           )}
         >
-          Save
+          Add
         </Button>
       </div>
     </TabsContent>
