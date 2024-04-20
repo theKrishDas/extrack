@@ -24,7 +24,7 @@ export default function SelectComponent({
   return (
     <Select open={isSelectOpen} onOpenChange={setSelectOpen}>
       <SelectTrigger className="">
-        <SelectValue placeholder="Theme" />
+        <SelectValue placeholder="Category" />
       </SelectTrigger>
       <SelectContent>
         {/* --- Create new button --- */}

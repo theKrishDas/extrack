@@ -1,5 +1,4 @@
 import NewTransactionComponent from "./NewTransactionComponent";
-import SelectComponent from "./SelectComponent";
 
 export type TCategories = {
   id: string;
@@ -7,6 +6,12 @@ export type TCategories = {
   is_expense: boolean;
 };
 
+export type TTransactionType = "income" | "expense";
+
+const incomeCategories: TCategories[] = [
+  { id: "i5y8zFO3", name: "salary", is_expense: true },
+  { id: "zPu34l3J", name: "freelance", is_expense: true },
+];
 const expenseCategories: TCategories[] = [
   { id: "lqIGQTiN", name: "grocery", is_expense: true },
   { id: "UH3DAtex", name: "food", is_expense: true },
@@ -16,8 +21,10 @@ const expenseCategories: TCategories[] = [
 export default function TestPage() {
   return (
     <main className="space-y-5 p-5">
-      <NewTransactionComponent />
-      <SelectComponent categories={expenseCategories} />
+      <NewTransactionComponent
+        incomeCategories={incomeCategories}
+        expenseCategories={expenseCategories}
+      />
     </main>
   );
 }

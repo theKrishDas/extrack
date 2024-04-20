@@ -1,9 +1,15 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { IoAddSharp, IoRemoveSharp } from "react-icons/io5";
+import { TCategories, TTransactionType } from "./page";
+import SelectComponent from "./SelectComponent";
 
-export type TTransactionType = "income" | "expense";
-
-export default function NewTransactionComponent() {
+export default function NewTransactionComponent({
+  incomeCategories,
+  expenseCategories,
+}: {
+  incomeCategories: TCategories[];
+  expenseCategories: TCategories[];
+}) {
   return (
     <>
       <Tabs defaultValue="expense">
@@ -12,8 +18,12 @@ export default function NewTransactionComponent() {
           <TransactionTypeSwitchTrigger type="expense" />
         </TabsList>
 
-        <TabsContent value="income">Add new income</TabsContent>
-        <TabsContent value="expense">Where did you waste money</TabsContent>
+        <TabsContent value="income">
+          <SelectComponent categories={incomeCategories} />
+        </TabsContent>
+        <TabsContent value="expense">
+          <SelectComponent categories={expenseCategories} />
+        </TabsContent>
       </Tabs>
     </>
   );
