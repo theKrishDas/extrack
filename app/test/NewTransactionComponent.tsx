@@ -44,7 +44,7 @@ function TransactionTypeSwitchTrigger({ type }: { type: TTransactionType }) {
     <TabsTrigger
       value={type}
       className={cn(
-        "h-9 w-12 rounded-full text-base",
+        "h-9 w-12 rounded-full text-base data-[state=active]:shadow-none",
         type === "income"
           ? "data-[state=active]:bg-success data-[state=active]:text-success-foreground"
           : "data-[state=active]:bg-destructive data-[state=active]:text-destructive-foreground",
