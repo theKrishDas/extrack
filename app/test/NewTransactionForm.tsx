@@ -58,7 +58,6 @@ export default function NewTransactionForm({
         </div>
 
         <CurrencyInput
-          autoFocus
           decimalsLimit={2}
           allowNegativeValue={false}
           maxLength={8}

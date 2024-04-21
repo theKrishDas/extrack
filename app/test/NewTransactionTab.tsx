@@ -7,7 +7,7 @@ import { useState } from "react";
 import { cn } from "@/lib/utils";
 import NewTransactionForm from "./NewTransactionForm";
 
-export default function NewTransactionComponent({
+export default function NewTransactionTab({
   incomeCategories,
   expenseCategories,
 }: {
