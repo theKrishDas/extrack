@@ -30,8 +30,7 @@ export default function NewTransactionDrawer() {
           </DrawerTrigger>
         </Button>
 
-        {/* NOTE: --- bottom nav has z-[999] --- */}
-        <DrawerContent className="z-[1000] rounded-t-3xl border-none p-5 pb-16 outline-none">
+        <DrawerContent className="rounded-t-3xl border-none p-5 pb-16 outline-none">
           <DrawerHeader>
             <DrawerTitle>Add New Transaction</DrawerTitle>
           </DrawerHeader>
