@@ -82,11 +82,9 @@ export default function NewTransactionForm({
                           placeholder="Add a Label"
                           value={field.value}
                           onChange={(e) => {
-                            // Replace consecutive spaces with a single space
-                            const sanitizedValue = e.target.value.replace(
-                              / {2,}/g,
-                              " ",
-                            );
+                            const sanitizedValue = e.target.value
+                              .replace(/^\s+/, "") // Remove trailing white space from the start
+                              .replace(/ {2,}/g, " "); // Replace consecutive spaces with a single space ;
 
                             form.setValue("label", sanitizedValue);
                           }}
