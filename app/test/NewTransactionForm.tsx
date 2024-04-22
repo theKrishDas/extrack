@@ -71,11 +71,12 @@ export default function NewTransactionForm({
         <Button
           size="lg"
           className={cn(
-            "mx-auto rounded-full shadow-none",
+            "mx-auto h-12 rounded-full text-base shadow-none",
             type === "income"
               ? "bg-success text-success-foreground"
               : "bg-destructive text-destructive-foreground",
           )}
+          type="submit"
         >
           Add
         </Button>

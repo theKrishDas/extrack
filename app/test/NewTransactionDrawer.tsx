@@ -30,7 +30,7 @@ export default function NewTransactionDrawer() {
           </DrawerTrigger>
         </Button>
 
-        <DrawerContent className="rounded-t-3xl border-none p-5 pb-16 outline-none">
+        <DrawerContent className="rounded-t-3xl border-none p-5 outline-none">
           <DrawerHeader>
             <DrawerTitle>Add New Transaction</DrawerTitle>
           </DrawerHeader>
