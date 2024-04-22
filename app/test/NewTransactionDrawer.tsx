@@ -23,7 +23,7 @@ const expenseCategories: TCategories[] = [
 export default function NewTransactionDrawer() {
   return (
     <>
-      <Drawer>
+      <Drawer open={true}>
         <Button className="h-12 w-12 rounded-full text-3xl" size="icon" asChild>
           <DrawerTrigger>
             <IoAddSharp />
