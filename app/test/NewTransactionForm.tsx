@@ -18,10 +18,10 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
-import { Input } from "@/components/ui/input";
 
 type TFormData = {
   label: string;
+  amount: number;
 };
 
 export default function NewTransactionForm({
@@ -102,12 +102,25 @@ export default function NewTransactionForm({
               />
             </div>
 
-            <CurrencyInput
-              decimalsLimit={2}
-              allowNegativeValue={false}
-              maxLength={8}
-              placeholder="Amount"
-              className="w-full truncate border-none bg-transparent text-5xl font-light tracking-tight outline-none"
+            <FormField
+              control={form.control}
+              name="amount"
+              render={() => (
+                <FormItem>
+                  <FormControl>
+                    <CurrencyInput
+                      decimalsLimit={2}
+                      allowNegativeValue={false}
+                      maxLength={8}
+                      placeholder="Amount"
+                      className="w-full truncate border-none bg-transparent text-5xl font-light tracking-tight outline-none"
+                      onValueChange={(_, __, values) =>
+                        form.setValue("amount", values?.float ?? 0)
+                      }
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
             />
           </section>
 
