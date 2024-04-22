@@ -6,6 +6,7 @@ import { TCategories, TTransactionType } from "./page";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import NewTransactionForm from "./NewTransactionForm";
+import { DEFAULT_ACTIVE_TAB } from "@/defaultValues";
 
 export default function NewTransactionTab({
   incomeCategories,
@@ -14,7 +15,6 @@ export default function NewTransactionTab({
   incomeCategories: TCategories[];
   expenseCategories: TCategories[];
 }) {
-  const DEFAULT_ACTIVE_TAB = "expense";
   const [activeTab, setActiveTab] =
     useState<TTransactionType>(DEFAULT_ACTIVE_TAB);
 
