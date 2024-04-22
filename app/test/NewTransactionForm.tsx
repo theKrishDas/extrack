@@ -80,7 +80,16 @@ export default function NewTransactionForm({
                         <input
                           className="min-w-0 flex-1 bg-transparent text-lg outline-none"
                           placeholder="Add a Label"
-                          {...field}
+                          value={field.value}
+                          onChange={(e) => {
+                            // Replace consecutive spaces with a single space
+                            const sanitizedValue = e.target.value.replace(
+                              / {2,}/g,
+                              " ",
+                            );
+
+                            form.setValue("label", sanitizedValue);
+                          }}
                         />
                       </FormControl>
                       <FormDescription className="hidden">
