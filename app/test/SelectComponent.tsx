@@ -23,7 +23,7 @@ export default function SelectComponent({
 
   return (
     <Select open={isSelectOpen} onOpenChange={setSelectOpen}>
-      <SelectTrigger className="w-max rounded-full border-none shadow-none outline-none focus:outline-none">
+      <SelectTrigger className="h-10 w-max rounded-lg border-none bg-card shadow-none">
         <SelectValue placeholder="Select Category" />
       </SelectTrigger>
       <SelectContent>

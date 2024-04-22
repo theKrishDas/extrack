@@ -19,25 +19,25 @@ export default function NewTransactionForm({
   return (
     <TabsContent value={type} className="relative space-y-2 pt-3">
       <div className="inline-flex w-full items-center justify-between">
-        <SelectComponent categories={categories} />
+        <div className="flex items-center space-x-1">
+          <SelectComponent categories={categories} />
 
-        <div className="space-x-1">
           <Button
-            className="h-10 w-10 rounded-lg bg-card/50 text-base shadow-none"
+            className="h-10 w-10 rounded-lg bg-card text-base shadow-none"
             variant="secondary"
             size="icon"
           >
             <IoCalendarClearOutline />
           </Button>
-
-          <Button
-            className="h-10 w-10 rounded-lg text-base shadow-none"
-            variant="ghost"
-            size="icon"
-          >
-            <LuUndo2 strokeWidth={1.75} />
-          </Button>
         </div>
+
+        <Button
+          className="h-10 w-10 rounded-lg text-base shadow-none"
+          variant="ghost"
+          size="icon"
+        >
+          <LuUndo2 strokeWidth={1.75} />
+        </Button>
       </div>
 
       {/* --- --- INPUTS --- --- */}

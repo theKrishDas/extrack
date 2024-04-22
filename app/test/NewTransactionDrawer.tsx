@@ -31,8 +31,8 @@ export default function NewTransactionDrawer() {
         </Button>
 
         <DrawerContent className="rounded-t-3xl border-none p-5 outline-none">
-          <DrawerHeader>
-            <DrawerTitle>Add New Transaction</DrawerTitle>
+          <DrawerHeader className="pb-7 pt-5">
+            <DrawerTitle>New Transaction</DrawerTitle>
           </DrawerHeader>
 
           <NewTransactionTab

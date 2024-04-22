@@ -25,7 +25,7 @@ export default function NewTransactionTab({
         value={activeTab}
         onValueChange={(value) => setActiveTab(value as TTransactionType)}
       >
-        <TabsList className="h-fit w-fit rounded-full bg-card">
+        <TabsList className="h-fit w-fit rounded-full bg-muted/30">
           <TransactionTypeSwitchTrigger type="income" />
           <TransactionTypeSwitchTrigger type="expense" />
         </TabsList>
