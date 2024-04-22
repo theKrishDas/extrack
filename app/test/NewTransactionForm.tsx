@@ -144,6 +144,9 @@ export default function NewTransactionForm({
                   : "bg-destructive text-destructive-foreground",
               )}
               type="submit"
+              disabled={
+                form.watch("amount") === undefined || form.watch("amount") === 0
+              }
             >
               Add
             </Button>
