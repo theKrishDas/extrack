@@ -1,5 +1,3 @@
-"use client";
-
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { IoAddSharp, IoRemoveSharp } from "react-icons/io5";
 import { TCategories, TTransactionType } from "./page";
@@ -11,9 +9,11 @@ import { DEFAULT_ACTIVE_TAB } from "@/lib/defaultValues";
 export default function NewTransactionTab({
   incomeCategories,
   expenseCategories,
+  setDrawerOpen,
 }: {
   incomeCategories: TCategories[];
   expenseCategories: TCategories[];
+  setDrawerOpen: (_: boolean) => void; // eslint-disable-line no-unused-vars
 }) {
   const [activeTab, setActiveTab] =
     useState<TTransactionType>(DEFAULT_ACTIVE_TAB);
@@ -30,8 +30,16 @@ export default function NewTransactionTab({
           <TransactionTypeSwitchTrigger type="expense" />
         </TabsList>
 
-        <NewTransactionForm type="income" categories={incomeCategories} />
-        <NewTransactionForm type="expense" categories={expenseCategories} />
+        <NewTransactionForm
+          type="income"
+          categories={incomeCategories}
+          setDrawerOpen={setDrawerOpen}
+        />
+        <NewTransactionForm
+          type="expense"
+          categories={expenseCategories}
+          setDrawerOpen={setDrawerOpen}
+        />
       </Tabs>
     </>
   );

@@ -1,5 +1,3 @@
-"use client";
-
 import { cn } from "@/lib/utils";
 import { IoArrowUpSharp, IoCalendarClearOutline } from "react-icons/io5";
 import SelectComponent from "./SelectComponent";
@@ -18,8 +16,9 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
-import { useRouter } from "next/navigation";
 import { NewTransactionSchemaType } from "@/lib/form-schema/new-transaction-schema";
+import { useState } from "react";
+import Spinner from "@/components/spinner";
 
 type TFormData = {
   label: string;
@@ -29,14 +28,18 @@ type TFormData = {
 export default function NewTransactionForm({
   type,
   categories,
+  setDrawerOpen,
 }: {
   type: TTransactionType;
   categories: TCategories[];
+  setDrawerOpen: (_: boolean) => void; // eslint-disable-line no-unused-vars
 }) {
-  const router = useRouter();
   const form = useForm<TFormData>({ defaultValues: { label: "" } });
+  const [isFormSubmitting, setFormSubmitting] = useState(false);
 
   async function onSubmit(data: TFormData) {
+    setFormSubmitting(true);
+
     const actualData: NewTransactionSchemaType = {
       label: data.label.trim(),
       amount: data.amount,
@@ -49,13 +52,14 @@ export default function NewTransactionForm({
 
     const { error } = await insertTransactions(actualData);
 
+    setFormSubmitting(false);
+    setDrawerOpen(false);
+
     // TODO: Render alert
     if (error) {
       console.error(error);
       return;
     }
-
-    router.push("/");
   }
 
   return (
@@ -157,17 +161,19 @@ export default function NewTransactionForm({
             <Button
               size="lg"
               className={cn(
-                "mx-auto h-12 rounded-full text-base shadow-none",
+                "mx-auto h-12 w-24 overflow-hidden rounded-full text-base shadow-none",
                 type === "income"
                   ? "bg-success text-success-foreground"
                   : "bg-destructive text-destructive-foreground",
               )}
               type="submit"
               disabled={
-                form.watch("amount") === undefined || form.watch("amount") === 0
+                isFormSubmitting ||
+                form.watch("amount") === undefined ||
+                form.watch("amount") === 0
               }
             >
-              Add
+              {isFormSubmitting ? <Spinner size={18} /> : "Add"}
             </Button>
           </div>
         </form>

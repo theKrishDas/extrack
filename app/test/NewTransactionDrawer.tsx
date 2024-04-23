@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import {
   Drawer,
@@ -9,6 +11,7 @@ import {
 import { TCategories } from "./page";
 import { IoAddSharp } from "react-icons/io5";
 import NewTransactionTab from "./NewTransactionTab";
+import { useState } from "react";
 
 const incomeCategories: TCategories[] = [
   { id: "i5y8zFO3", name: "salary", is_expense: true },
@@ -21,9 +24,12 @@ const expenseCategories: TCategories[] = [
 ];
 
 export default function NewTransactionDrawer() {
+  const [isDrawerOpen, setDrawerOpen] = useState(false);
+
   return (
     <>
-      <Drawer>
+      {/* TODO: Make this component uncontrolled later with intercepting routes */}
+      <Drawer open={isDrawerOpen} onOpenChange={setDrawerOpen}>
         <Button className="h-12 w-12 rounded-full text-3xl" size="icon" asChild>
           <DrawerTrigger>
             <IoAddSharp />
@@ -38,6 +44,7 @@ export default function NewTransactionDrawer() {
           <NewTransactionTab
             incomeCategories={incomeCategories}
             expenseCategories={expenseCategories}
+            setDrawerOpen={setDrawerOpen}
           />
         </DrawerContent>
       </Drawer>
