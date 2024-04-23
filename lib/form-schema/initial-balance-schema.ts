@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { MINIMUM_SARTING_BALANCE } from "@/defaultValues";
+import { MINIMUM_SARTING_BALANCE } from "@/lib/defaultValues";
 
 export const InitialBalanceSchema = z.object({
   amount: z.number().min(MINIMUM_SARTING_BALANCE, {

@@ -1,6 +1,6 @@
 "use server";
 
-import { MINIMUM_SARTING_BALANCE } from "@/defaultValues";
+import { MINIMUM_SARTING_BALANCE } from "@/lib/defaultValues";
 import { db } from "@/db";
 import { preference } from "@/db/drizzle/schema";
 import { currentUser } from "@clerk/nextjs";
