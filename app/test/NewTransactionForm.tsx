@@ -18,6 +18,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
+import { NewTransactionSchemaType } from "@/lib/form-schema/new-transaction-schema";
 
 type TFormData = {
   label: string;
@@ -31,10 +33,29 @@ export default function NewTransactionForm({
   type: TTransactionType;
   categories: TCategories[];
 }) {
+  const router = useRouter();
   const form = useForm<TFormData>({ defaultValues: { label: "" } });
 
-  function onSubmit(data: TFormData) {
-    console.log(data);
+  async function onSubmit(data: TFormData) {
+    const actualData: NewTransactionSchemaType = {
+      label: data.label.trim(),
+      amount: data.amount,
+      is_expense: type !== "income",
+    };
+
+    const insertTransactions = await import(
+      "@/actions/handle-transaction"
+    ).then((_) => _.insertTransactions);
+
+    const { error } = await insertTransactions(actualData);
+
+    // TODO: Render alert
+    if (error) {
+      console.error(error);
+      return;
+    }
+
+    router.push("/");
   }
 
   return (
