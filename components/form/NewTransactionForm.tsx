@@ -33,11 +33,12 @@ import { useRouter } from "next/navigation";
 
 import { format } from "date-fns";
 import { NumericFormat } from "react-number-format";
+import {
+  DEFAULT_TRANSACTION_IS_EXPENSE,
+  MAX_AMOUNT_LIMIT,
+} from "@/lib/defaultValues";
 
 export default function NewTransactionForm() {
-  const MAX_AMOUNT_LIMIT = 1_00_00_000;
-  const DEFAULT_TRANSACTION_IS_EXPENSE = true;
-
   const [isExpense, setIsExpense] = useState(DEFAULT_TRANSACTION_IS_EXPENSE);
   const transactionTypeText = isExpense ? "Expense" : "Income";
 
