@@ -10,13 +10,13 @@ import {
 } from "@/components/ui/popover";
 import { IoCalendarClear } from "react-icons/io5";
 import { UseFormReturn } from "react-hook-form";
-import { TFormData } from "./NewTransactionForm";
 import { FormControl, FormField } from "@/components/ui/form";
+import { NewTransactionFormSchemaType } from "@/lib/types/new-transaction-form-schema";
 
 export function PickDate({
   form,
 }: {
-  form: UseFormReturn<TFormData, any, undefined>;
+  form: UseFormReturn<NewTransactionFormSchemaType, any, undefined>;
 }) {
   return (
     <>

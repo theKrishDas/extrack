@@ -9,12 +9,11 @@ import { PickDate } from "./PickDate";
 import SelectCategory from "./SelectCategory";
 import { Form } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
-
-export type TFormData = {
-  label: string;
-  amount: number;
-  date: Date;
-};
+import {
+  NewTransactionFormSchemaType,
+  NewTransactionSchema,
+  NewTransactionSchemaType,
+} from "@/lib/types/new-transaction-form-schema";
 
 export default function NewTransactionForm({
   tabType,
@@ -23,12 +22,18 @@ export default function NewTransactionForm({
 }) {
   const isExpense = tabType !== "income";
 
-  const form = useForm<TFormData>({
+  const form = useForm<NewTransactionFormSchemaType>({
     defaultValues: { label: "", date: new Date() },
   });
 
-  function onSubmit(data: TFormData) {
-    console.log(data);
+  function onSubmit(data: NewTransactionFormSchemaType) {
+    const actualData: NewTransactionSchemaType = {
+      label: data.label,
+      date: data.date,
+      is_expense: isExpense,
+    };
+    console.log(NewTransactionSchema.safeParse(actualData));
+    console.log(actualData);
   }
 
   return (
