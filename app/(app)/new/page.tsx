@@ -4,7 +4,7 @@ import NewTransactionTab from "./NewTransactionTab";
 export default function NewTransactionPage() {
   return (
     <>
-      <PageTitleWithNavigation heading="Add new" href="/new" />
+      <PageTitleWithNavigation heading="Add new" href="/" />
       <NewTransactionTab />
     </>
   );
