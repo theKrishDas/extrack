@@ -26,7 +26,7 @@ export default function SelectCategory() {
     <>
       <Select>
         <Button
-          className="h-10 gap-2 rounded-full px-5 shadow-none"
+          className="h-10 w-fit gap-2 rounded-full px-5 shadow-none"
           variant="secondary"
           type="button"
           asChild
