@@ -1,6 +1,6 @@
 "use client";
 
-import { cn } from "@/lib/utils";
+import { cn, wait } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { PickDate } from "./PickDate";
 import SelectCategory from "./SelectCategory";
@@ -15,6 +15,9 @@ import {
 } from "@/lib/types/new-transaction-form-schema";
 import NewTransactionLabelInput from "./NewTransactionLabelInput";
 import NewTransactionAmountInput from "./NewTransactionAmountInput";
+import { useState } from "react";
+import Spinner from "@/components/spinner";
+import { MINIMUM_TRANSACTION_AMOUNT } from "@/lib/defaultValues";
 
 export default function NewTransactionForm({
   tabType,
@@ -25,12 +28,17 @@ export default function NewTransactionForm({
 }) {
   const isExpense = tabType !== "income";
 
+  const [isFormSubmitting, setFormSubmitting] = useState(false);
+
   const form = useForm<NewTransactionFormSchemaType>({
     defaultValues: { label: "", date: new Date() },
   });
 
-  function onSubmit(data: NewTransactionFormSchemaType) {
+  async function onSubmit(data: NewTransactionFormSchemaType) {
     // TODO: Remove trailing spaces from the label
+
+    setFormSubmitting(true);
+    await wait(2500);
 
     const actualData: NewTransactionSchemaType = {
       amount: data.amount,
@@ -44,6 +52,7 @@ export default function NewTransactionForm({
       NewTransactionSchema.safeParse(actualData).success,
     );
     console.log(actualData);
+    setFormSubmitting(false);
   }
 
   return (
@@ -70,8 +79,13 @@ export default function NewTransactionForm({
               isExpense ? "text-destructive" : "text-success",
             )}
             type="submit"
+            disabled={
+              isFormSubmitting ||
+              form.watch("amount") === undefined ||
+              form.watch("amount") < MINIMUM_TRANSACTION_AMOUNT
+            }
           >
-            Add
+            {isFormSubmitting ? <Spinner size={18} /> : "Add"}
           </Button>
           <Button
             className="h-14 w-full rounded-full text-base text-foreground/50"
