@@ -30,9 +30,13 @@ export default function NewTransactionForm({
     const actualData: NewTransactionSchemaType = {
       label: data.label,
       date: data.date,
+      category: data.category,
       is_expense: isExpense,
     };
-    console.log(NewTransactionSchema.safeParse(actualData));
+    console.log(
+      "Success: ",
+      NewTransactionSchema.safeParse(actualData).success,
+    );
     console.log(actualData);
   }
 
@@ -42,7 +46,7 @@ export default function NewTransactionForm({
         <div className="inline-flex w-full items-center gap-2">
           <PickDate form={form} />
 
-          <SelectCategory />
+          <SelectCategory form={form} />
         </div>
 
         {/* --- --- INPUTS --- --- */}
