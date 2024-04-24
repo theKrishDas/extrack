@@ -11,6 +11,7 @@ import {
 import { useState } from "react";
 import { IoAddSharp } from "react-icons/io5";
 import CreateNewCatDialog from "./CreateNewCatDialog";
+import { toNormalCase } from "@/lib/utils";
 
 const expenseCategories = [
   { id: "lqIGQTiN", name: "grocery", is_expense: true },
@@ -56,8 +57,8 @@ export default function SelectCategory() {
 
           {/* --- Select items --- */}
           {categories.map((cat) => (
-            <SelectItem value={cat.id} key={cat.id} className="capitalize">
-              {cat.name}
+            <SelectItem value={cat.id} key={cat.id}>
+              {toNormalCase(cat.name)}
             </SelectItem>
           ))}
         </SelectContent>
