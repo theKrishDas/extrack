@@ -2,7 +2,6 @@
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import CurrencyInput from "react-currency-input-field";
 import { PickDate } from "./PickDate";
 import SelectCategory from "./SelectCategory";
 import { Form } from "@/components/ui/form";
@@ -15,6 +14,7 @@ import {
   TTransactionType,
 } from "@/lib/types/new-transaction-form-schema";
 import NewTransactionLabelInput from "./NewTransactionLabelInput";
+import NewTransactionAmountInput from "./NewTransactionAmountInput";
 
 export default function NewTransactionForm({
   tabType,
@@ -30,7 +30,10 @@ export default function NewTransactionForm({
   });
 
   function onSubmit(data: NewTransactionFormSchemaType) {
+    // TODO: Remove trailing spaces from the label
+
     const actualData: NewTransactionSchemaType = {
+      amount: data.amount,
       label: data.label,
       date: data.date,
       category: data.category,
@@ -56,16 +59,7 @@ export default function NewTransactionForm({
         <section className="flex w-full flex-col items-start justify-center gap-8 rounded-3xl bg-card p-10">
           <NewTransactionLabelInput form={form} isExpense={isExpense} />
 
-          <CurrencyInput
-            decimalsLimit={2}
-            allowNegativeValue={false}
-            maxLength={8}
-            placeholder="Amount"
-            className={cn(
-              "w-full truncate border-none bg-transparent text-5xl font-light tracking-tight outline-none",
-              isExpense ? "text-destructive" : "text-success",
-            )}
-          />
+          <NewTransactionAmountInput form={form} isExpense={isExpense} />
         </section>
 
         <div className="flex flex-row-reverse items-center gap-2">
