@@ -1,7 +1,12 @@
 import { GoHome, GoHomeFill } from "react-icons/go";
-import { IoSettingsOutline, IoSettingsSharp } from "react-icons/io5";
+import {
+  IoAddSharp,
+  IoSettingsOutline,
+  IoSettingsSharp,
+} from "react-icons/io5";
 import BottomNavLink from "./BottonNavLink";
-import NewTransactionDrawer from "@/app/test/NewTransactionDrawer";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export default function BottomNavigation() {
   return (
@@ -17,7 +22,11 @@ export default function BottomNavigation() {
           }}
         />
 
-        <NewTransactionDrawer />
+        <Button className="h-12 w-12 rounded-full text-3xl" size="icon" asChild>
+          <Link href="/new">
+            <IoAddSharp />
+          </Link>
+        </Button>
 
         <BottomNavLink
           prop={{
