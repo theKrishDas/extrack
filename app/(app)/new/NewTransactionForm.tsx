@@ -1,7 +1,7 @@
 "use client";
 
 import { IoArrowUpSharp, IoCaretDown } from "react-icons/io5";
-import { cn } from "@/lib/utils";
+import { cn, formatDate } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { IoCalendarClear } from "react-icons/io5";
 import CurrencyInput from "react-currency-input-field";
@@ -13,6 +13,8 @@ export default function NewTransactionForm({
   tabType: TTransactionType;
 }) {
   const isExpense = tabType !== "income";
+
+  const date = formatDate(new Date());
 
   return (
     <div className="space-y-2">
@@ -32,7 +34,7 @@ export default function NewTransactionForm({
           type="button"
         >
           <IoCalendarClear className="text-foreground/50" />
-          18 Apr
+          {date}
         </Button>
       </div>
 
