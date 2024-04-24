@@ -16,11 +16,11 @@ export default function NewTransactionTab() {
         </TabsList>
 
         <TabsContent value="income">
-          <NewTransactionForm />
+          <NewTransactionForm tabType="income" />
         </TabsContent>
 
         <TabsContent value="expense">
-          <NewTransactionForm />
+          <NewTransactionForm tabType="expense" />
         </TabsContent>
       </Tabs>
     </>

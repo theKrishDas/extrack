@@ -5,8 +5,15 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { IoCalendarClear } from "react-icons/io5";
 import CurrencyInput from "react-currency-input-field";
+import { TTransactionType } from "./NewTransactionTab";
 
-export default function NewTransactionForm() {
+export default function NewTransactionForm({
+  tabType,
+}: {
+  tabType: TTransactionType;
+}) {
+  const isExpense = tabType !== "income";
+
   return (
     <div className="space-y-2">
       <div className="inline-flex items-center gap-2">
@@ -39,7 +46,10 @@ export default function NewTransactionForm() {
 
           <IoArrowUpSharp
             size={16}
-            className={cn("rotate-0 text-success transition-all")}
+            className={cn(
+              "rotate-0 text-success transition-all",
+              isExpense && "rotate-180 text-destructive",
+            )}
           />
         </div>
 
@@ -48,12 +58,21 @@ export default function NewTransactionForm() {
           allowNegativeValue={false}
           maxLength={8}
           placeholder="Amount"
-          className="w-full truncate border-none bg-transparent text-5xl font-light tracking-tight outline-none"
+          className={cn(
+            "w-full truncate border-none bg-transparent text-5xl font-light tracking-tight outline-none",
+            isExpense ? "text-destructive" : "text-success",
+          )}
         />
       </section>
 
       <div className="flex flex-row-reverse items-center gap-2">
-        <Button className="h-14 w-full rounded-full bg-destructive text-base shadow-none">
+        <Button
+          variant="secondary"
+          className={cn(
+            "h-14 w-full rounded-full bg-card text-base shadow-none",
+            isExpense ? "text-destructive" : "text-success",
+          )}
+        >
           Add
         </Button>
         <Button
