@@ -4,7 +4,6 @@ import { IoArrowUpSharp } from "react-icons/io5";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import CurrencyInput from "react-currency-input-field";
-import { TTransactionType } from "./NewTransactionTab";
 import { PickDate } from "./PickDate";
 import SelectCategory from "./SelectCategory";
 import { Form } from "@/components/ui/form";
@@ -13,12 +12,16 @@ import {
   NewTransactionFormSchemaType,
   NewTransactionSchema,
   NewTransactionSchemaType,
+  TCategories,
+  TTransactionType,
 } from "@/lib/types/new-transaction-form-schema";
 
 export default function NewTransactionForm({
   tabType,
+  categories,
 }: {
   tabType: TTransactionType;
+  categories: TCategories[];
 }) {
   const isExpense = tabType !== "income";
 
@@ -46,7 +49,7 @@ export default function NewTransactionForm({
         <div className="inline-flex w-full items-center gap-2">
           <PickDate form={form} />
 
-          <SelectCategory form={form} />
+          <SelectCategory form={form} categories={categories} />
         </div>
 
         {/* --- --- INPUTS --- --- */}

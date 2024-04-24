@@ -1,5 +1,13 @@
 import { z } from "zod";
 
+export type TTransactionType = "income" | "expense";
+
+export type TCategories = {
+  id: string;
+  name: string;
+  is_expense: boolean;
+};
+
 export type NewTransactionFormSchemaType = {
   label: string;
   date: Date;

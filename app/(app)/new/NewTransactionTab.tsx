@@ -3,8 +3,20 @@ import { IoAddSharp, IoRemoveSharp } from "react-icons/io5";
 import { cn } from "@/lib/utils";
 import { DEFAULT_ACTIVE_TAB } from "@/lib/defaultValues";
 import NewTransactionForm from "./NewTransactionForm";
+import {
+  TCategories,
+  TTransactionType,
+} from "@/lib/types/new-transaction-form-schema";
 
-export type TTransactionType = "income" | "expense";
+const incomeCategories: TCategories[] = [
+  { id: "i5y8zFO3", name: "salary", is_expense: true },
+  { id: "zPu34l3J", name: "freelance", is_expense: true },
+];
+const expenseCategories: TCategories[] = [
+  { id: "lqIGQTiN", name: "grocery", is_expense: true },
+  { id: "UH3DAtex", name: "food", is_expense: true },
+  { id: "B7iLVbhN", name: "clothings", is_expense: true },
+];
 
 export default function NewTransactionTab() {
   return (
@@ -16,11 +28,14 @@ export default function NewTransactionTab() {
         </TabsList>
 
         <TabsContent value="income">
-          <NewTransactionForm tabType="income" />
+          <NewTransactionForm tabType="income" categories={incomeCategories} />
         </TabsContent>
 
         <TabsContent value="expense">
-          <NewTransactionForm tabType="expense" />
+          <NewTransactionForm
+            tabType="expense"
+            categories={expenseCategories}
+          />
         </TabsContent>
       </Tabs>
     </>

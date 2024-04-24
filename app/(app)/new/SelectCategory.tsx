@@ -5,7 +5,10 @@ import { IoAddSharp } from "react-icons/io5";
 import CreateNewCatDialog from "./CreateNewCatDialog";
 import { toNormalCase } from "@/lib/utils";
 import { UseFormReturn } from "react-hook-form";
-import { NewTransactionFormSchemaType } from "@/lib/types/new-transaction-form-schema";
+import {
+  NewTransactionFormSchemaType,
+  TCategories,
+} from "@/lib/types/new-transaction-form-schema";
 import {
   FormControl,
   FormDescription,
@@ -21,18 +24,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-const expenseCategories = [
-  { id: "lqIGQTiN", name: "grocery", is_expense: true },
-  { id: "UH3DAtex", name: "food", is_expense: true },
-  { id: "B7iLVbhN", name: "clothings", is_expense: true },
-];
-
 export default function SelectCategory({
   form,
+  categories,
 }: {
   form: UseFormReturn<NewTransactionFormSchemaType, any, undefined>;
+  categories: TCategories[];
 }) {
-  const categories = expenseCategories;
   const [isDialogOpen, setDialogOpen] = useState(false);
 
   return (
