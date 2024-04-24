@@ -1,3 +1,4 @@
+"use client";
 import { Button } from "@/components/ui/button";
 
 import {
@@ -7,6 +8,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useState } from "react";
+import { IoAddSharp } from "react-icons/io5";
+import CreateNewCatDialog from "./CreateNewCatDialog";
 
 const expenseCategories = [
   { id: "lqIGQTiN", name: "grocery", is_expense: true },
@@ -15,6 +19,9 @@ const expenseCategories = [
 ];
 
 export default function SelectCategory() {
+  const categories = expenseCategories;
+  const [isDialogOpen, setDialogOpen] = useState(false);
+
   return (
     <>
       <Select>
@@ -28,10 +35,31 @@ export default function SelectCategory() {
             <SelectValue placeholder="Category" />
           </SelectTrigger>
         </Button>
+
         <SelectContent>
-          <SelectItem value="light">Light</SelectItem>
-          <SelectItem value="dark">Dark</SelectItem>
-          <SelectItem value="system">System</SelectItem>
+          <Button
+            variant="ghost"
+            className="flex h-10 w-full justify-between px-2 font-semibold"
+            onClick={() => {
+              setDialogOpen(true);
+            }}
+          >
+            Create new
+            <IoAddSharp size={18} />
+          </Button>
+          <CreateNewCatDialog
+            open={isDialogOpen}
+            onOpenChange={setDialogOpen}
+          />
+
+          <hr className="mt-1 py-1" />
+
+          {/* --- Select items --- */}
+          {categories.map((cat) => (
+            <SelectItem value={cat.id} key={cat.id} className="capitalize">
+              {cat.name}
+            </SelectItem>
+          ))}
         </SelectContent>
       </Select>
     </>

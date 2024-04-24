@@ -1,6 +1,6 @@
 "use client";
 
-import { IoArrowUpSharp, IoCaretDown } from "react-icons/io5";
+import { IoArrowUpSharp } from "react-icons/io5";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import CurrencyInput from "react-currency-input-field";
