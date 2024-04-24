@@ -2,6 +2,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { IoAddSharp, IoRemoveSharp } from "react-icons/io5";
 import { cn } from "@/lib/utils";
 import { DEFAULT_ACTIVE_TAB } from "@/lib/defaultValues";
+import NewTransactionForm from "./NewTransactionForm";
 
 export type TTransactionType = "income" | "expense";
 
@@ -9,13 +10,18 @@ export default function NewTransactionTab() {
   return (
     <>
       <Tabs defaultValue={DEFAULT_ACTIVE_TAB}>
-        <TabsList className="h-fit w-fit rounded-full bg-muted/30 p-0">
+        <TabsList className="mb-3 h-fit w-fit rounded-full bg-muted/30 p-0">
           <TransactionTypeSwitchTrigger type="income" />
           <TransactionTypeSwitchTrigger type="expense" />
         </TabsList>
 
-        <TabsContent value="income">Income</TabsContent>
-        <TabsContent value="expense">Expense</TabsContent>
+        <TabsContent value="income">
+          <NewTransactionForm />
+        </TabsContent>
+
+        <TabsContent value="expense">
+          <NewTransactionForm />
+        </TabsContent>
       </Tabs>
     </>
   );
