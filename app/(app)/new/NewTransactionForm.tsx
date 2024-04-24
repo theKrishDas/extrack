@@ -18,6 +18,7 @@ import NewTransactionAmountInput from "./NewTransactionAmountInput";
 import { useState } from "react";
 import Spinner from "@/components/spinner";
 import { MINIMUM_TRANSACTION_AMOUNT } from "@/lib/defaultValues";
+import Link from "next/link";
 
 export default function NewTransactionForm({
   tabType,
@@ -91,8 +92,9 @@ export default function NewTransactionForm({
             className="h-14 w-full rounded-full text-base text-foreground/50"
             variant="ghost"
             type="button"
+            asChild
           >
-            Cancel
+            <Link href="/">Cancel</Link>
           </Button>
         </div>
       </form>
