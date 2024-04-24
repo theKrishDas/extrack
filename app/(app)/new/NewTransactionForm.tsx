@@ -7,19 +7,13 @@ import CurrencyInput from "react-currency-input-field";
 import { TTransactionType } from "./NewTransactionTab";
 import { PickDate } from "./PickDate";
 import SelectCategory from "./SelectCategory";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-} from "@/components/ui/form";
+import { Form } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 
-type TFormData = {
+export type TFormData = {
   label: string;
   amount: number;
+  date: Date;
 };
 
 export default function NewTransactionForm({
@@ -29,13 +23,20 @@ export default function NewTransactionForm({
 }) {
   const isExpense = tabType !== "income";
 
-  const form = useForm<TFormData>({ defaultValues: { label: "" } });
+  const form = useForm<TFormData>({
+    defaultValues: { label: "", date: new Date() },
+  });
+
+  function onSubmit(data: TFormData) {
+    console.log(data);
+  }
 
   return (
     <Form {...form}>
-      <form className="space-y-2">
-        <div className="inline-flex items-center gap-2">
-          <PickDate />
+      <form className="space-y-2" onSubmit={form.handleSubmit(onSubmit)}>
+        <div className="inline-flex w-full items-center gap-2">
+          <PickDate form={form} />
+
           <SelectCategory />
         </div>
 
@@ -75,12 +76,14 @@ export default function NewTransactionForm({
               "h-14 w-full rounded-full bg-card text-base shadow-none",
               isExpense ? "text-destructive" : "text-success",
             )}
+            type="submit"
           >
             Add
           </Button>
           <Button
             className="h-14 w-full rounded-full text-base text-foreground/50"
             variant="ghost"
+            type="button"
           >
             Cancel
           </Button>
