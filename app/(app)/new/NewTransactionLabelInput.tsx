@@ -30,7 +30,14 @@ export default function NewTransactionLabelInput({
               <input
                 className="min-w-0 flex-1 bg-transparent text-lg outline-none"
                 placeholder="Add a Label"
-                {...field}
+                value={field.value}
+                onChange={(e) => {
+                  const sanitizedValue = e.target.value
+                    .replace(/^\s+/, "") // Remove trailing white space from the start
+                    .replace(/ {2,}/g, " "); // Replace consecutive spaces with a single space ;
+
+                  form.setValue("label", sanitizedValue);
+                }}
               />
             </FormControl>
             <FormDescription className="hidden">
