@@ -1,6 +1,5 @@
 "use client";
 
-import { IoArrowUpSharp } from "react-icons/io5";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import CurrencyInput from "react-currency-input-field";
@@ -15,6 +14,7 @@ import {
   TCategories,
   TTransactionType,
 } from "@/lib/types/new-transaction-form-schema";
+import NewTransactionLabelInput from "./NewTransactionLabelInput";
 
 export default function NewTransactionForm({
   tabType,
@@ -54,20 +54,7 @@ export default function NewTransactionForm({
 
         {/* --- --- INPUTS --- --- */}
         <section className="flex w-full flex-col items-start justify-center gap-8 rounded-3xl bg-card p-10">
-          <div className="justify-betweens inline-flex w-full items-center">
-            <input
-              className="min-w-0 flex-1 bg-transparent text-lg outline-none"
-              placeholder="Add a Label"
-            />
-
-            <IoArrowUpSharp
-              size={16}
-              className={cn(
-                "rotate-0 text-success transition-all",
-                isExpense && "rotate-180 text-destructive",
-              )}
-            />
-          </div>
+          <NewTransactionLabelInput form={form} isExpense={isExpense} />
 
           <CurrencyInput
             decimalsLimit={2}
