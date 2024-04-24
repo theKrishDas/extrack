@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import CurrencyInput from "react-currency-input-field";
 import { TTransactionType } from "./NewTransactionTab";
 import { PickDate } from "./PickDate";
+import SelectCategory from "./SelectCategory";
 
 export default function NewTransactionForm({
   tabType,
@@ -17,15 +18,8 @@ export default function NewTransactionForm({
   return (
     <div className="space-y-2">
       <div className="inline-flex items-center gap-2">
-        <Button
-          className="h-10 gap-2 rounded-full px-5 shadow-none"
-          variant="secondary"
-          type="button"
-        >
-          <IoCaretDown size={20} className="text-foreground/50" />
-          Category
-        </Button>
         <PickDate />
+        <SelectCategory />
       </div>
 
       {/* --- --- INPUTS --- --- */}
