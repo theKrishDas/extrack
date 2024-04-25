@@ -1,6 +1,6 @@
 "use client";
 
-import { cn, wait } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { PickDate } from "./PickDate";
 import SelectCategory from "./SelectCategory";
@@ -8,7 +8,6 @@ import { Form } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import {
   NewTransactionFormSchemaType,
-  NewTransactionSchema,
   NewTransactionSchemaType,
   TCategories,
   TTransactionType,
@@ -39,7 +38,6 @@ export default function NewTransactionForm({
     // TODO: Remove trailing spaces from the label
 
     setFormSubmitting(true);
-    await wait(2500);
 
     const actualData: NewTransactionSchemaType = {
       amount: data.amount,
@@ -48,12 +46,20 @@ export default function NewTransactionForm({
       category: data.category,
       is_expense: isExpense,
     };
-    console.log(
-      "Success: ",
-      NewTransactionSchema.safeParse(actualData).success,
-    );
-    console.log(actualData);
+
+    const insertTransactions = await import(
+      "@/actions/handle-transaction"
+    ).then((_) => _.insertTransactions);
+
+    const { error } = await insertTransactions(actualData);
+
     setFormSubmitting(false);
+
+    // TODO: Render alert
+    if (error) {
+      console.error(error);
+      return;
+    }
   }
 
   return (
