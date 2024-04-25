@@ -18,6 +18,7 @@ import { useState } from "react";
 import Spinner from "@/components/spinner";
 import { MINIMUM_TRANSACTION_AMOUNT } from "@/lib/defaultValues";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function NewTransactionForm({
   tabType,
@@ -29,6 +30,8 @@ export default function NewTransactionForm({
   const isExpense = tabType !== "income";
 
   const [isFormSubmitting, setFormSubmitting] = useState(false);
+
+  const router = useRouter();
 
   const form = useForm<NewTransactionFormSchemaType>({
     defaultValues: { label: "", date: new Date() },
@@ -54,6 +57,7 @@ export default function NewTransactionForm({
     const { error } = await insertTransactions(actualData);
 
     setFormSubmitting(false);
+    router.push("/");
 
     // TODO: Render alert
     if (error) {
