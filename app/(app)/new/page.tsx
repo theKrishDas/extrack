@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import PageTitleWithNavigation from "@/components/navigation/PageTitleWithNavigation";
+import NewTransactionFallback from "@/components/newTransaction/NewTransactionFallback";
 import NewTransactionTab from "./NewTransactionTab";
-import NewTransactionFallback from "./NewTransactionFallback";
 
 export default function NewTransactionPage() {
   return (

@@ -2,9 +2,9 @@
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { PickDate } from "./PickDate";
+import { PickDate } from "@/components/newTransaction/PickDate";
 import { toast } from "sonner";
-import SelectCategory from "./SelectCategory";
+import SelectCategory from "@/components/newTransaction/SelectCategory";
 import { Form } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import {
@@ -13,8 +13,8 @@ import {
   TCategories,
   TTransactionType,
 } from "@/lib/types/new-transaction-form-schema";
-import NewTransactionLabelInput from "./NewTransactionLabelInput";
-import NewTransactionAmountInput from "./NewTransactionAmountInput";
+import NewTransactionLabelInput from "@/components/newTransaction/NewTransactionLabelInput";
+import NewTransactionAmountInput from "@/components/newTransaction/NewTransactionAmountInput";
 import { useState } from "react";
 import Spinner from "@/components/spinner";
 import { MINIMUM_TRANSACTION_AMOUNT } from "@/lib/defaultValues";
