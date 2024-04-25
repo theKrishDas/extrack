@@ -1,13 +1,14 @@
-import { Button } from "@/components/ui/button";
 import {
-  Dialog,
+  ActionDialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { Switch } from "@/components/ui/switch";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+  DialogDescription,
+  DialogBody,
+  DialogFooter,
+  DialogClose,
+  DialogAction,
+} from "@/components/ui/ActionDialog";
 
 export default function CreateNewCatDialog({
   open,
@@ -17,30 +18,30 @@ export default function CreateNewCatDialog({
   onOpenChange: (_: boolean) => void; // eslint-disable-line no-unused-vars
 }) {
   return (
-    <Dialog open={open} onOpenChange={onOpenChange} defaultOpen={true}>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Create new category</DialogTitle>
-        </DialogHeader>
-        <CategoryForm />
-      </DialogContent>
-    </Dialog>
+    <>
+      <ActionDialog open={open} onOpenChange={onOpenChange}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Create category</DialogTitle>
+            <DialogDescription>
+              Create a new category for organization.
+            </DialogDescription>
+          </DialogHeader>
+
+          <DialogBody>
+            <CategoryForm />
+          </DialogBody>
+
+          <DialogFooter>
+            <DialogClose>Cancel</DialogClose>
+            <DialogAction className="text-info">Create</DialogAction>
+          </DialogFooter>
+        </DialogContent>
+      </ActionDialog>
+    </>
   );
 }
 
 function CategoryForm() {
-  return (
-    <div className="flex flex-col gap-2">
-      <div className="flex items-center gap-1">
-        <Switch id="category-type" />
-        <Label htmlFor="category-type">Expense</Label>
-      </div>
-
-      <Input placeholder="name" />
-
-      <div className="h-3 w-full" />
-
-      <Button type="submit">Add</Button>
-    </div>
-  );
+  return <div className="flex flex-col gap-2"></div>;
 }
