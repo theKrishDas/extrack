@@ -3,6 +3,7 @@
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { PickDate } from "./PickDate";
+import { toast } from "sonner";
 import SelectCategory from "./SelectCategory";
 import { Form } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
@@ -59,9 +60,15 @@ export default function NewTransactionForm({
     setFormSubmitting(false);
     router.push("/");
 
-    // TODO: Render alert
     if (error) {
-      console.error(error);
+      toast.error("Unable to add transaction", {
+        description: error,
+        action: {
+          label: "Retry",
+          onClick: () => router.push("/new"),
+        },
+      });
+
       return;
     }
   }
