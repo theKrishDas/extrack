@@ -8,17 +8,22 @@ import {
   TTransactionType,
 } from "@/lib/types/new-transaction-form-schema";
 
-const incomeCategories: TCategories[] = [
-  { id: "i5y8zFO3", name: "salary", is_expense: true },
-  { id: "zPu34l3J", name: "freelance", is_expense: true },
-];
-const expenseCategories: TCategories[] = [
-  { id: "lqIGQTiN", name: "grocery", is_expense: true },
-  { id: "UH3DAtex", name: "food", is_expense: true },
-  { id: "B7iLVbhN", name: "clothings", is_expense: true },
-];
+export default async function NewTransactionTab() {
+  const getAllCategories = await import("@/actions/handle-category").then(
+    (_) => _.getAllCategories,
+  );
 
-export default function NewTransactionTab() {
+  const incomeCategoryData = await getAllCategories(false);
+  const expenseCategoryData = await getAllCategories(true);
+
+  const incomeCategories: TCategories[] | undefined =
+    incomeCategoryData.categories;
+
+  const expenseCategories: TCategories[] | undefined =
+    expenseCategoryData.categories;
+
+  if (!incomeCategories || !expenseCategories) return;
+
   return (
     <>
       <Tabs defaultValue={DEFAULT_ACTIVE_TAB}>

@@ -6,7 +6,8 @@ export type TTransactionType = "income" | "expense";
 export type TCategories = {
   id: string;
   name: string;
-  is_expense: boolean;
+  userId: string;
+  isExpense: boolean;
 };
 
 export type NewTransactionFormSchemaType = {
