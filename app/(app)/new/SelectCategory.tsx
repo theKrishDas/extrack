@@ -73,7 +73,7 @@ export default function SelectCategory({
                   onOpenChange={setDialogOpen}
                 />
 
-                <hr className="mt-1 py-1" />
+                {categories.length > 0 && <hr className="mt-1 py-1" />}
 
                 {/* --- Select items --- */}
                 {categories.map((cat) => (
