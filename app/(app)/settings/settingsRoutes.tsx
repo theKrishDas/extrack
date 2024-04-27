@@ -22,7 +22,7 @@ export const settingsRoutes: SettingsRouteGroup[] = [
       },
       {
         title: "category",
-        href: "/settings",
+        href: "/settings/category",
         icon: <IoFunnel />,
       },
     ],

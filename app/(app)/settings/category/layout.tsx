@@ -1,0 +1,20 @@
+import PageTitleWithNavigation from "@/components/navigation/PageTitleWithNavigation";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Suspense } from "react";
+
+export default function CategorySettingsLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <>
+      <PageTitleWithNavigation href="/settings" heading="Category" />
+      <Suspense fallback={<Loading />}>{children}</Suspense>
+    </>
+  );
+}
+
+function Loading() {
+  return <Skeleton className="h-40 w-full rounded-3xl" />;
+}
