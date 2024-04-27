@@ -14,7 +14,7 @@ export default function SettingsList() {
                 <li key={setting.title}>
                   <Link
                     href={setting.href}
-                    className="relative flex items-center gap-3 p-5 text-lg capitalize"
+                    className="relative flex items-center gap-3 p-4 text-base capitalize"
                   >
                     <div className="sborder sborder-foreground/80 inline-grid h-10 w-10 place-content-center rounded-full bg-accent text-base">
                       {setting.icon}

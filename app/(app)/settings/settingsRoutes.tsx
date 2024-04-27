@@ -1,4 +1,4 @@
-import { IoBag, IoContrastSharp, IoFunnel } from "react-icons/io5";
+import { IoBag, IoFunnel } from "react-icons/io5";
 
 export type TSettingsRoutes = {
   icon: React.ReactNode;
@@ -13,21 +13,11 @@ type SettingsRouteGroup = {
 
 export const settingsRoutes: SettingsRouteGroup[] = [
   {
-    groupName: "ui",
-    settings: [
-      {
-        title: "theme",
-        href: "/settings",
-        icon: <IoContrastSharp />,
-      },
-    ],
-  },
-  {
     groupName: "transaction",
     settings: [
       {
         title: "starting balance",
-        href: "/settings",
+        href: "/settings/starting-balance",
         icon: <IoBag />,
       },
       {
