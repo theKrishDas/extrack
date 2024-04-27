@@ -20,6 +20,17 @@ import {
   DialogAction,
 } from "@/components/ui/ActionDialog";
 
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
+
 export default function CategoryTabContent({
   type,
   categories,
@@ -71,10 +82,27 @@ export default function CategoryTabContent({
         </ul>
       )}
 
-      <Button className="absolute right-0 top-0 h-10 gap-2 rounded-full">
-        Add new <span className="sr-only">category</span>
-        <IoAddSharp />
-      </Button>
+      <Drawer>
+        <DrawerTrigger asChild>
+          <Button className="absolute right-0 top-0 h-10 gap-2 rounded-full">
+            Add new <span className="sr-only">category</span>
+            <IoAddSharp />
+          </Button>
+        </DrawerTrigger>
+        <DrawerContent>
+          <DrawerHeader>
+            <DrawerTitle>Are you absolutely sure?</DrawerTitle>
+            <DrawerDescription>This action cannot be undone.</DrawerDescription>
+            <div className="h-44 w-full"></div>
+          </DrawerHeader>
+          <DrawerFooter>
+            {/* <Button>Submit</Button> */}
+            <DrawerClose>
+              <Button variant="outline">Cancel</Button>
+            </DrawerClose>
+          </DrawerFooter>
+        </DrawerContent>
+      </Drawer>
     </TabsContent>
   );
 }
