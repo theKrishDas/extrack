@@ -1,8 +1,5 @@
-"use client";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
-import { IoAddSharp } from "react-icons/io5";
-import CreateNewCatDialog from "./CreateNewCatDialog";
+import { IoChevronForwardSharp } from "react-icons/io5";
 import { toNormalCase } from "@/lib/utils";
 import { UseFormReturn } from "react-hook-form";
 import {
@@ -23,6 +20,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import Link from "next/link";
 
 export default function SelectCategory({
   form,
@@ -31,8 +29,6 @@ export default function SelectCategory({
   form: UseFormReturn<NewTransactionFormSchemaType, any, undefined>;
   categories: TCategories[];
 }) {
-  const [isDialogOpen, setDialogOpen] = useState(false);
-
   return (
     <>
       <FormField
@@ -61,17 +57,13 @@ export default function SelectCategory({
                 <Button
                   variant="ghost"
                   className="flex h-10 w-full justify-between px-2 font-semibold"
-                  onClick={() => {
-                    setDialogOpen(true);
-                  }}
+                  asChild
                 >
-                  Create new
-                  <IoAddSharp size={18} />
+                  <Link href="/settings/category">
+                    Create new
+                    <IoChevronForwardSharp />
+                  </Link>
                 </Button>
-                <CreateNewCatDialog
-                  open={isDialogOpen}
-                  onOpenChange={setDialogOpen}
-                />
 
                 {categories.length > 0 && <hr className="mt-1 py-1" />}
 
