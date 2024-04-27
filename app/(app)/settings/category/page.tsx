@@ -24,7 +24,7 @@ export default async function CategorySettingsPage() {
 
   return (
     <>
-      <Tabs defaultValue={DEFAULT_ACTIVE_TAB}>
+      <Tabs defaultValue={DEFAULT_ACTIVE_TAB} className="relative">
         <TabsList className="h-fit w-fit rounded-full bg-muted/30 p-0">
           <TransactionTypeSwitchTrigger type="income" />
           <TransactionTypeSwitchTrigger type="expense" />
@@ -44,7 +44,7 @@ function TransactionTypeSwitchTrigger({ type }: { type: TTransactionType }) {
     <TabsTrigger
       value={type}
       className={cn(
-        "h-9 w-12 rounded-full text-base data-[state=active]:bg-card data-[state=active]:shadow-none",
+        "h-10 w-12 rounded-full text-base data-[state=active]:bg-card data-[state=active]:shadow-none",
         type === "income"
           ? "data-[state=active]:text-success"
           : "data-[state=active]:text-destructive",
