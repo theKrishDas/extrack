@@ -22,14 +22,13 @@ import {
 
 import {
   Drawer,
-  DrawerClose,
   DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
+import NewCategoryForm from "./NewCategoryForm";
+import { cn } from "@/lib/utils";
 
 export default function CategoryTabContent({
   type,
@@ -89,18 +88,21 @@ export default function CategoryTabContent({
             <IoAddSharp />
           </Button>
         </DrawerTrigger>
-        <DrawerContent>
-          <DrawerHeader>
-            <DrawerTitle>Are you absolutely sure?</DrawerTitle>
-            <DrawerDescription>This action cannot be undone.</DrawerDescription>
-            <div className="h-44 w-full"></div>
+        <DrawerContent className="rounded-t-3xl p-7">
+          <DrawerHeader className="p-0 py-7 text-left">
+            <DrawerTitle>
+              New category for{" "}
+              <span
+                className={cn(
+                  "inline-flex items-center gap-1 rounded-full bg-success/10 px-2 py-px text-base font-normal",
+                )}
+              >
+                <span className="inline-block h-3 w-3 rounded-full bg-success" />
+                {type}
+              </span>
+            </DrawerTitle>
           </DrawerHeader>
-          <DrawerFooter>
-            {/* <Button>Submit</Button> */}
-            <DrawerClose>
-              <Button variant="outline">Cancel</Button>
-            </DrawerClose>
-          </DrawerFooter>
+          <NewCategoryForm />
         </DrawerContent>
       </Drawer>
     </TabsContent>
