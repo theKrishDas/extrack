@@ -8,6 +8,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { TTransactionType } from "@/lib/types/new-transaction-form-schema";
 
 import { useForm } from "react-hook-form";
 
@@ -18,13 +19,22 @@ type TNewCategoryType = {
 
 export default function NewCategoryForm({
   setDrawerOpen,
+  type,
 }: {
   setDrawerOpen: (_: boolean) => void; // eslint-disable-line no-unused-vars
+  type: TTransactionType;
 }) {
   const form = useForm<TNewCategoryType>({ defaultValues: { name: "" } });
 
-  const onSubmit = (data: TNewCategoryType) => {
-    console.log(data.name);
+  const onSubmit = async (data: TNewCategoryType) => {
+    const isExpense = type !== "income";
+
+    const createCategory = await import("@/actions/handle-category").then(
+      (_) => _.createCategory,
+    );
+
+    await createCategory(data.name, isExpense);
+
     setDrawerOpen(false);
   };
 

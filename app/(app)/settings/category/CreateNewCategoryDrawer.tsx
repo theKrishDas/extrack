@@ -53,7 +53,7 @@ export default function CreateNewCategoryDrawer({
           </DrawerTitle>
         </DrawerHeader>
 
-        <NewCategoryForm setDrawerOpen={setDrawerOpen} />
+        <NewCategoryForm setDrawerOpen={setDrawerOpen} type={type} />
       </DrawerContent>
     </Drawer>
   );
