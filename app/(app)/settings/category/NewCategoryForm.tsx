@@ -37,7 +37,7 @@ export default function NewCategoryForm() {
                 <FormControl>
                   <input
                     placeholder="Category name"
-                    className="h-16 w-full flex-1 bg-transparent text-4xl outline-none"
+                    className="h-16 w-full flex-1 bg-transparent text-4xl font-light tracking-tight outline-none"
                     value={field.value}
                     onChange={(e) => {
                       const sanitizedValue = e.target.value

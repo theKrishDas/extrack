@@ -30,10 +30,16 @@ export default function CreateNewCategoryDrawer({
             New category for{" "}
             <span
               className={cn(
-                "inline-flex items-center gap-1 rounded-full bg-success/10 px-2 py-px text-base font-normal",
+                "inline-flex items-center gap-1 rounded-full px-2 py-px text-base font-normal",
+                type === "income" ? "bg-success/10 " : "bg-destructive/10 ",
               )}
             >
-              <span className="inline-block h-3 w-3 rounded-full bg-success" />
+              <span
+                className={cn(
+                  "inline-block h-2 w-2 rounded-full bg-success",
+                  type === "income" ? "bg-success" : "bg-destructive",
+                )}
+              />
               {type}
             </span>
           </DrawerTitle>
