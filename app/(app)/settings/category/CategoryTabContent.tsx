@@ -19,15 +19,7 @@ import {
   DialogClose,
   DialogAction,
 } from "@/components/ui/ActionDialog";
-
-import {
-  Drawer,
-  DrawerContent,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger,
-} from "@/components/ui/drawer";
-import NewCategoryForm from "./NewCategoryForm";
+import CreateNewCategoryDrawer from "./CreateNewCategoryDrawer";
 import { cn } from "@/lib/utils";
 
 export default function CategoryTabContent({
@@ -42,9 +34,12 @@ export default function CategoryTabContent({
       {categories.length <= 0 ? (
         <NoCategoryMessege />
       ) : (
-        <ul className="flex h-full w-full flex-col gap-2 rounded-3xl bg-card p-4">
+        <ul className="flex w-full flex-col rounded-2xl bg-card">
           {categories.map((cat) => (
-            <li key={cat.id} className="flex items-center justify-between ">
+            <li
+              key={cat.id}
+              className="flex h-14 items-center justify-between px-4"
+            >
               <p className="capitalize">{cat.name}</p>
 
               <ActionDialog>
@@ -80,31 +75,7 @@ export default function CategoryTabContent({
           ))}
         </ul>
       )}
-
-      <Drawer>
-        <DrawerTrigger asChild>
-          <Button className="absolute right-0 top-0 h-10 gap-2 rounded-full">
-            Add new <span className="sr-only">category</span>
-            <IoAddSharp />
-          </Button>
-        </DrawerTrigger>
-        <DrawerContent className="rounded-t-3xl p-7">
-          <DrawerHeader className="p-0 py-7 text-left">
-            <DrawerTitle>
-              New category for{" "}
-              <span
-                className={cn(
-                  "inline-flex items-center gap-1 rounded-full bg-success/10 px-2 py-px text-base font-normal",
-                )}
-              >
-                <span className="inline-block h-3 w-3 rounded-full bg-success" />
-                {type}
-              </span>
-            </DrawerTitle>
-          </DrawerHeader>
-          <NewCategoryForm />
-        </DrawerContent>
-      </Drawer>
+      <CreateNewCategoryDrawer type={type} />
     </TabsContent>
   );
 }
