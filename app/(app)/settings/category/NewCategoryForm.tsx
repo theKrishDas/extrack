@@ -9,7 +9,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { DrawerClose } from "@/components/ui/drawer";
 
 import { useForm } from "react-hook-form";
 
@@ -39,7 +38,14 @@ export default function NewCategoryForm() {
                   <input
                     placeholder="Category name"
                     className="h-16 w-full flex-1 bg-transparent text-4xl outline-none"
-                    {...field}
+                    value={field.value}
+                    onChange={(e) => {
+                      const sanitizedValue = e.target.value
+                        .toLowerCase()
+                        .trim(); // No spaces in category name
+
+                      form.setValue("name", sanitizedValue);
+                    }}
                   />
                 </FormControl>
                 <FormDescription className="sr-only">
