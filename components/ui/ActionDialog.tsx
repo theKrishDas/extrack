@@ -97,7 +97,7 @@ const CustomDialogClose = React.forwardRef<
   <DialogClose
     ref={ref}
     className={cn(
-      "h-14 w-full rounded-none border-r bg-transparent text-base font-medium text-foreground/60 shadow-none outline-none",
+      "inline-flex h-14 w-full items-center justify-center rounded-none border-r bg-transparent text-center text-base font-medium text-foreground/60 shadow-none outline-none",
       noSeparator && "border-none",
       className,
     )}
@@ -114,7 +114,7 @@ const CustomDialogAction = React.forwardRef<
     <button
       ref={ref}
       className={cn(
-        "h-14 w-full rounded-none bg-transparent text-base font-medium text-foreground shadow-none outline-none",
+        "inline-flex h-14 w-full items-center justify-center rounded-none bg-transparent text-center text-base font-medium text-foreground shadow-none outline-none",
         className,
       )}
       {...props}
