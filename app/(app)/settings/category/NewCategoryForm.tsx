@@ -1,4 +1,3 @@
-"use client";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -17,11 +16,16 @@ type TNewCategoryType = {
   name: string;
 };
 
-export default function NewCategoryForm() {
+export default function NewCategoryForm({
+  setDrawerOpen,
+}: {
+  setDrawerOpen: (_: boolean) => void; // eslint-disable-line no-unused-vars
+}) {
   const form = useForm<TNewCategoryType>({ defaultValues: { name: "" } });
 
   const onSubmit = (data: TNewCategoryType) => {
     console.log(data.name);
+    setDrawerOpen(false);
   };
 
   return (

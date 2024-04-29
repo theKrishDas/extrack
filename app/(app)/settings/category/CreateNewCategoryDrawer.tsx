@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Drawer,
   DrawerContent,
@@ -10,16 +12,22 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { IoAddSharp } from "react-icons/io5";
 import { TTransactionType } from "@/lib/types/new-transaction-form-schema";
+import { useState } from "react";
 
 export default function CreateNewCategoryDrawer({
   type,
 }: {
   type: TTransactionType;
 }) {
+  const [isDrawerOpen, setDrawerOpen] = useState(false);
+
   return (
-    <Drawer>
+    <Drawer open={isDrawerOpen} onOpenChange={setDrawerOpen}>
       <DrawerTrigger asChild>
-        <Button className="absolute right-0 top-0 h-10 gap-2 rounded-full">
+        <Button
+          className="absolute right-0 top-0 h-10 gap-2 rounded-full"
+          onClick={() => setDrawerOpen(true)}
+        >
           Add new <span className="sr-only">category</span>
           <IoAddSharp />
         </Button>
@@ -44,7 +52,8 @@ export default function CreateNewCategoryDrawer({
             </span>
           </DrawerTitle>
         </DrawerHeader>
-        <NewCategoryForm />
+
+        <NewCategoryForm setDrawerOpen={setDrawerOpen} />
       </DrawerContent>
     </Drawer>
   );
