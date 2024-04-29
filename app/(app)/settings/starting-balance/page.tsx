@@ -1,20 +1,17 @@
-import PageTitleWithNavigation from "@/components/navigation/PageTitleWithNavigation";
-import StartingBalanceSettingsWrapper from "./StartingBalanceSettingsWrapper";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Suspense } from "react";
+import { getInitialBalance } from "@/actions/balance-querry";
+import InitialBalanceSettings from "@/components/settings/InitialBalanceSettings";
 
-export default function StartingBalanceSettingsPage() {
+export default async function StartingBalanceSettingsPage() {
+  const { initialBalance, error } = await getInitialBalance();
+
+  // TODO: Build components for this
+  if (error) return <p>{error}</p>;
+
+  if (initialBalance === undefined)
+    return <p>Unable to fetch starting balance!</p>;
   return (
     <>
-      <PageTitleWithNavigation heading="Balance" href="/settings" />
-
-      <Suspense fallback={<StartingBalanceSettingsPageSkeleton />}>
-        <StartingBalanceSettingsWrapper />
-      </Suspense>
+      <InitialBalanceSettings initialBalance={initialBalance} />
     </>
   );
-}
-
-function StartingBalanceSettingsPageSkeleton() {
-  return <Skeleton className="h-40 w-full rounded-3xl" />;
 }
