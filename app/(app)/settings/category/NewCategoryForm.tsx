@@ -1,3 +1,4 @@
+import Spinner from "@/components/spinner";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -9,6 +10,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { TTransactionType } from "@/lib/types/new-transaction-form-schema";
+import { useState } from "react";
 
 import { useForm } from "react-hook-form";
 
@@ -25,8 +27,10 @@ export default function NewCategoryForm({
   type: TTransactionType;
 }) {
   const form = useForm<TNewCategoryType>({ defaultValues: { name: "" } });
+  const [isAddingCategory, setAddingCategory] = useState(false);
 
   const onSubmit = async (data: TNewCategoryType) => {
+    setAddingCategory(true);
     const isExpense = type !== "income";
 
     const createCategory = await import("@/actions/handle-category").then(
@@ -35,6 +39,7 @@ export default function NewCategoryForm({
 
     await createCategory(data.name, isExpense);
 
+    setAddingCategory(false);
     setDrawerOpen(false);
   };
 
@@ -71,7 +76,7 @@ export default function NewCategoryForm({
           />
 
           <Button type="submit" className="h-12 w-full rounded-full text-base">
-            Create
+            {isAddingCategory ? <Spinner /> : "Create"}
           </Button>
         </form>
       </Form>
