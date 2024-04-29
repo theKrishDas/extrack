@@ -4,7 +4,6 @@ import {
   TCategories,
   TTransactionType,
 } from "@/lib/types/new-transaction-form-schema";
-import { IoAddSharp } from "react-icons/io5";
 import { LuTrash } from "react-icons/lu";
 
 import {
@@ -20,7 +19,6 @@ import {
   DialogAction,
 } from "@/components/ui/ActionDialog";
 import CreateNewCategoryDrawer from "./CreateNewCategoryDrawer";
-import { cn } from "@/lib/utils";
 
 export default function CategoryTabContent({
   type,
