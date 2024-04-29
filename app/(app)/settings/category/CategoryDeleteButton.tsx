@@ -14,20 +14,37 @@ import {
   DialogAction,
 } from "@/components/ui/ActionDialog";
 import { TCategories } from "@/lib/types/new-transaction-form-schema";
+import { deleteCategory } from "@/actions/handle-category";
+import { toast } from "sonner";
+import { useState } from "react";
+import Spinner from "@/components/spinner";
 
 export default function CategoryDeleteButton({
   category,
 }: {
   category: TCategories;
 }) {
+  const [isDialogOpen, setDialogOpen] = useState(false);
+  const [isDeletingCategory, setDeletingCategory] = useState(false);
+
   async function onCategoryDelete() {
-    console.log(category);
+    setDeletingCategory(true);
+    const { error } = await deleteCategory(category.id);
+
+    if (error) {
+      toast.error("Unable to delete category", {
+        description: error,
+      });
+    }
+
+    setDeletingCategory(false);
+    setDialogOpen(false);
   }
 
   return (
-    <ActionDialog>
+    <ActionDialog open={isDialogOpen} onOpenChange={setDialogOpen}>
       <DialogTrigger asChild>
-        <Button size="icon" variant="ghost" className="h-10 w-10 rounded-full">
+        <Button variant="ghost" size="icon" onClick={() => setDialogOpen(true)}>
           <LuTrash />
           <span className="sr-only">Delete category</span>
         </Button>
@@ -46,7 +63,11 @@ export default function CategoryDeleteButton({
             className="text-destructive"
             onClick={async () => await onCategoryDelete()}
           >
-            Delete
+            {isDeletingCategory ? (
+              <Spinner size={18} strokeWidth={2} />
+            ) : (
+              "Delete"
+            )}
           </DialogAction>
         </DialogFooter>
       </DialogContent>

@@ -50,3 +50,22 @@ export async function createCategory(
     return { error: "An error occured while creating new category" };
   }
 }
+
+export async function deleteCategory(categoryId: string) {
+  try {
+    const user = await currentUser();
+    if (!user) return { error: "You must be signed in to add transaction" };
+
+    const userId = user.id;
+
+    await db
+      .delete(category)
+      .where(and(eq(category.id, categoryId), eq(category.userId, userId)));
+
+    revalidatePath("/settings/category");
+
+    return { success: "Successfully deleted category" };
+  } catch (error) {
+    return { error: "An error occured while deleting category" };
+  }
+}
