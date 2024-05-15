@@ -1,19 +1,17 @@
-import InitialBalanceSettings from "@/components/settings/InitialBalanceSettings";
-import { getInitialBalance } from "@/actions/balance-querry";
+import { Main } from "@/components/mainwrapper";
+import SettingsList from "./SettingsList";
+import { ContentWrapper } from "@/components/contentwrapper";
 
-export default async function SettingsPage() {
-  const { initialBalance, error } = await getInitialBalance();
-
-  // TODO: Build components for this
-  if (error) return <p>{error}</p>;
-
-  if (initialBalance === undefined)
-    return <p>Unable to fetch starting balance!</p>;
-
+export default function SettingsPage() {
   return (
-    <>
-      <h1 className="pt-12 text-5xl font-light tracking-tight">Settings</h1>
-      <InitialBalanceSettings initialBalance={initialBalance} />
-    </>
+    <Main>
+      <h1 className="pb-8 pt-12 text-5xl font-light tracking-tight">
+        Settings
+      </h1>
+
+      <ContentWrapper>
+        <SettingsList />
+      </ContentWrapper>
+    </Main>
   );
 }

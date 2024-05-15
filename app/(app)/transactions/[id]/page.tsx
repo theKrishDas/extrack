@@ -1,4 +1,6 @@
 import { getCachedTransactionById } from "@/actions/handle-transaction";
+import { ContentWrapper } from "@/components/contentwrapper";
+import { Main } from "@/components/mainwrapper";
 import AppNavigateBack from "@/components/navigation/AppNavigateBack";
 import TransactionDetail from "@/components/transactions/TransactionDetail";
 import TransactionDropdown from "@/components/transactions/TransactionDropdown";
@@ -17,12 +19,14 @@ export default async function TransactionDetailPage({
   if (!transaction) return notFound();
 
   return (
-    <>
-      <AppNavigateBack heading={transaction?.label || "Details"}>
-        <TransactionDropdown transaction={transaction} />
-      </AppNavigateBack>
+    <Main>
+      <ContentWrapper>
+        <AppNavigateBack heading={transaction?.label || "Details"}>
+          <TransactionDropdown transaction={transaction} />
+        </AppNavigateBack>
 
-      <TransactionDetail transaction={transaction} />
-    </>
+        <TransactionDetail transaction={transaction} />
+      </ContentWrapper>
+    </Main>
   );
 }

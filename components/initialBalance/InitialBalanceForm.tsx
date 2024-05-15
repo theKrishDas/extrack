@@ -3,7 +3,7 @@ import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import CurrencyInput from "react-currency-input-field";
 import { IoCloseSharp } from "react-icons/io5";
 import { InitialBalanceInputType } from "@/lib/form-schema/initial-balance-schema";
-import { MINIMUM_SARTING_BALANCE } from "@/defaultValues";
+import { MINIMUM_SARTING_BALANCE } from "@/lib/defaultValues";
 
 export default function InitialBalanceForm({
   setButtonClicked,

@@ -1,13 +1,17 @@
-import NewTransactionForm from "@/components/form/NewTransactionForm";
-import AppNavigateBack from "@/components/navigation/AppNavigateBack";
-import { IoCloseSharp } from "react-icons/io5";
+import { Suspense } from "react";
+import PageTitleWithNavigation from "@/components/navigation/PageTitleWithNavigation";
+import NewTransactionFallback from "@/components/newTransaction/NewTransactionFallback";
+import NewTransactionTab from "./NewTransactionTab";
+import { Main } from "@/components/mainwrapper";
 
 export default function NewTransactionPage() {
   return (
-    <>
-      <AppNavigateBack heading="Add new" icon={<IoCloseSharp />} />
+    <Main>
+      <PageTitleWithNavigation heading="Add new" href="/" />
 
-      <NewTransactionForm />
-    </>
+      <Suspense fallback={<NewTransactionFallback />}>
+        <NewTransactionTab />
+      </Suspense>
+    </Main>
   );
 }

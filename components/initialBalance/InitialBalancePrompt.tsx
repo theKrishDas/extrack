@@ -3,7 +3,7 @@
 import { useState } from "react";
 import InitialBalanceForm from "../initialBalance/InitialBalanceForm";
 import InitialBalanceRemider from "../initialBalance/InitialBalanceRemider";
-import { MINIMUM_SARTING_BALANCE } from "@/defaultValues";
+import { MINIMUM_SARTING_BALANCE } from "@/lib/defaultValues";
 
 export default function StartingBalancePrompt({
   initialBalance,

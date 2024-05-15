@@ -1,6 +1,6 @@
 "use client";
 
-import { MINIMUM_SARTING_BALANCE } from "@/defaultValues";
+import { MINIMUM_SARTING_BALANCE } from "@/lib/defaultValues";
 import { Button } from "@/components/ui/button";
 import { IoBag, IoCloseSharp, IoCheckmarkSharp } from "react-icons/io5";
 import { RxPencil1 } from "react-icons/rx";

@@ -4,7 +4,7 @@ import { transax } from "@/db/drizzle/schema";
 import {
   NewTransactionSchema,
   NewTransactionSchemaType,
-} from "@/lib/form-schema/new-transaction-schema";
+} from "@/lib/types/new-transaction-form-schema";
 import { currentUser } from "@clerk/nextjs";
 import { and, desc, eq, sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
@@ -94,7 +94,7 @@ export async function insertTransactions(formData: NewTransactionSchemaType) {
     const validatedData = NewTransactionSchema.safeParse(formData);
     if (!validatedData.success) return { error: "Error parsing input values" };
 
-    const { amount, label, is_expense, date } = validatedData.data;
+    const { amount, label, is_expense, date, category } = validatedData.data;
 
     const mappedAmount = is_expense
       ? Math.abs(amount) * -100
@@ -105,9 +105,10 @@ export async function insertTransactions(formData: NewTransactionSchemaType) {
     const newTransactionData: transactionInsertSchemaType = {
       userId: user.id,
       amount: roundedAmount,
-      label: label,
+      label: label?.trim(),
       isExpense: is_expense,
       date: date?.toISOString(),
+      category,
     };
 
     await db.insert(transax).values(newTransactionData);
