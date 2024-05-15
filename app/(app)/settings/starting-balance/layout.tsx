@@ -1,3 +1,4 @@
+import { ContentWrapper } from "@/components/contentwrapper";
 import { Main } from "@/components/mainwrapper";
 import PageTitleWithNavigation from "@/components/navigation/PageTitleWithNavigation";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -9,11 +10,11 @@ export default function StartingBalanceSettingsLayout({
   children: React.ReactNode;
 }) {
   return (
-    <Main className="space-y-0">
+    <Main>
       <PageTitleWithNavigation href="/settings" heading="Balance" />
 
       <Suspense fallback={<StartingBalanceSettingsPageSkeleton />}>
-        {children}
+        <ContentWrapper>{children}</ContentWrapper>
       </Suspense>
     </Main>
   );

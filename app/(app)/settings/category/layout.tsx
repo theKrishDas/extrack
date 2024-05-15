@@ -1,3 +1,4 @@
+import { ContentWrapper } from "@/components/contentwrapper";
 import { Main } from "@/components/mainwrapper";
 import PageTitleWithNavigation from "@/components/navigation/PageTitleWithNavigation";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -9,13 +10,12 @@ export default function CategorySettingsLayout({
   children: React.ReactNode;
 }) {
   return (
-    <Main className="space-y-0">
+    <Main>
       <PageTitleWithNavigation href="/settings" heading="Category" />
 
-      {/* NOTE: spacing between heading and body */}
-      <div className="block h-5 w-full" />
-
-      <Suspense fallback={<Loading />}>{children}</Suspense>
+      <Suspense fallback={<Loading />}>
+        <ContentWrapper className="pt-3">{children}</ContentWrapper>
+      </Suspense>
     </Main>
   );
 }
