@@ -2,7 +2,6 @@ import { getCachedTransactionById } from "@/actions/handle-transaction";
 import { ContentWrapper } from "@/components/contentwrapper";
 import { Main } from "@/components/mainwrapper";
 import AppNavigateBack from "@/components/navigation/AppNavigateBack";
-import PageTitleWithNavigation from "@/components/navigation/PageTitleWithNavigation";
 import TransactionDetail from "@/components/transactions/TransactionDetail";
 import TransactionDropdown from "@/components/transactions/TransactionDropdown";
 import { notFound } from "next/navigation";
