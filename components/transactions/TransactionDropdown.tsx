@@ -44,7 +44,7 @@ export default function TransactionDropdown({
             <DropdownMenuItem asChild>
               <Link href={`/edit/?id=${transaction.id}`}>Edit</Link>
             </DropdownMenuItem>
-            <DropdownMenuItem>Add as preset</DropdownMenuItem>
+            <DropdownMenuItem disabled>Add as preset</DropdownMenuItem>
           </DropdownMenuGroup>
 
           <DropdownMenuSeparator />
