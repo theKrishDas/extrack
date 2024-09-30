@@ -42,9 +42,9 @@ export default function TransactionDropdown({
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
-              <Link href={`/edit/?id=${transaction.id}`}>Edit</Link>
+              <Link href={`/edit-v2/${transaction.id}`}>Edit</Link>
             </DropdownMenuItem>
-            <DropdownMenuItem>Add as preset</DropdownMenuItem>
+            <DropdownMenuItem disabled>Add as preset</DropdownMenuItem>
           </DropdownMenuGroup>
 
           <DropdownMenuSeparator />
