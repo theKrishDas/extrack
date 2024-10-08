@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils";
+import { cn, formatCurrency, formatDate } from "@/lib/utils";
 import Link from "next/link";
 import { HiArrowDown, HiArrowUp } from "react-icons/hi2";
 import { TbSquareArrowRight } from "react-icons/tb";
@@ -8,21 +8,8 @@ export default function TransactionItem({
 }: {
   transaction: transactionSchemaType;
 }) {
-  const LOCALE = "en-IN";
-
-  const transactionDate = new Date(transaction.date).toLocaleDateString(
-    LOCALE,
-    { month: "short", day: "numeric" },
-  );
-
-  const amountFormat = new Intl.NumberFormat(LOCALE, {
-    style: "currency",
-    currency: "INR",
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 2,
-  });
-
-  const formattedAmount = amountFormat.format(transaction.amount);
+  const transactionDate = formatDate(transaction.date);
+  const formattedAmount = formatCurrency(transaction.amount);
 
   return (
     <>
