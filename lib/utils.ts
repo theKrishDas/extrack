@@ -1,7 +1,9 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
-const LOCALE = "en-IN";
+//  TODO: Localize these variables in future
+export const LOCALE = "en-IN" as const;
+export const TIMEZONE = "Asia/Kolkata" as const;
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -26,13 +28,17 @@ export function formatCurrency(amount: number) {
   return formattedCurrency;
 }
 
-export function formatDate(date: Date | string) {
-  const formattedDate = new Date(date).toLocaleDateString(LOCALE, {
-    month: "short",
+export function formatDate(
+  date: Date | string,
+  monthLength: "long" | "short" = "short",
+  showYear: boolean = false,
+) {
+  return new Intl.DateTimeFormat(LOCALE, {
+    timeZone: TIMEZONE,
     day: "numeric",
-  });
-
-  return formattedDate;
+    month: monthLength,
+    ...(showYear && { year: "numeric" }), // Include 'year' only if showYear is true
+  }).format(new Date(date));
 }
 
 export function toNormalCase(str: string): string {
