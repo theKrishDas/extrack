@@ -7,7 +7,7 @@ export default function TransactionDetail({
   transaction: transactionSchemaType;
 }) {
   const isExpense = transaction.isExpense;
-  const transactionDate = formatDate(transaction.date);
+  const transactionDate = formatDate(transaction.date, undefined, true);
   const formattedAmount = formatCurrency(transaction.amount);
 
   return (
