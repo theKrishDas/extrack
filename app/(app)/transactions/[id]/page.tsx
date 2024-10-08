@@ -1,4 +1,5 @@
 import { getCachedTransactionById } from "@/actions/handle-transaction";
+import DebugButton from "@/components/(temp)/DebugButton";
 import { ContentWrapper } from "@/components/contentwrapper";
 import { Main } from "@/components/mainwrapper";
 import AppNavigateBack from "@/components/navigation/AppNavigateBack";
@@ -27,6 +28,8 @@ export default async function TransactionDetailPage({
 
         <TransactionDetail transaction={transaction} />
       </ContentWrapper>
+
+      <DebugButton transaction={transaction} />
     </Main>
   );
 }
