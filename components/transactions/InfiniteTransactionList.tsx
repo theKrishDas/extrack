@@ -5,7 +5,7 @@ import { useInView } from "react-intersection-observer";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { fetchInfiniteTransactions } from "@/actions/handleCachedTransaction";
 import { TRANSACTION_PER_PAGE_FETCH_LIMIT } from "@/lib/defaultValues";
-import InfiniteTransactionWrapper from "./InfiniteTransactionSkeleton";
+import { InfiniteTransactionSkeletonWrapper } from "./InfiniteTransactionSkeleton";
 import TransactionItem from "@/components/transactions/TransactionItem";
 import EndOfTransaction from "@/components/transactions/EndOfTransaction";
 
@@ -27,23 +27,26 @@ export default function InfiniteTransactionList() {
   }, [inView, fetchNextPage]);
 
   return status === "pending" ? (
-    <InfiniteTransactionWrapper />
+    <InfiniteTransactionSkeletonWrapper />
   ) : status === "error" ? (
     <p>{error.message}</p>
   ) : (
-    <div className="space-y-1">
-      {data.pages.map((page, idx) => (
-        <Fragment key={idx}>
-          {page.data.map((transaction) => (
-            <TransactionItem key={transaction.id} transaction={transaction} />
-          ))}
-        </Fragment>
-      ))}
+    <>
+      <section className="space-y-1">
+        {data.pages.map((page, idx) => (
+          <Fragment key={idx}>
+            {page.data.map((transaction) => (
+              <TransactionItem key={transaction.id} transaction={transaction} />
+            ))}
+          </Fragment>
+        ))}
+      </section>
 
-      {/* TODO: don't always render 12 skeletons, canculate the number. */}
-      <div ref={ref}>
-        {hasNextPage ? <InfiniteTransactionWrapper /> : <EndOfTransaction />}
-      </div>
-    </div>
+      {hasNextPage ? (
+        <InfiniteTransactionSkeletonWrapper ref={ref} />
+      ) : (
+        <EndOfTransaction />
+      )}
+    </>
   );
 }
