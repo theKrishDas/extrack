@@ -31,22 +31,20 @@ export default function InfiniteTransactionList() {
   ) : status === "error" ? (
     <p>{error.message}</p>
   ) : (
-    <>
-      <section className="space-y-1">
-        {data.pages.map((page, idx) => (
-          <Fragment key={idx}>
-            {page.data.map((transaction) => (
-              <TransactionItem key={transaction.id} transaction={transaction} />
-            ))}
-          </Fragment>
-        ))}
-      </section>
+    <section className="space-y-1">
+      {data.pages.map((page, idx) => (
+        <Fragment key={idx}>
+          {page.data.map((transaction) => (
+            <TransactionItem key={transaction.id} transaction={transaction} />
+          ))}
+        </Fragment>
+      ))}
 
       {hasNextPage ? (
         <InfiniteTransactionSkeletonWrapper ref={ref} />
       ) : (
         <EndOfTransaction />
       )}
-    </>
+    </section>
   );
 }
