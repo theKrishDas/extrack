@@ -1,4 +1,9 @@
 //
+// Limits
+//
+export const TRANSACTION_PER_PAGE_FETCH_LIMIT = 12 as const;
+
+//
 // New transaction form
 //
 export const MINIMUM_SARTING_BALANCE = 500 as const;

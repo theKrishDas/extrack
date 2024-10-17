@@ -21,7 +21,7 @@ export default async function TransactionDisplay({
       {!hasAllTransactions && (
         <InlineNavigation
           heading="Recent transactions"
-          href="/transactions"
+          href="/transactionsv2"
           linkText="View all"
         />
       )}
