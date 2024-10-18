@@ -14,7 +14,7 @@ export const InfiniteTransactionSkeletonWrapper = forwardRef<
 >((props, ref) => (
   <section
     ref={ref}
-    className="transactions-infinite-scroll__trigger transaction-skeleton__wrapper space-y-1"
+    className="transaction-skeleton__wrapper space-y-1"
     {...props}
   >
     {Array.from({ length: TRANSACTION_PER_PAGE_FETCH_LIMIT }).map((_, idx) => (
