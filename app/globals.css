@@ -93,4 +93,8 @@
   body {
     @apply h-[100dvh] overflow-y-scroll bg-background text-foreground;
   }
+
+  .transaction-group__wraper:has(.group-date):not(:has(> .goup-date))
+    > .transaction-item__wrapper {
+  }
 }

@@ -12,11 +12,11 @@ import EndOfTransaction from "@/components/transactions/EndOfTransaction";
 export default function InfiniteTransactionList() {
   const { data, status, error, fetchNextPage, hasNextPage, isFetching } =
     useInfiniteQuery({
-      queryKey: ["transaction"],
+      queryKey: ["transactions"],
       queryFn: async ({ pageParam = 0 }) =>
         fetchInfiniteTransactions(pageParam),
       getNextPageParam: (lastPage) =>
-        lastPage.data.length < TRANSACTION_PER_PAGE_FETCH_LIMIT
+        lastPage.ungroupedTransactions.length < TRANSACTION_PER_PAGE_FETCH_LIMIT
           ? undefined
           : lastPage.nextOffset,
       initialPageParam: 0,
@@ -34,18 +34,60 @@ export default function InfiniteTransactionList() {
     <p>{error.message}</p>
   ) : (
     <section className="space-y-1">
-      {data.pages.map((page, idx) => (
-        <Fragment key={idx}>
-          {page.data.map((transaction) => (
-            <TransactionItem key={transaction.id} transaction={transaction} />
-          ))}
-        </Fragment>
-      ))}
+      {data.pages.map((page, pageIdx) => {
+        const previousPage = data.pages[pageIdx - 1];
+        const lastTransactionGroupInPreviousPage =
+          previousPage?.groupedTransactions.at(-1);
+        const lastTransactionDate = lastTransactionGroupInPreviousPage?.Date;
 
-      {isFetching ? (
-        <InfiniteTransactionSkeletonWrapper />
-      ) : hasNextPage ? (
-        <div className="transactions-infinite-scroll__trigger" ref={ref} />
+        return (
+          <Fragment key={pageIdx}>
+            {page.groupedTransactions.map((group, groupIdx) => {
+              const splitDate = group.Date.split(" ");
+
+              return (
+                <div
+                  key={groupIdx}
+                  className="transaction-group__wraper space-y-1"
+                >
+                  {/* --- --- --- group Date ---  ---  ---  */}
+                  {group.Date !== lastTransactionDate && (
+                    <div className="group-date mt-4 inline-flex w-full items-center gap-3 py-2 pl-1">
+                      <p className="text-base leading-none text-primary/40">
+                        <span className="font-extrabold -uppercase">
+                          {splitDate[0]}
+                        </span>{" "}
+                        <span className="">{splitDate[1]}</span>
+                      </p>
+                      <div className="mb-px h-[2px] w-full flex-1 bg-primary/10" />
+                    </div>
+                  )}
+
+                  {/* --- --- --- Transactions ---  ---  ---  */}
+                  <div className="transaction-item__wrapper space-y-1">
+                    {group.transactions.map((transactions) => (
+                      <TransactionItem
+                        key={transactions.id}
+                        transaction={transactions}
+                      />
+                    ))}
+                  </div>
+                </div>
+              );
+            })}
+          </Fragment>
+        );
+      })}
+
+      {/* --- --- --- Loader and trigger ---  ---  ---  */}
+      {hasNextPage && isFetching && <InfiniteTransactionSkeletonWrapper />}
+      {hasNextPage ? (
+        !isFetching && (
+          <InfiniteTransactionSkeletonWrapper
+            className="transactions-infinite-scroll__trigger"
+            ref={ref}
+          />
+        )
       ) : (
         <EndOfTransaction />
       )}

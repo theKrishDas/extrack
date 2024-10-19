@@ -1,7 +1,7 @@
 import { cn, formatCurrency, formatDate } from "@/lib/utils";
 import Link from "next/link";
 import { HiArrowDown, HiArrowUp } from "react-icons/hi2";
-import { TbSquareArrowRight } from "react-icons/tb";
+import { IoChevronForwardSharp } from "react-icons/io5";
 
 export default function TransactionItem({
   transaction,
@@ -15,7 +15,7 @@ export default function TransactionItem({
     <>
       <Link
         href={`/transactions/${transaction.id}`}
-        className="flex items-center justify-between rounded-md bg-card p-4 transition hover:bg-accent hover:text-accent-foreground"
+        className="flex items-center justify-between rounded-md bg-card p-4 py-3 transition hover:bg-accent hover:text-accent-foreground"
       >
         <div className="flex items-start gap-2">
           {transaction.isExpense ? (
@@ -45,7 +45,7 @@ export default function TransactionItem({
             {formattedAmount}
           </p>
 
-          <TbSquareArrowRight strokeWidth={1.5} />
+          <IoChevronForwardSharp size={12} className="text-primary/30" />
         </div>
       </Link>
     </>
