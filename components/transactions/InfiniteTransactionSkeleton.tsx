@@ -1,5 +1,6 @@
 import { Skeleton } from "@/components/ui/skeleton";
 import { TRANSACTION_PER_PAGE_FETCH_LIMIT } from "@/lib/defaultValues";
+import { cn } from "@/lib/utils";
 import { forwardRef, DetailedHTMLProps, HTMLAttributes } from "react";
 
 type Props = {} & Omit<
@@ -11,10 +12,10 @@ type Props = {} & Omit<
 export const InfiniteTransactionSkeletonWrapper = forwardRef<
   HTMLDivElement,
   Props
->((props, ref) => (
+>(({ className, ...props }, ref) => (
   <section
     ref={ref}
-    className="transaction-skeleton__wrapper space-y-1"
+    className={cn("transaction-skeleton__wrapper space-y-1", className)}
     {...props}
   >
     {Array.from({ length: TRANSACTION_PER_PAGE_FETCH_LIMIT }).map((_, idx) => (

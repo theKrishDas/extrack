@@ -3,7 +3,7 @@ import { Main } from "@/components/mainwrapper";
 import BackNavigation from "@/components/navigation/AppNavigateBack";
 import InfiniteTransactionList from "@/components/transactions/InfiniteTransactionList";
 
-export default function IFOPage() {
+export default function AllTransactions() {
   return (
     <Main>
       <ContentWrapper>

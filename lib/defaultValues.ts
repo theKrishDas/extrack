@@ -1,7 +1,7 @@
 //
 // Limits
 //
-export const TRANSACTION_PER_PAGE_FETCH_LIMIT = 12 as const;
+export const TRANSACTION_PER_PAGE_FETCH_LIMIT = 10 as const;
 
 //
 // New transaction form
