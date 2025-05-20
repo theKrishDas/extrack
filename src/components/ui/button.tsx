@@ -1,9 +1,9 @@
 "use client"
 
-import { forwardRef } from "react"
-import { cva, VariantProps } from "class-variance-authority"
+import {forwardRef} from "react"
+import {cva, VariantProps} from "class-variance-authority"
 
-import { cn } from "@/lib/utils"
+import {cn} from "@/lib/utils"
 
 export interface ButtonProps
   extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "color">,
@@ -80,13 +80,13 @@ const buttonVariants = cva(
 )
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, color, size, isIconOnly, ...props }, ref) => {
+  ({className, variant, color, size, isIconOnly, ...rest}, ref) => {
     return (
       <button
         className={cn(
-          buttonVariants({ variant, color, size, isIconOnly, className })
+          buttonVariants({variant, color, size, isIconOnly, className})
         )}
-        {...props}
+        {...rest}
         ref={ref}
       />
     )
@@ -94,4 +94,4 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 )
 Button.displayName = "Button"
 
-export { Button, buttonVariants }
+export {Button, buttonVariants}
