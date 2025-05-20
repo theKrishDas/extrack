@@ -5,6 +5,7 @@
       "name": "nextkit",
       "dependencies": {
         "@react-aria/button": "^3.13.1",
+        "@react-aria/focus": "^3.20.3",
         "@tailwindcss/postcss": "^4.1.7",
         "class-variance-authority": "^0.7.1",
         "clsx": "^2.1.1",
