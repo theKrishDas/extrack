@@ -12,7 +12,6 @@ export interface ButtonProps
 const buttonVariants = cva(
   [
     "inline-flex w-fit shrink-0 items-center justify-center gap-1 px-5 leading-none font-medium tracking-[0.01em] whitespace-nowrap",
-    "focus-visible:ring-[var(--button-color)]/50 focus-visible:ring-offset-background focus:outline-none focus-visible:ring-4 focus-visible:ring-offset-2 focus-visible:outline-none", // focus
     "disabled:text-label-tertiary disabled:bg-fill-secondary disabled:pointer-events-none disabled:opacity-50", // Disabled
     "cursor-default touch-none select-none", // cursor and select
   ],
@@ -50,6 +49,10 @@ const buttonVariants = cva(
         true: "gap-0 rounded-full p-0 leading-none sm:p-0",
         false: "",
       },
+      focusTreatment: {
+        true: "ring-[var(--button-color)]/50 ring-offset-background focus:outline-none focus-visible:ring-4 focus-visible:ring-offset-2 focus-visible:outline-none", // focus
+        false: "",
+      },
     },
     compoundVariants: [
       {
@@ -75,16 +78,27 @@ const buttonVariants = cva(
       color: "blue",
       size: "md",
       isIconOnly: false,
+      focusTreatment: true,
     },
   }
 )
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  ({className, variant, color, size, isIconOnly, ...rest}, ref) => {
+  (
+    {className, variant, color, size, isIconOnly, focusTreatment, ...rest},
+    ref
+  ) => {
     return (
       <button
         className={cn(
-          buttonVariants({variant, color, size, isIconOnly, className})
+          buttonVariants({
+            variant,
+            color,
+            size,
+            isIconOnly,
+            focusTreatment,
+            className,
+          })
         )}
         {...rest}
         ref={ref}
