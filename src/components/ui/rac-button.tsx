@@ -1,4 +1,4 @@
-import {RefObject, useRef} from "react"
+import {RefObject} from "react"
 import {AriaButtonProps, useButton} from "@react-aria/button"
 import {FocusRing} from "@react-aria/focus"
 import {PressEvent} from "@react-aria/interactions"
@@ -39,29 +39,25 @@ const Button = ({
   ref,
   ...rest
 }: ButtonProps) => {
-  const internalRef = useRef<HTMLButtonElement>(null)
   const [scope, animate] = useAnimate()
 
   const handlePressStart = (e: PressEvent): void => {
     animate(
       scope.current,
-      {backgroundColor: "color-mix( in oklab, var(--gray-1), transparent)"},
+      {backgroundColor: "var(--button-highlight)"},
       {duration: 0}
     )
 
     if (onPressStart) onPressStart(e)
   }
   const handlePressEnd = (e: PressEvent): void => {
-    animate(scope.current, {
-      backgroundColor:
-        "color-mix( in oklab, var(--fill-color) var(--fill-tertiary-opacity), transparent)",
-    })
+    animate(scope.current, {backgroundColor: "var(--button-bg)"})
     if (onPressEnd) onPressEnd(e)
   }
 
   const {buttonProps} = useButton(
     {...rest, onPressStart: handlePressStart, onPressEnd: handlePressEnd},
-    internalRef
+    scope
   )
 
   return (
@@ -82,8 +78,7 @@ const Button = ({
           })
         )}
         {...buttonProps}
-        // ref={mergeRefs([internalRef, ref])}
-        ref={mergeRefs([internalRef, ref, scope])}
+        ref={mergeRefs([ref, scope])}
       >
         {children}
       </button>

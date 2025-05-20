@@ -18,12 +18,14 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        gray: "bg-fill-tertiary text-[var(--button-color)]",
-        filled: "bg-[var(--button-color)] text-[var(--button-fg,_white)]",
+        gray: "bg-[var(--button-bg)] text-[var(--button-color)] [--button-bg:var(--fill-tertiary)] [--button-highlight:var(--fill-primary)]",
+        filled:
+          "bg-[var(--button-bg)] text-[var(--button-fg,_white)] [--button-bg:var(--button-color)] [--button-highlight:color-mix(in_oklch,var(--button-color),var(--button-fg,white)_30%)]",
         tinted:
-          "bg-[var(--button-color)]/[var(--fill-tertiary-opacity)] text-[var(--button-color)]",
+          "bg-[var(--button-bg)] text-[var(--button-color)] [--button-bg:color-mix(in_oklch,var(--button-color)_var(--fill-tertiary-opacity),transparent)] [--button-highlight:color-mix(in_oklch,var(--button-color)_var(--label-tertiary-opacity),transparent)]",
         ghost:
-          "text-[var(--button-color)] hover:bg-[var(--button-color)]/[var(--fill-quaternary-opacity)]",
+          "text-[var(--button-color)] bg-[var(--button-bg)] [--button-highlight:var(--fill-primary)] [--button-bg:var(--fill-opaque)]",
+        // "hover:bg-[var(--button-color)]/[var(--fill-quaternary-opacity)]",
       },
       color: {
         blue: "[--button-color:var(--ios-blue)]",
@@ -38,7 +40,7 @@ const buttonVariants = cva(
         purple: "[--button-color:var(--ios-purple)]",
         pink: "[--button-color:var(--ios-pink)]",
         brown: "[--button-color:var(--ios-brown)]",
-        gray: "[--button-color:var(--gray-1)]",
+        gray: "[--button-color:var(--label-secondary)]",
       },
       size: {
         lg: "h-14 sm:px-4 rounded-[0.85rem] text-base sm:h-11 sm:text-sm [&_svg]:text-[1.3rem] sm:[&_svg]:text-lg",
