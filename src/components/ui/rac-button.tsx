@@ -1,10 +1,9 @@
 import {RefObject} from "react"
 import {AriaButtonProps, useButton} from "@react-aria/button"
 import {FocusRing} from "@react-aria/focus"
-import {PressEvent} from "@react-aria/interactions"
+import {mergeRefs} from "@react-aria/utils"
 import {VariantProps} from "class-variance-authority"
 import {useAnimate} from "motion/react-mini"
-import {mergeRefs} from "react-merge-refs"
 
 import {cn} from "@/lib/utils"
 
@@ -41,24 +40,34 @@ const Button = ({
 }: ButtonProps) => {
   const [scope, animate] = useAnimate()
 
-  const handlePressStart = (e: PressEvent): void => {
+  const animatePressStart = (): void => {
     animate(
       scope.current,
       {backgroundColor: "var(--button-highlight)"},
       {duration: 0}
     )
-
-    if (onPressStart) onPressStart(e)
   }
-  const handlePressEnd = (e: PressEvent): void => {
+  const animatePressEnd = (): void => {
     animate(scope.current, {backgroundColor: "var(--button-bg)"})
-    if (onPressEnd) onPressEnd(e)
   }
 
   const {buttonProps} = useButton(
-    {...rest, onPressStart: handlePressStart, onPressEnd: handlePressEnd},
+    {
+      ...rest,
+      onPressStart: e => {
+        animatePressStart()
+        onPressStart?.(e)
+      },
+      onPressEnd: e => {
+        animatePressEnd()
+        onPressEnd?.(e)
+      },
+    },
     scope
   )
+
+  // TODO: Try playing with this
+  // const mergedProps = mergeProps(buttonProps, rest) // import from @react-aria/utils
 
   return (
     <FocusRing focusRingClass="ring-offset-background ring-4 ring-[var(--button-color)]/50 ring-offset-2">
@@ -78,7 +87,7 @@ const Button = ({
           })
         )}
         {...buttonProps}
-        ref={mergeRefs([ref, scope])}
+        ref={mergeRefs(ref, scope)}
       >
         {children}
       </button>
