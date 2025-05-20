@@ -37,6 +37,7 @@
   --color-fill-secondary: var(--fill-secondary);
   --color-fill-tertiary: var(--fill-tertiary);
   --color-fill-quaternary: var(--fill-quaternary);
+  --color-fill-opaque: var(--fill-opaque);
   --color-separator-opaque: var(--separator-opaque);
   --color-separator-non-opaque: var(--separator-non-opaque);
 }
