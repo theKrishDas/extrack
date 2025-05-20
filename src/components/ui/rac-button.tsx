@@ -1,6 +1,7 @@
 import {RefObject, useRef} from "react"
 import {AriaButtonProps, useButton} from "@react-aria/button"
 import {FocusRing} from "@react-aria/focus"
+import {PressEvent} from "@react-aria/interactions"
 import {VariantProps} from "class-variance-authority"
 import {mergeRefs} from "react-merge-refs"
 
@@ -32,12 +33,23 @@ const Button = ({
   isIconOnly,
   children,
   className,
+  onPressStart,
+  onPressEnd,
   ref,
   ...rest
 }: ButtonProps) => {
   const internalRef = useRef<HTMLButtonElement>(null)
+  const handlePressStart = (e: PressEvent): void => {
+    if (onPressStart) onPressStart(e)
+  }
+  const handlePressEnd = (e: PressEvent): void => {
+    if (onPressEnd) onPressEnd(e)
+  }
 
-  const {buttonProps, isPressed} = useButton(rest, internalRef)
+  const {buttonProps, isPressed} = useButton(
+    {...rest, onPressStart: handlePressStart, onPressEnd: handlePressEnd},
+    internalRef
+  )
 
   return (
     <FocusRing focusRingClass="ring-offset-background ring-4 ring-[var(--button-color)]/50 ring-offset-2 focus:outline-none focus-visible:outline-none">
