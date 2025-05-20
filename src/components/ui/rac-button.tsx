@@ -3,6 +3,7 @@ import {AriaButtonProps, useButton} from "@react-aria/button"
 import {FocusRing} from "@react-aria/focus"
 import {PressEvent} from "@react-aria/interactions"
 import {VariantProps} from "class-variance-authority"
+import {useAnimate} from "motion/react-mini"
 import {mergeRefs} from "react-merge-refs"
 
 import {cn} from "@/lib/utils"
@@ -39,22 +40,38 @@ const Button = ({
   ...rest
 }: ButtonProps) => {
   const internalRef = useRef<HTMLButtonElement>(null)
+  const [scope, animate] = useAnimate()
+
   const handlePressStart = (e: PressEvent): void => {
+    animate(
+      scope.current,
+      {backgroundColor: "color-mix( in oklab, var(--gray-1), transparent)"},
+      {duration: 0}
+    )
+
     if (onPressStart) onPressStart(e)
   }
   const handlePressEnd = (e: PressEvent): void => {
+    animate(scope.current, {
+      backgroundColor:
+        "color-mix( in oklab, var(--fill-color) var(--fill-tertiary-opacity), transparent)",
+    })
     if (onPressEnd) onPressEnd(e)
   }
 
-  const {buttonProps, isPressed} = useButton(
+  const {buttonProps} = useButton(
     {...rest, onPressStart: handlePressStart, onPressEnd: handlePressEnd},
     internalRef
   )
 
   return (
-    <FocusRing focusRingClass="ring-offset-background ring-4 ring-[var(--button-color)]/50 ring-offset-2 focus:outline-none focus-visible:outline-none">
+    <FocusRing focusRingClass="ring-offset-background ring-4 ring-[var(--button-color)]/50 ring-offset-2">
       <button
+        style={{
+          WebkitTapHighlightColor: "transparent",
+        }}
         className={cn(
+          "focus:outline-none focus-visible:outline-none",
           buttonVariants({
             variant,
             color,
@@ -62,14 +79,11 @@ const Button = ({
             isIconOnly,
             focusTreatment: false,
             className,
-          }),
-          // isPressed && "bg-[color-mix(in_oklab,white_8%,var(--button-color)_20%)]"
-          // isPressed && "bg-[color-mix(in_oklab,var(--gray-1)_30%,var(--button-color)_20%)]"
-          // isPressed && "bg-[var(--button-color)] text-[var(--button-bg)]"
-          isPressed && "bg-[var(--gray-3)]"
+          })
         )}
         {...buttonProps}
-        ref={mergeRefs([internalRef, ref])}
+        // ref={mergeRefs([internalRef, ref])}
+        ref={mergeRefs([internalRef, ref, scope])}
       >
         {children}
       </button>
