@@ -19,6 +19,7 @@
     "postcss": "^8.5.3",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
+    "react-merge-refs": "^3.0.2",
     "tailwind-merge": "^3.3.0",
     "tailwindcss": "^4.1.7"
   },
