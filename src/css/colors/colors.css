@@ -53,6 +53,7 @@
   --fill-secondary: color-mix( in oklab, var(--fill-color) var(--fill-secondary-opacity), transparent);
   --fill-tertiary: color-mix( in oklab, var(--fill-color) var(--fill-tertiary-opacity), transparent);
   --fill-quaternary: color-mix( in oklab, var(--fill-color) var(--fill-quaternary-opacity), transparent);
+  --fill-opaque: color-mix(in oklab, var(--fill-color) 0%, transparent);
 
   --separator-opaque: color-mix( in oklab, var(--separator-opaque-color) 100%, transparent);
   --separator-non-opaque: color-mix( in oklab, var(--separator-non-opaque-color) var(--separator-non-opaque-opacity), transparent);
