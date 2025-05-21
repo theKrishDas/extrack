@@ -2,6 +2,7 @@
 
 import {RefObject} from "react"
 import {mergeRefs} from "@react-aria/utils"
+import {VariantProps} from "class-variance-authority"
 import {useAnimate} from "motion/react-mini"
 import {
   Button as RacButton,
@@ -10,11 +11,23 @@ import {
 
 import {cn} from "@/lib/utils"
 
-interface ButtonProps extends RacButtonProps {
+import {buttonVariants} from "./button-variants"
+
+interface ButtonProps
+  extends RacButtonProps,
+    Omit<VariantProps<typeof buttonVariants>, "focusTreatment"> {
   ref?: RefObject<HTMLButtonElement | null>
 }
 
-const Button = ({className, ref, ...rest}: ButtonProps) => {
+const Button = ({
+  className,
+  variant,
+  color,
+  size,
+  isIconOnly,
+  ref,
+  ...rest
+}: ButtonProps) => {
   const [scope, animate] = useAnimate()
 
   const animatePressStart = (): void => {
@@ -30,13 +43,19 @@ const Button = ({className, ref, ...rest}: ButtonProps) => {
 
   return (
     <RacButton
-      className={cn(
-        "border-separator-non-opaque rounded-2xl border p-3",
-        "[--button-bg:var(--fill-opaque)] [--button-highlight:var(--ios-blue)]",
-        className
-      )}
       onPressStart={animatePressStart}
       onPressEnd={animatePressEnd}
+      className={cn(
+        "focus:outline-none focus-visible:outline-none",
+        buttonVariants({
+          variant,
+          color,
+          size,
+          isIconOnly,
+          focusTreatment: false,
+          className,
+        })
+      )}
       ref={mergeRefs(ref, scope)}
       {...rest}
     />
