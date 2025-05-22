@@ -5,14 +5,36 @@ import { mutation, query } from "./_generated/server"
 export const get = query({
   args: {},
   handler: async ctx => {
-    return await ctx.db.query("tasks").collect()
+    const user = await ctx.auth.getUserIdentity()
+
+    if (user === null) return
+
+    const ownerId = user.subject
+
+    const tasks = await ctx.db
+      .query("tasks")
+      .filter(q => q.eq(q.field("ownerId"), ownerId))
+      .order("desc")
+      .take(100)
+
+    return tasks
   },
 })
 
 export const create = mutation({
   args: { text: v.string(), isCompleted: v.boolean() },
   handler: async (ctx, { text, isCompleted }) => {
-    const newTaskId = await ctx.db.insert("tasks", { text, isCompleted })
+    const user = await ctx.auth.getUserIdentity()
+
+    if (user === null) return
+
+    const ownerId = user.subject
+
+    const newTaskId = await ctx.db.insert("tasks", {
+      ownerId,
+      text,
+      isCompleted,
+    })
     return newTaskId
   },
 })
