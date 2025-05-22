@@ -7,14 +7,17 @@ import { useMutation } from "convex/react"
 import { cn } from "@/lib/utils"
 
 export default function AddTasks() {
-  const [inputValue, setInputValue] = useState("")
   const createTasks = useMutation(api.tasks.create)
+
+  const [inputValue, setInputValue] = useState("")
+  const clearInput = () => setInputValue("")
 
   const handleSubmitTask = (): void => {
     const text = inputValue
     if (text.length === 0) return
 
     createTasks({ text, isCompleted: false })
+    clearInput()
     return
   }
 
@@ -35,7 +38,7 @@ export default function AddTasks() {
         />
         <button
           className="text-label-secondary hover:bg-fill-secondary absolute top-1/2 right-3.5 inline-flex size-5 -translate-y-1/2 items-center justify-center rounded-full text-sm font-medium"
-          onClick={() => setInputValue("")}
+          onClick={clearInput}
         >
           ⨯
         </button>
