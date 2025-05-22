@@ -1,14 +1,10 @@
 "use client"
 
 import { useState } from "react"
-import { api } from "#/convex/_generated/api"
-import { useMutation } from "convex/react"
 
 import { cn } from "@/lib/utils"
 
-export default function AddTasks() {
-  const createTasks = useMutation(api.tasks.create)
-
+export default function AddCategory() {
   const [inputValue, setInputValue] = useState("")
   const clearInput = () => setInputValue("")
 
@@ -16,7 +12,6 @@ export default function AddTasks() {
     const text = inputValue
     if (text.length === 0) return
 
-    createTasks({ text, isCompleted: false })
     clearInput()
     return
   }
@@ -31,7 +26,7 @@ export default function AddTasks() {
           "focus-visible:ring-ios-blue/50 outline-none focus-visible:ring-4"
         )}
         type="text"
-        placeholder="Add something here..."
+        placeholder="Type name..."
         value={inputValue}
         onChange={e => setInputValue(e.target.value)}
       />

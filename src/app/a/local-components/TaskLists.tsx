@@ -24,11 +24,11 @@ export default function TaskLists() {
           const { _id: id, text, isCompleted } = task
           return (
             <li
-              className="hover:bg-fill-secondary relative flex gap-2 overflow-hidden rounded px-2 py-1 text-sm font-medium select-none"
+              className="hover:bg-fill-secondary relative flex items-start gap-2 overflow-hidden rounded px-2 py-1 text-sm font-medium select-none"
               key={id}
             >
               <input
-                className="pointer-events-none touch-none"
+                className="pointer-events-none my-1 touch-none"
                 type="checkbox"
                 checked={isCompleted}
                 disabled
