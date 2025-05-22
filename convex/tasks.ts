@@ -16,3 +16,10 @@ export const create = mutation({
     return newTaskId
   },
 })
+
+export const updateTask = mutation({
+  args: { id: v.id("tasks"), isCompleted: v.boolean() },
+  handler: async (ctx, { id, isCompleted }) => {
+    return await ctx.db.patch(id, { isCompleted })
+  },
+})
