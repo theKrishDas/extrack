@@ -10,3 +10,7 @@ export function wait(milliseconds: number) {
     setTimeout(resolve, milliseconds)
   })
 }
+
+export type Prettify<T> = {
+  [K in keyof T]: T[K]
+} & {}
