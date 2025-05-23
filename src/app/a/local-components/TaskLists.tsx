@@ -6,6 +6,8 @@ import { useMutation, useQuery } from "convex/react"
 
 import { cn } from "@/lib/utils"
 
+import CategoryDisplayOnTasks from "./CategoryDisplayOnTasks"
+
 export default function TaskLists() {
   const tasks = useQuery(api.tasks.get)
   const updateTask = useMutation(api.tasks.updateTask)
@@ -44,13 +46,7 @@ export default function TaskLists() {
                 {text}
               </span>
 
-              {category && (
-                <div className="absolute top-0 right-0">
-                  <span className="text-label-secondary bg-fill-tertiary rounded-md px-[0.2rem] py-0.5 text-xs">
-                    {category}
-                  </span>
-                </div>
-              )}
+              {category && <CategoryDisplayOnTasks categoryId={category} />}
 
               <button
                 className="absolute inset-0 z-10 hidden"
