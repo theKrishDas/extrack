@@ -1,5 +1,6 @@
 "use client"
 
+import { useAuth } from "@clerk/nextjs"
 import { api } from "#/convex/_generated/api"
 import { Id } from "#/convex/_generated/dataModel"
 import { useMutation, useQuery } from "convex/react"
@@ -9,8 +10,21 @@ import { cn } from "@/lib/utils"
 import CategoryDisplayOnTasks from "./CategoryDisplayOnTasks"
 
 export default function TaskLists() {
+  const { userId: ownerId } = useAuth()
   const tasks = useQuery(api.tasks.get)
-  const updateTask = useMutation(api.tasks.updateTask)
+  const updateTask = useMutation(api.tasks.updateTask).withOptimisticUpdate(
+    (localStore, { id, isCompleted }) => {
+      const existingTasks = localStore.getQuery(api.tasks.get, {})
+
+      if (!!existingTasks && !!ownerId) {
+        const updatedTask = existingTasks.map(task =>
+          task._id === id ? { ...task, isCompleted } : task
+        )
+
+        localStore.setQuery(api.tasks.get, {}, updatedTask)
+      }
+    }
+  )
 
   if (!tasks || tasks.length === 0) return <p>No tasks found!</p>
 
