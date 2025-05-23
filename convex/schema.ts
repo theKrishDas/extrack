@@ -6,5 +6,10 @@ export default defineSchema({
     ownerId: v.string(),
     text: v.string(),
     isCompleted: v.boolean(),
+    category: v.optional(v.id("categories")),
+  }),
+  categories: defineTable({
+    ownerId: v.string(),
+    name: v.string(),
   }),
 })
