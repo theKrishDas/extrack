@@ -1,15 +1,35 @@
 "use client"
 
 import { useState } from "react"
+import { useAuth } from "@clerk/nextjs"
 import { api } from "#/convex/_generated/api"
-import { Id } from "#/convex/_generated/dataModel"
+import { Doc, Id } from "#/convex/_generated/dataModel"
 import { useMutation, useQuery } from "convex/react"
+import { v4 as uuidv4 } from "uuid"
 
 import { cn } from "@/lib/utils"
 
 export default function AddTasks() {
-  const createTasks = useMutation(api.tasks.create)
+  const { userId: ownerId } = useAuth()
   const categories = useQuery(api.categories.get)
+  const createTasks = useMutation(api.tasks.create).withOptimisticUpdate(
+    (localStore, { isCompleted, category, text }) => {
+      const existingTasks = localStore.getQuery(api.tasks.get, {})
+
+      if (!!existingTasks && !!ownerId) {
+        const newTask: Doc<"tasks"> = {
+          _id: uuidv4() as Id<"tasks">,
+          _creationTime: Date.now(),
+          ownerId,
+          isCompleted,
+          category,
+          text,
+        }
+
+        localStore.setQuery(api.tasks.get, {}, [...existingTasks, newTask])
+      }
+    }
+  )
 
   const [inputValue, setInputValue] = useState("")
   const clearInput = () => setInputValue("")
