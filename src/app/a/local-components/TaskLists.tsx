@@ -21,10 +21,11 @@ export default function TaskLists() {
     <section className="flex h-fit gap-1">
       <ul className="bg-fill-quaternary flex flex-col rounded-lg p-1">
         {tasks.map(task => {
-          const { _id: id, text, isCompleted } = task
+          const { _id: id, text, isCompleted, category } = task
+
           return (
             <li
-              className="hover:bg-fill-secondary relative flex items-start gap-2 overflow-hidden rounded px-2 py-1 text-sm font-medium select-none"
+              className="hover:bg-fill-secondary group relative flex items-start gap-2 overflow-hidden rounded px-2 py-1 text-sm font-medium select-none"
               key={id}
             >
               <input
@@ -42,8 +43,17 @@ export default function TaskLists() {
               >
                 {text}
               </span>
+
+              {category && (
+                <div className="absolute top-0 right-0">
+                  <span className="text-label-secondary bg-fill-tertiary rounded-md px-[0.2rem] py-0.5 text-xs">
+                    {category}
+                  </span>
+                </div>
+              )}
+
               <button
-                className="absolute inset-0"
+                className="absolute inset-0 z-10 hidden"
                 onClick={() => handleCompleteTask(id, !isCompleted)}
               />
             </li>

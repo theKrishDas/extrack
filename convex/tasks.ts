@@ -22,8 +22,12 @@ export const get = query({
 })
 
 export const create = mutation({
-  args: { text: v.string(), isCompleted: v.boolean() },
-  handler: async (ctx, { text, isCompleted }) => {
+  args: {
+    text: v.string(),
+    isCompleted: v.boolean(),
+    category: v.optional(v.id("categories")),
+  },
+  handler: async (ctx, { text, isCompleted, category }) => {
     const user = await ctx.auth.getUserIdentity()
 
     if (user === null) return
@@ -34,6 +38,7 @@ export const create = mutation({
       ownerId,
       text,
       isCompleted,
+      category,
     })
     return newTaskId
   },
