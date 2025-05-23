@@ -1,17 +1,22 @@
 "use client"
 
 import { useState } from "react"
+import { api } from "#/convex/_generated/api"
+import { useMutation } from "convex/react"
 
 import { cn } from "@/lib/utils"
 
 export default function AddCategory() {
+  const createCategory = useMutation(api.categories.create)
+
   const [inputValue, setInputValue] = useState("")
   const clearInput = () => setInputValue("")
 
   const handleSubmitTask = (): void => {
-    const text = inputValue
-    if (text.length === 0) return
+    const name = inputValue
+    if (name.length === 0) return
 
+    createCategory({ name })
     clearInput()
     return
   }
