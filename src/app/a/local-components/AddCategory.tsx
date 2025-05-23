@@ -1,13 +1,37 @@
 "use client"
 
 import { useState } from "react"
+import { useAuth } from "@clerk/nextjs"
 import { api } from "#/convex/_generated/api"
+import { Id } from "#/convex/_generated/dataModel"
 import { useMutation } from "convex/react"
+import { v4 as uuidv4 } from "uuid"
 
 import { cn } from "@/lib/utils"
 
 export default function AddCategory() {
-  const createCategory = useMutation(api.categories.create)
+  const { userId: ownerId } = useAuth()
+
+  const createCategory = useMutation(
+    api.categories.create
+  ).withOptimisticUpdate((localStore, { name }) => {
+    const existingCategories = localStore.getQuery(api.categories.get, {})
+
+    if (!!existingCategories && !!ownerId) {
+      // Manually creating new category
+      const newCategory = {
+        _id: uuidv4() as Id<"categories">,
+        _creationTime: Date.now(),
+        name,
+        ownerId,
+      }
+
+      localStore.setQuery(api.categories.get, {}, [
+        ...existingCategories,
+        newCategory,
+      ])
+    }
+  })
 
   const [inputValue, setInputValue] = useState("")
   const clearInput = () => setInputValue("")
