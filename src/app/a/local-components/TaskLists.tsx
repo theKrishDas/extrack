@@ -49,7 +49,7 @@ export default function TaskLists() {
               {category && <CategoryDisplayOnTasks categoryId={category} />}
 
               <button
-                className="absolute inset-0 z-10 hidden"
+                className="absolute inset-0 z-10"
                 onClick={() => handleCompleteTask(id, !isCompleted)}
               />
             </li>
