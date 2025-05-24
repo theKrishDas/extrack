@@ -10,7 +10,7 @@ export default function InputComponent() {
       <Nav />
       <Input
         className={cn(
-          "text-label-primary/90 hidden h-30 w-full text-center text-5xl font-bold"
+          "text-label-primary/90 h-62 w-full text-center text-5xl font-medium"
           // "w-full max-w-70 rounded-lg"
           // "px-3.5 py-1.75 leading-5",
           // "rounded-xl px-5 py-3.5 leading-5.5"
@@ -18,6 +18,16 @@ export default function InputComponent() {
         name="amount-input"
         defaultValue="300"
         // type="number"
+      />
+      <Input
+        className={cn(
+          "text-label-secondary bg-fill-tertiary inline-flex h-12 w-25 items-center justify-center rounded-full px-5 text-center text-base leading-none font-medium tracking-[0.01em] sm:h-9 sm:px-3 sm:text-sm"
+          // "w-full max-w-70 rounded-lg"
+          // "px-3.5 py-1.75 leading-5",
+          // "rounded-xl px-5 py-3.5 leading-5.5"
+        )}
+        name="amount-input"
+        placeholder="Add note"
       />
     </div>
   )
