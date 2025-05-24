@@ -5,9 +5,11 @@ import {Drawer} from "vaul"
 import {cn} from "@/lib/utils"
 import {Button} from "@/components/ui/button/animated-button"
 
+import InputComponent from "./InputComponent"
+
 export default function ChildComponent() {
   return (
-    <Drawer.Root shouldScaleBackground setBackgroundColorOnScale={false}>
+    <Drawer.Root shouldScaleBackground setBackgroundColorOnScale={false} open>
       <Drawer.Trigger asChild>
         <Button className="backdrop-blur-md" color="gray">
           + Add
@@ -24,10 +26,7 @@ export default function ChildComponent() {
               "bg-fill-quaternary shadow-[inset_0_1px,inset_0_0_0_1px] shadow-white/[0.025] backdrop-blur-2xl"
             )}
           >
-            <Drawer.Handle />
-            <div className="inline-flex h-32 w-full items-center">
-              <p className="text-xl font-bold">Are you sure?</p>
-            </div>
+            <InputComponent />
           </div>
         </Drawer.Content>
       </Drawer.Portal>
