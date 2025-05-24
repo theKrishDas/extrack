@@ -6,7 +6,7 @@
   "trailingComma": "es5",
   "arrowParens": "avoid",
   "bracketSameLine": false,
-  "bracketSpacing": true,
+  "bracketSpacing": false,
   "htmlWhitespaceSensitivity": "css",
   "insertPragma": false,
   "jsxSingleQuote": false,
