@@ -26,6 +26,7 @@ const Button = ({
   size,
   isIconOnly,
   ref,
+  style,
   ...rest
 }: ButtonProps) => {
   const [scope, animate] = useAnimate()
@@ -43,6 +44,7 @@ const Button = ({
 
   return (
     <RacButton
+      {...rest}
       onPressStart={animatePressStart}
       onPressEnd={animatePressEnd}
       className={cn(
@@ -56,8 +58,11 @@ const Button = ({
           className,
         })
       )}
+      style={{
+        WebkitTapHighlightColor: "transparent",
+        ...style,
+      }}
       ref={mergeRefs(ref, scope)}
-      {...rest}
     />
   )
 }
