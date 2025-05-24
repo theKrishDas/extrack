@@ -2,7 +2,7 @@ import {cva} from "class-variance-authority"
 
 export const buttonVariants = cva(
   [
-    "inline-flex w-fit shrink-0 items-center justify-center gap-1 px-5 leading-none font-medium tracking-[0.01em] whitespace-nowrap",
+    "inline-flex w-fit shrink-0 items-center justify-center gap-1 px-5 leading-0 font-medium tracking-[0.01em] whitespace-nowrap",
     "disabled:text-label-tertiary disabled:bg-fill-secondary disabled:pointer-events-none disabled:opacity-50", // Disabled
     "cursor-default touch-none select-none", // cursor and select
   ],
@@ -34,12 +34,12 @@ export const buttonVariants = cva(
         gray: "[--button-color:var(--label-secondary)]",
       },
       size: {
-        lg: "h-14 sm:px-4 rounded-[0.85rem] text-base sm:h-11 sm:text-sm [&_svg]:text-[1.3rem] sm:[&_svg]:text-lg",
-        md: "h-12 rounded-full text-base sm:h-9 sm:px-4 sm:text-sm [&_svg]:text-xl sm:[&_svg]:text-lg",
+        lg: "h-14 rounded-[0.85rem] text-[1.05rem] sm:h-11 sm:px-4 sm:text-[0.9rem] [&_svg]:text-[1.2rem] sm:[&_svg]:text-[1.1rem]",
+        md: "h-12 rounded-full text-base sm:h-9 sm:px-3 sm:text-sm [&_svg]:text-xl sm:[&_svg]:text-base",
         sm: "h-10 rounded-full px-4 text-sm sm:h-8 sm:px-3 sm:text-xs [&_svg]:text-base sm:[&_svg]:text-sm",
       },
       isIconOnly: {
-        true: "gap-0 rounded-full p-0 leading-none sm:p-0",
+        true: "gap-0 rounded-full p-0 sm:p-0",
         false: "",
       },
       focusTreatment: {
