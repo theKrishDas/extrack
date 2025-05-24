@@ -4,6 +4,7 @@
     "": {
       "name": "nextkit",
       "dependencies": {
+        "@radix-ui/react-slot": "^1.2.3",
         "@tailwindcss/postcss": "^4.1.7",
         "class-variance-authority": "^0.7.1",
         "clsx": "^2.1.1",
@@ -175,6 +176,10 @@
     "@nodelib/fs.walk": ["@nodelib/fs.walk@1.2.8", "", { "dependencies": { "@nodelib/fs.scandir": "2.1.5", "fastq": "^1.6.0" } }, "sha512-oGB+UxlgWcgQkgwo8GcEGwemoTFt3FIO9ababBmaGwXIoBKZ+GTy0pP185beGg7Llih/NSHSV2XAs1lnznocSg=="],
 
     "@nolyfill/is-core-module": ["@nolyfill/is-core-module@1.0.39", "", {}, "sha512-nn5ozdjYQpUCZlWGuxcJY/KpxkWQs4DcbMCmKojjyrYDEAGy4Ce19NN4v5MduafTwJlbKc99UA8YhSVqq9yPZA=="],
+
+    "@radix-ui/react-compose-refs": ["@radix-ui/react-compose-refs@1.1.2", "", { "peerDependencies": { "@types/react": "*", "react": "^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc" }, "optionalPeers": ["@types/react"] }, "sha512-z4eqJvfiNnFMHIIvXP3CY57y2WJs5g2v3X0zm9mEJkrkNv4rDxu+sg9Jh8EkXyeqBkB7SOcboo9dMVqhyrACIg=="],
+
+    "@radix-ui/react-slot": ["@radix-ui/react-slot@1.2.3", "", { "dependencies": { "@radix-ui/react-compose-refs": "1.1.2" }, "peerDependencies": { "@types/react": "*", "react": "^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc" }, "optionalPeers": ["@types/react"] }, "sha512-aeNmHnBxbi2St0au6VBVC7JXFlhLlOnvIIlePNniyUNAClzmtAUEY8/pBiK3iHjufOlwA+c20/8jngo7xcrg8A=="],
 
     "@react-aria/autocomplete": ["@react-aria/autocomplete@3.0.0-beta.3", "", { "dependencies": { "@react-aria/combobox": "^3.12.3", "@react-aria/focus": "^3.20.3", "@react-aria/i18n": "^3.12.9", "@react-aria/interactions": "^3.25.1", "@react-aria/listbox": "^3.14.4", "@react-aria/searchfield": "^3.8.4", "@react-aria/textfield": "^3.17.3", "@react-aria/utils": "^3.29.0", "@react-stately/autocomplete": "3.0.0-beta.1", "@react-stately/combobox": "^3.10.5", "@react-types/autocomplete": "3.0.0-alpha.31", "@react-types/button": "^3.12.1", "@react-types/shared": "^3.29.1", "@swc/helpers": "^0.5.0" }, "peerDependencies": { "react": "^16.8.0 || ^17.0.0-rc.1 || ^18.0.0 || ^19.0.0-rc.1", "react-dom": "^16.8.0 || ^17.0.0-rc.1 || ^18.0.0 || ^19.0.0-rc.1" } }, "sha512-8haBygHNMqVt4Ge90VOk+iVlLW+zhiOGHYz2IKCE6+Sy1dTE6mzhHjxrtwWYnSez/OQLbxjHlwLch4CDd5JkLA=="],
 

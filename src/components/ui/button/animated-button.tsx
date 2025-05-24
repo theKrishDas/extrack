@@ -1,6 +1,7 @@
 "use client"
 
-import {RefObject} from "react"
+import {ReactElement, RefObject, SVGProps} from "react"
+import {Slot} from "@radix-ui/react-slot"
 import {mergeRefs} from "@react-aria/utils"
 import {VariantProps} from "class-variance-authority"
 import {useAnimate} from "motion/react-mini"
@@ -17,6 +18,8 @@ interface ButtonProps
   extends RacButtonProps,
     Omit<VariantProps<typeof buttonVariants>, "focusTreatment"> {
   ref?: RefObject<HTMLButtonElement | null>
+  startIcon?: ReactElement<SVGProps<SVGSVGElement>>
+  endIcon?: ReactElement<SVGProps<SVGSVGElement>>
 }
 
 const Button = ({
@@ -27,6 +30,9 @@ const Button = ({
   isIconOnly,
   ref,
   style,
+  children,
+  startIcon,
+  endIcon,
   ...rest
 }: ButtonProps) => {
   const [scope, animate] = useAnimate()
@@ -63,7 +69,13 @@ const Button = ({
         ...style,
       }}
       ref={mergeRefs(ref, scope)}
-    />
+    >
+      <>
+        <Slot className="-ml-1">{startIcon}</Slot>
+        {children}
+        <Slot className="-mr-1">{endIcon}</Slot>
+      </>
+    </RacButton>
   )
 }
 
