@@ -1,0 +1,10 @@
+//
+// Limits
+//
+export const TRANSACTION_PER_PAGE_FETCH_LIMIT = 10 as const
+
+//
+// New transaction form
+//
+export const MAXIMUM_TRANSACTION_AMOUNT = 1_00_00_000 as const
+export const MINIMUM_TRANSACTION_AMOUNT = 0.1 as const
