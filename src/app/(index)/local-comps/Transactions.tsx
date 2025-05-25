@@ -4,13 +4,10 @@ import {Fragment} from "react"
 import {api} from "#/convex/_generated/api"
 import {useQuery} from "convex/react"
 
-import {type Transaction} from "@/lib/types/transactions"
 import {cn} from "@/lib/utils"
 import {buttonVariants} from "@/components/ui/button"
-import {
-  MatArrowDownwardAltRounded,
-  MatArrowUpwardAltRounded,
-} from "@/components/icons/mat"
+
+import TransactionListItem from "./TransactionListItem"
 
 export default function Transactions() {
   const transactions = useQuery(api.transactions.get)
@@ -36,9 +33,8 @@ export default function Transactions() {
     <ul className="bg-fill-quaternary mx-auto flex max-w-xl flex-col gap-2 rounded-2xl py-2">
       {transactions.map(transaction => (
         <Fragment key={transaction._id}>
-          <List transaction={transaction} />
+          <TransactionListItem transaction={transaction} />
 
-          {/* hide separator if last */}
           <Separator />
         </Fragment>
       ))}
@@ -46,45 +42,9 @@ export default function Transactions() {
   )
 }
 
-const List = ({transaction}: {transaction: Transaction}) => {
-  const {_id: id, amount, note, type} = transaction
-  const isExpense = type === "expense"
-
-  return (
-    <li id={id} className="flex items-center gap-4 pl-4">
-      <span
-        className={cn(
-          buttonVariants({
-            isIconOnly: true,
-            size: "sm",
-            color: isExpense ? "red" : "green",
-          })
-        )}
-      >
-        {isExpense ? (
-          <MatArrowDownwardAltRounded />
-        ) : (
-          <MatArrowUpwardAltRounded />
-        )}
-      </span>
-
-      {/* "border-b-separator-opaque flex w-full items-center justify-between border-b pr-6 py-2 transaction-info" */}
-      <div className="border-b-separator-opaque flex w-full items-center justify-between py-2 pr-6">
-        <span
-          className={cn(
-            note ? "text-label-primary/80 font-medium" : "text-label-secondary"
-          )}
-        >
-          {note || "Add a note..."}
-        </span>
-        <span className="text-right font-semibold">${amount}</span>
-      </div>
-    </li>
-  )
-}
-
 const Separator = () => {
   return (
+    // hide separator if last
     <div className="flex w-full items-center gap-4 pl-4 [&:not(:has(+li))]:hidden">
       <span
         className={cn(
