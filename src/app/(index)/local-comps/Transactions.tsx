@@ -30,7 +30,7 @@ export default function Transactions() {
 
   // Render the transaction lists
   return (
-    <ul className="bg-fill-quaternary mx-auto flex max-w-xl flex-col gap-2 rounded-2xl py-2">
+    <ul className="bg-fill-quaternary mx-auto flex max-w-xl flex-col gap-2 rounded-3xl py-2.5">
       {transactions.map(transaction => (
         <Fragment key={transaction._id}>
           <TransactionListItem transaction={transaction} />
@@ -45,7 +45,7 @@ export default function Transactions() {
 const Separator = () => {
   return (
     // hide separator if last
-    <div className="flex w-full items-center gap-4 pl-4 [&:not(:has(+li))]:hidden">
+    <div className="flex w-full items-center gap-3 pl-3 [&:not(:has(+li))]:hidden">
       <span
         className={cn(
           // just to get the width of the icons as it changes on different
@@ -53,8 +53,8 @@ const Separator = () => {
           buttonVariants({
             isIconOnly: true,
             size: "sm",
-          }),
-          "invisible h-0 sm:h-0"
+            className: "invisible h-0 sm:h-0",
+          })
         )}
       />
       <div className="bg-separator-opaque h-px w-full rounded-full" />

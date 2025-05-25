@@ -3,10 +3,7 @@ import {useState} from "react"
 import {Transaction} from "@/lib/types/transactions"
 import {cn} from "@/lib/utils"
 import {buttonVariants} from "@/components/ui/button"
-import {
-  MatArrowDownwardAltRounded,
-  MatArrowUpwardAltRounded,
-} from "@/components/icons/mat"
+import {IonArrowDown, IonArrowUp} from "@/components/icons/ion"
 
 import ExpantionDrawer from "./ExpantionDrawer"
 
@@ -23,7 +20,7 @@ export default function TransactionListItem({
     <>
       <li
         id={id}
-        className="flex items-center gap-4 pl-4"
+        className="flex items-center gap-3 pl-3"
         onClick={() => setOpen(true)}
       >
         <span
@@ -35,21 +32,15 @@ export default function TransactionListItem({
             })
           )}
         >
-          {isExpense ? (
-            <MatArrowDownwardAltRounded />
-          ) : (
-            <MatArrowUpwardAltRounded />
-          )}
+          {isExpense ? <IonArrowDown /> : <IonArrowUp />}
         </span>
 
         {/* "border-b-separator-opaque flex w-full items-center justify-between border-b pr-6 py-2 transaction-info" */}
-        <div className="border-b-separator-opaque flex w-full items-center justify-between gap-4 truncate py-2 pr-6">
+        <div className="border-b-separator-opaque flex w-full items-center justify-between gap-4 truncate py-2 pr-4">
           <span
             className={cn(
               "flex-1 overflow-hidden whitespace-nowrap",
-              note
-                ? "text-label-primary/80 font-medium"
-                : "text-label-secondary"
+              note ? "text-label-primary/80 font-bold" : "text-label-tertiary"
             )}
             style={{
               WebkitMaskImage:
