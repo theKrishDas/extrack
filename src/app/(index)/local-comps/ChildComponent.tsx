@@ -9,7 +9,7 @@ import InputComponent from "./InputComponent"
 
 export default function ChildComponent() {
   return (
-    <Drawer.Root shouldScaleBackground setBackgroundColorOnScale={false} open>
+    <Drawer.Root shouldScaleBackground setBackgroundColorOnScale={false}>
       <Drawer.Trigger asChild>
         <Button className="backdrop-blur-md" color="gray">
           + Add
