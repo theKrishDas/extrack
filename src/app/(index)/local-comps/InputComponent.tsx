@@ -13,8 +13,13 @@ import {
   MatRefreshRounded,
   MatUnfoldMoreRounded,
 } from "@/components/icons/mat"
+import { useQuery } from "convex/react"
+import { api } from "#/convex/_generated/api"
 
 export default function InputComponent() {
+  const getAllTransactions = useQuery(api.transactions.get)
+  console.log(getAllTransactions)
+
   return (
     <Form
       className="inline-flex w-full flex-col items-center"
