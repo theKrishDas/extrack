@@ -43,17 +43,26 @@ export default function TransactionListItem({
         </span>
 
         {/* "border-b-separator-opaque flex w-full items-center justify-between border-b pr-6 py-2 transaction-info" */}
-        <div className="border-b-separator-opaque flex w-full items-center justify-between py-2 pr-6">
+        <div className="border-b-separator-opaque flex w-full items-center justify-between gap-4 truncate py-2 pr-6">
           <span
             className={cn(
+              "flex-1 overflow-hidden whitespace-nowrap",
               note
                 ? "text-label-primary/80 font-medium"
                 : "text-label-secondary"
             )}
+            style={{
+              WebkitMaskImage:
+                "linear-gradient(to right, black 80%, transparent 100%)",
+              maskImage:
+                "linear-gradient(to right, black 80%, transparent 100%)",
+              WebkitMaskRepeat: "no-repeat",
+              maskRepeat: "no-repeat",
+            }}
           >
-            {note || "Add a note..."}
+            {note || "Add a note"}
           </span>
-          <span className="text-right font-semibold">${amount}</span>
+          <span className="truncate text-right font-semibold">${amount}</span>
         </div>
       </li>
 
