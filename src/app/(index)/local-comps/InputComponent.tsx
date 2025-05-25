@@ -69,7 +69,7 @@ export default function InputComponent({
         setOpen(false)
       }}
     >
-      <Nav />
+      <Nav setOpen={setOpen} />
 
       <NumberField name="amount" minValue={0.1} isRequired>
         <Label className="sr-only">Amount</Label>
@@ -102,7 +102,7 @@ export default function InputComponent({
   )
 }
 
-const Nav = () => {
+const Nav = ({setOpen}: {setOpen: Dispatch<SetStateAction<boolean>>}) => {
   return (
     <div className="flex w-full items-center justify-between">
       <div className="inline-flex items-center gap-1">
@@ -130,7 +130,7 @@ const Nav = () => {
         isIconOnly
         variant="ghost"
         type="button"
-        isDisabled
+        onPress={() => setOpen(false)}
       >
         <MatCloseRounded />
       </Button>
