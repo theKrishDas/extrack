@@ -18,7 +18,7 @@ export default function ChildComponent() {
       <Drawer.Portal>
         <Drawer.Overlay className="bg-background/60 fixed inset-0" />
         <Drawer.Content className="fixed right-0 bottom-1.5 left-0 h-fit px-1.5 outline-none [--initial-transform:calc(100%+0.375rem)]">
-          <Drawer.Title className="sr-only">Add new transaction</Drawer.Title>
+         <Drawer.Title className="sr-only">Add new transaction</Drawer.Title>
           <div
             className={cn(
               "rounded-2xl p-4 before:rounded-2xl",
