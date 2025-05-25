@@ -9,7 +9,7 @@ import {
   TextField,
 } from "react-aria-components"
 
-import {newTransactionSchema} from "@/lib/types/new-transaction-schema"
+import {newTransactionSchema} from "@/lib/schema/new-transaction-schema"
 import {Button} from "@/components/ui/button"
 import {
   MatCloseRounded,
