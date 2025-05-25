@@ -1,3 +1,5 @@
+import {api} from "#/convex/_generated/api"
+import {useMutation} from "convex/react"
 import {
   Form,
   Input,
@@ -7,6 +9,7 @@ import {
   TextField,
 } from "react-aria-components"
 
+import {type TransactionInsert} from "@/lib/types/transactions"
 import {Button} from "@/components/ui/button"
 import {
   MatCloseRounded,
@@ -15,13 +18,30 @@ import {
 } from "@/components/icons/mat"
 
 export default function InputComponent() {
+  const addTransaction = useMutation(api.transactions.addTransaction)
+
+  const handleTransactionAdd = ({note, ...rest}: TransactionInsert) => {
+    // Make sure note is not an empty string
+    const modyfiedNote =
+      note !== undefined && note.length === 0 ? undefined : note
+
+    addTransaction({...rest, note: modyfiedNote})
+  }
+
   return (
     <Form
       className="inline-flex w-full flex-col items-center"
       onSubmit={e => {
         e.preventDefault()
         const data = Object.fromEntries(new FormData(e.currentTarget))
-        console.log(data)
+        // TODO: implement zod here
+        const newTransactionData: TransactionInsert = {
+          amount: parseInt(data.amount),
+          note: data.note,
+          type: "expense",
+        }
+
+        handleTransactionAdd(newTransactionData as TransactionInsert)
         e.currentTarget.reset()
       }}
     >
