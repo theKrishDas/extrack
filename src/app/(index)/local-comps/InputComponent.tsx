@@ -1,3 +1,4 @@
+import {Dispatch, SetStateAction} from "react"
 import {api} from "#/convex/_generated/api"
 import {useMutation} from "convex/react"
 import {
@@ -17,7 +18,11 @@ import {
   MatUnfoldMoreRounded,
 } from "@/components/icons/mat"
 
-export default function InputComponent() {
+export default function InputComponent({
+  setOpen,
+}: {
+  setOpen: Dispatch<SetStateAction<boolean>>
+}) {
   const addTransaction = useMutation(api.transactions.addTransaction)
 
   const handleTransactionAdd = (formData: FormData) => {
@@ -61,6 +66,7 @@ export default function InputComponent() {
         const data = new FormData(e.currentTarget)
         handleTransactionAdd(data)
         e.currentTarget.reset()
+        setOpen(false)
       }}
     >
       <Nav />
