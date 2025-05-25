@@ -9,7 +9,7 @@ import {
   TextField,
 } from "react-aria-components"
 
-import {type TransactionInsert} from "@/lib/types/transactions"
+import {newTransactionSchema} from "@/lib/types/new-transaction-schema"
 import {Button} from "@/components/ui/button"
 import {
   MatCloseRounded,
@@ -20,8 +20,33 @@ import {
 export default function InputComponent() {
   const addTransaction = useMutation(api.transactions.addTransaction)
 
-  const handleTransactionAdd = ({note, ...rest}: TransactionInsert) => {
+  const handleTransactionAdd = (formData: FormData) => {
+    const parsedData = {
+      amount: Number(formData.get("amount")) as unknown,
+      note: formData.get("note") as unknown,
+      type: "expense" as const, // formData.get("type") as unknown,
+    }
+
+    const result = newTransactionSchema.safeParse(parsedData)
+    if (result.error) {
+      // TODO: Use winston for logging instead
+      // eslint-disable-next-line no-console
+      console.error({
+        message: "ZOD ERROR: Form data validation unsuccessfull!",
+        info: {
+          message: JSON.parse(result.error.message),
+          error: result.error,
+        },
+      })
+      return
+    }
+
+    const {
+      data: {note, ...rest},
+    } = result
+
     // Make sure note is not an empty string
+    // I don't want to deal with empty strings
     const modyfiedNote =
       note !== undefined && note.length === 0 ? undefined : note
 
@@ -33,15 +58,8 @@ export default function InputComponent() {
       className="inline-flex w-full flex-col items-center"
       onSubmit={e => {
         e.preventDefault()
-        const data = Object.fromEntries(new FormData(e.currentTarget))
-        // TODO: implement zod here
-        const newTransactionData: TransactionInsert = {
-          amount: parseInt(data.amount),
-          note: data.note,
-          type: "expense",
-        }
-
-        handleTransactionAdd(newTransactionData as TransactionInsert)
+        const data = new FormData(e.currentTarget)
+        handleTransactionAdd(data)
         e.currentTarget.reset()
       }}
     >
