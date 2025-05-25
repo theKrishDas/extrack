@@ -1,6 +1,7 @@
 import {z} from "zod"
 
 import {
+  MAX_NOTE_LENGTH,
   MAXIMUM_TRANSACTION_AMOUNT,
   MINIMUM_TRANSACTION_AMOUNT,
 } from "../constants/defaults"
@@ -16,7 +17,7 @@ export const newTransactionSchema = z.object({
     .max(MAXIMUM_TRANSACTION_AMOUNT, {
       message: `Amount must not exceed ${MAXIMUM_TRANSACTION_AMOUNT}.`,
     }),
-  note: z.string().optional(),
+  note: z.string().max(MAX_NOTE_LENGTH).optional(),
   // category: z.string().nullable().optional(),
   type: z.union([z.literal("income"), z.literal("expense")], {
     message: "Type must be `income` or `expense`",
