@@ -58,7 +58,7 @@ const DrawerContent = ({
       ref={ref}
       className={cn(
         "fixed inset-x-0 bottom-0 z-50 mx-auto mt-24 flex h-auto max-w-xl flex-col p-1.5 pt-0 outline-none",
-        // "[--initial-transform:calc(100%+0.375rem)]",
+        // "[--initial-transform:calc(100%+0.375rem)]", // tailwind's 1.5 = 0.375rem
         className
       )}
       {...rest}

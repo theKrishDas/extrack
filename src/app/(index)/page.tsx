@@ -10,7 +10,7 @@ export default function Home() {
         </div>
       </nav>
 
-      {/* // WARN: this main container have min-height: `min-h-dvh` */}
+      {/* // WARN: this main container has a height */}
       <main className="min-h-dvh px-4 pt-6" data-vaul-drawer-wrapper="">
         <section className="">
           <Transactions />
