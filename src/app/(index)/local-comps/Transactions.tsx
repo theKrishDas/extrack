@@ -6,6 +6,7 @@ import {useQuery} from "convex/react"
 
 import {cn} from "@/lib/utils"
 import {buttonVariants} from "@/components/ui/button"
+import {Container} from "@/components/layout/container"
 
 import TransactionListItem from "./TransactionListItem"
 
@@ -30,15 +31,17 @@ export default function Transactions() {
 
   // Render the transaction lists
   return (
-    <ul className="bg-fill-quaternary mx-auto flex max-w-xl flex-col gap-2 rounded-3xl py-2.5">
-      {transactions.map(transaction => (
-        <Fragment key={transaction._id}>
-          <TransactionListItem transaction={transaction} />
+    <Container asChild>
+      <ul className="bg-fill-quaternary flex flex-col gap-2 rounded-3xl py-2.5">
+        {transactions.map(transaction => (
+          <Fragment key={transaction._id}>
+            <TransactionListItem transaction={transaction} />
 
-          <Separator />
-        </Fragment>
-      ))}
-    </ul>
+            <Separator />
+          </Fragment>
+        ))}
+      </ul>
+    </Container>
   )
 }
 

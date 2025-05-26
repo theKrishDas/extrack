@@ -7,6 +7,7 @@ import {
   DrawerBody,
   DrawerContent,
   DrawerFooter,
+  DrawerHandle,
   DrawerHeader,
   DrawerTitle,
 } from "@/components/ui/drawer"
