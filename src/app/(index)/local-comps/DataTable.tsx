@@ -15,7 +15,7 @@ import {cn} from "@/lib/utils"
 
 export type DataType = {
   header: string[]
-  body: (string | number)[][]
+  body: (string | number | undefined)[][]
 }
 
 function DataTable({
@@ -49,7 +49,9 @@ function DataTable({
             }}
           >
             {row.map((cell, k) => (
-              <Cell key={k}>{cell}</Cell>
+              <Cell key={k} className={cn(!cell && "text-label-quaternary")}>
+                {cell || "Empty"}
+              </Cell>
             ))}
           </Row>
         ))}
@@ -61,7 +63,10 @@ function DataTable({
 const Row = <T extends object>({children, className, ...rest}: RowProps<T>) => {
   return (
     <RacRow
-      className={cn("border-separator-non-opaque grid border-t-1", className)}
+      className={cn(
+        "border-separator-non-opaque grid gap-2 border-t-1",
+        className
+      )}
       {...rest}
     >
       {children}
@@ -72,7 +77,10 @@ const Row = <T extends object>({children, className, ...rest}: RowProps<T>) => {
 const Cell = ({children, className, ...rest}: CellProps) => {
   return (
     <RacCell
-      className={cn("text-label-primary py-3 font-bold", className)}
+      className={cn(
+        "text-label-primary [&:has(+td)]:text-label-secondary py-3 font-bold",
+        className
+      )}
       {...rest}
     >
       {children}
