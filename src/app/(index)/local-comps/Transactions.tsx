@@ -35,17 +35,19 @@ export default function Transactions() {
         <Fragment key={transaction._id}>
           <TransactionListItem transaction={transaction} />
 
-          <Separator />
+          {/* // hide separator if last */}
+          <ListSeparator className="pl-3 [&:not(:has(+li))]:hidden" />
         </Fragment>
       ))}
     </ul>
   )
 }
 
-export const Separator = () => {
+export const ListSeparator = ({className}: {className?: string}) => {
+  // equivalent left padding: pl-17 sm:pl-14
+  // This depents on the icon sizes (button sizes)
   return (
-    // hide separator if last
-    <div className="flex w-full items-center gap-3 pl-3 [&:not(:has(+li))]:hidden">
+    <div className={cn("flex h-px w-full items-center gap-3", className)}>
       <span
         className={cn(
           // just to get the width of the icons as it changes on different
@@ -53,11 +55,11 @@ export const Separator = () => {
           buttonVariants({
             isIconOnly: true,
             size: "sm",
-            className: "invisible h-0 sm:h-0",
+            className: "invisible h-full sm:h-full",
           })
         )}
       />
-      <div className="bg-separator-opaque h-px w-full rounded-full" />
+      <div className="bg-separator-opaque h-full flex-1 rounded-full" />
     </div>
   )
 }
