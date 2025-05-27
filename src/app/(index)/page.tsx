@@ -1,3 +1,7 @@
+import {Button} from "@/components/ui/button/animated-button"
+import {IonChevronForward} from "@/components/icons/ion"
+import {Container} from "@/components/layout/container"
+
 import ChildComponent from "./local-comps/ChildComponent"
 import Transactions from "./local-comps/Transactions"
 
@@ -12,9 +16,16 @@ export default function Home() {
 
       {/* // WARN: this main container has a height */}
       <main className="min-h-dvh px-4 pt-6" data-vaul-drawer-wrapper="">
-        <section className="">
+        <Container className="flex flex-col gap-0.5" as="section">
+          <div className="">
+            <h3 className="sr-only">Recent transactions</h3>
+            <Button variant="ghost" color="gray">
+              Recent transactions
+              <IonChevronForward />
+            </Button>
+          </div>
           <Transactions />
-        </section>
+        </Container>
       </main>
     </>
   )

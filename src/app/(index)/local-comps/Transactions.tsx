@@ -6,7 +6,6 @@ import {useQuery} from "convex/react"
 
 import {cn} from "@/lib/utils"
 import {buttonVariants} from "@/components/ui/button"
-import {Container} from "@/components/layout/container"
 
 import TransactionListItem from "./TransactionListItem"
 
@@ -31,21 +30,19 @@ export default function Transactions() {
 
   // Render the transaction lists
   return (
-    <Container asChild>
-      <ul className="bg-fill-quaternary flex flex-col gap-2 rounded-3xl py-2.5">
-        {transactions.map(transaction => (
-          <Fragment key={transaction._id}>
-            <TransactionListItem transaction={transaction} />
+    <ul className="bg-fill-quaternary flex flex-col gap-2 rounded-3xl py-2.5">
+      {transactions.map(transaction => (
+        <Fragment key={transaction._id}>
+          <TransactionListItem transaction={transaction} />
 
-            <Separator />
-          </Fragment>
-        ))}
-      </ul>
-    </Container>
+          <Separator />
+        </Fragment>
+      ))}
+    </ul>
   )
 }
 
-const Separator = () => {
+export const Separator = () => {
   return (
     // hide separator if last
     <div className="flex w-full items-center gap-3 pl-3 [&:not(:has(+li))]:hidden">
