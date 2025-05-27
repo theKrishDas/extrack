@@ -6,6 +6,8 @@ import {Drawer as DrawerPrimitive} from "vaul"
 
 import {cn} from "@/lib/utils"
 
+import {Material} from "../material"
+
 interface RefType<T> {
   ref?: RefObject<T | null>
 }
@@ -30,6 +32,8 @@ const DrawerTrigger = DrawerPrimitive.Trigger
 const DrawerPortal = DrawerPrimitive.Portal
 
 const DrawerClose = DrawerPrimitive.Close
+
+const DrawerMaterial = Material
 
 const DrawerOverlay = ({
   className,
@@ -63,25 +67,13 @@ const DrawerContent = ({
       )}
       {...rest}
     >
-      <DrawerMaterial>{children}</DrawerMaterial>
+      <DrawerMaterial withBorder thickness="thick" className="rounded-2xl">
+        {children}
+      </DrawerMaterial>
     </DrawerPrimitive.Content>
   </DrawerPortal>
 )
 DrawerContent.displayName = "DrawerContent"
-
-const DrawerMaterial = ({
-  className,
-  ...props
-}: React.HTMLAttributes<HTMLDivElement>) => (
-  <div
-    className={cn(
-      "bg-fill-quaternary h-auto overflow-hidden rounded-2xl shadow-[inset_0_1px,inset_0_0_0_1px] shadow-white/[0.025] backdrop-blur-2xl",
-      className
-    )}
-    {...props}
-  />
-)
-DrawerMaterial.displayName = "DrawerMaterial"
 
 const DrawerHeader = ({
   className,
