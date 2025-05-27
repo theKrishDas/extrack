@@ -2,7 +2,7 @@ import {cva} from "class-variance-authority"
 
 export const buttonVariants = cva(
   [
-    "inline-flex w-fit shrink-0 items-center justify-center gap-1 px-5 leading-0 font-medium tracking-[0.01em] whitespace-nowrap",
+    "inline-flex w-fit shrink-0 items-center justify-center gap-1 px-5 leading-0 font-medium tracking-[0.01em] whitespace-nowrap relative",
     "disabled:text-label-tertiary disabled:bg-fill-secondary disabled:pointer-events-none disabled:opacity-50", // Disabled
     "cursor-default touch-none select-none", // cursor and select
   ],
