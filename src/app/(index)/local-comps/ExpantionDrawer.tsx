@@ -3,6 +3,7 @@ import {Dispatch, SetStateAction} from "react"
 import {Transaction} from "@/lib/types/transactions"
 import {formatDate} from "@/lib/utils"
 import {Button} from "@/components/ui/button"
+import {ConfirmButton} from "@/components/ui/confirm-button"
 import {
   Drawer,
   DrawerBody,
@@ -53,9 +54,11 @@ export default function ExpantionDrawer({
           <Button className="flex-1" color="gray" isDisabled>
             Edit
           </Button>
-          <Button color="red" variant="tinted" className="flex-1">
-            Delete
-          </Button>
+          <ConfirmButton
+            className="flex-1"
+            restVariants={{color: "gray"}}
+            onConfirm={() => setOpen(false)}
+          />
         </DrawerFooter>
       </DrawerContent>
     </Drawer>
