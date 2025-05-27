@@ -2,6 +2,7 @@ import {cn} from "@/lib/utils"
 
 import {IonPencil} from "../icons/ion"
 import {Button} from "../ui/button"
+import Fab from "./fab/MainFab"
 
 export default function Dock() {
   return (
@@ -27,9 +28,7 @@ export default function Dock() {
           // "bg-fill-quaternary shadow-[inset_0_1px,inset_0_0_0_1px] shadow-white/[0.025] backdrop-blur-2xl"
         )}
       >
-        <Button variant="tinted" color="blue" size="lg" isIconOnly>
-          <IonPencil />
-        </Button>
+        <Fab />
       </div>
     </nav>
   )

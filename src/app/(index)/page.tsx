@@ -4,19 +4,11 @@ import Summary from "@/components/app/Summary"
 import {IonChevronForward} from "@/components/icons/ion"
 import {Container} from "@/components/layout/container"
 
-import ChildComponent from "./local-comps/ChildComponent"
 import Transactions from "./local-comps/Transactions"
 
 export default function Home() {
   return (
     <>
-      {/* // TODO: Get rid of this */}
-      <nav className="fixed inset-x-0 bottom-1/5 inline-flex items-center justify-center">
-        <div className="inline-flex w-full max-w-md justify-center">
-          <ChildComponent />
-        </div>
-      </nav>
-
       <Dock />
 
       {/* // WARN: this main container has a height */}
