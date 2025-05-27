@@ -20,7 +20,7 @@ export default function Home() {
           <div className="">
             <h3 className="sr-only">Recent transactions</h3>
             <Button variant="ghost" color="gray">
-              Recent transactions
+              All transactions
               <IonChevronForward />
             </Button>
           </div>
