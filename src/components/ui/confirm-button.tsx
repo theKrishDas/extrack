@@ -65,19 +65,18 @@ function ConfirmButton({
         setConfirming(v => !v)
         animate(scope.current, {
           backgroundColor: "var(--button-bg)",
-          scale: [null, 0.98, 1],
           filter: [null, "blur(3px)", "blur(0px)"],
         })
       }}
       onPressStart={() =>
         animate(
           scope.current,
-          {backgroundColor: "var(--button-highlight)"},
+          {backgroundColor: "var(--button-highlight)", scale: 0.975},
           {duration: 0}
         )
       }
       onPressEnd={() =>
-        animate(scope.current, {backgroundColor: "var(--button-bg)"})
+        animate(scope.current, {backgroundColor: "var(--button-bg)", scale: 1})
       }
     >
       <motion.span
