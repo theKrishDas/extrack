@@ -6,7 +6,7 @@ import {Drawer as DrawerPrimitive} from "vaul"
 
 import {cn} from "@/lib/utils"
 
-import {Material} from "../material"
+import {Material} from "../material/material"
 
 interface RefType<T> {
   ref?: RefObject<T | null>

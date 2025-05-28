@@ -1,7 +1,8 @@
-import {IonPencil} from "../icons/ion"
-import {Material} from "../material"
-import {Button} from "../ui/button"
-import Fab from "./fab/MainFab"
+import {Button} from "@/components/ui/button/animated-button"
+import {IonPencil} from "@/components/icons/ion"
+import {Material} from "@/components/material/material"
+
+import Fab from "../fab/MainFab"
 
 export default function Dock() {
   return (
