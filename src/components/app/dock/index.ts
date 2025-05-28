@@ -1,3 +1,4 @@
-import Dock from "./Dock";
+import Button from "./Button"
+import Dock from "./Dock"
 
-export {Dock}
+export {Dock, Button}

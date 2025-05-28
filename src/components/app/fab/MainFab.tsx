@@ -21,7 +21,7 @@ export default function Fab() {
   return (
     <Drawer open={open} onOpenChange={setOpen}>
       <DrawerTrigger asChild>
-        <Button variant="tinted" color="blue" size="lg" isIconOnly>
+        <Button variant="tinted" color="gray" size="lg" isIconOnly>
           <IonPlusRound />
           {/* <IonAdd /> */}
         </Button>
