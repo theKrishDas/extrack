@@ -51,7 +51,7 @@ export default function TransactionListItem({
               maskRepeat: "no-repeat",
             }}
           >
-            {note || "Add a note"}
+            {note || "Empty"}
           </span>
           <span className="truncate text-right font-semibold">${amount}</span>
         </div>
