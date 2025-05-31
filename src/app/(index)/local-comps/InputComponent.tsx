@@ -1,4 +1,3 @@
-import {Dispatch, SetStateAction} from "react"
 import {api} from "#/convex/_generated/api"
 import {useMutation} from "convex/react"
 import {
@@ -12,6 +11,7 @@ import {
 
 import {newTransactionSchema} from "@/lib/schema/new-transaction-schema"
 import {Button} from "@/components/ui/button"
+import {DrawerClose} from "@/components/ui/drawer"
 import {
   MatCloseRounded,
   MatRefreshRounded,
@@ -19,9 +19,9 @@ import {
 } from "@/components/icons/mat"
 
 export default function InputComponent({
-  setOpen,
+  afterSubmit,
 }: {
-  setOpen: Dispatch<SetStateAction<boolean>>
+  afterSubmit?: () => void
 }) {
   const addTransaction = useMutation(api.transactions.addTransaction)
 
@@ -66,10 +66,10 @@ export default function InputComponent({
         const data = new FormData(e.currentTarget)
         handleTransactionAdd(data)
         e.currentTarget.reset()
-        setOpen(false)
+        afterSubmit?.()
       }}
     >
-      <Nav setOpen={setOpen} />
+      <Nav />
 
       <NumberField name="amount" minValue={0.1} isRequired>
         <Label className="sr-only">Amount</Label>
@@ -102,7 +102,7 @@ export default function InputComponent({
   )
 }
 
-const Nav = ({setOpen}: {setOpen: Dispatch<SetStateAction<boolean>>}) => {
+const Nav = () => {
   return (
     <div className="flex w-full items-center justify-between">
       <div className="inline-flex items-center gap-1">
@@ -124,16 +124,11 @@ const Nav = ({setOpen}: {setOpen: Dispatch<SetStateAction<boolean>>}) => {
         </Button>
       </div>
 
-      <Button
-        color="gray"
-        size="sm"
-        isIconOnly
-        variant="ghost"
-        type="button"
-        onPress={() => setOpen(false)}
-      >
-        <MatCloseRounded />
-      </Button>
+      <DrawerClose asChild>
+        <Button color="gray" size="sm" isIconOnly variant="ghost" type="button">
+          <MatCloseRounded />
+        </Button>
+      </DrawerClose>
     </div>
   )
 }

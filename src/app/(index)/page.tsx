@@ -1,5 +1,5 @@
 import {Button} from "@/components/ui/button/animated-button"
-import {Dock} from "@/components/app/dock"
+import {Dock} from "@/components/app/dock-v2"
 import Summary from "@/components/app/Summary"
 import {IonChevronForward} from "@/components/icons/ion"
 import {Container} from "@/components/layout/container"
