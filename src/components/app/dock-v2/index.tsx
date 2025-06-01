@@ -1,3 +1,4 @@
-import {Dock} from "./Dock"
+import {Dock} from "./src/Dock"
+import {physics} from "./src/helpers"
 
-export {Dock}
+export {Dock, physics}
