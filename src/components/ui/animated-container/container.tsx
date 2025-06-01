@@ -81,7 +81,11 @@ const Content = ({
         exit={exit || {opacity: 0}}
         transition={transition}
       >
-        <div className={cn("h-auto w-auto", className)} ref={ref} {...rest} />
+        <div
+          className={cn("pointer-events-auto h-auto w-auto", className)}
+          ref={ref}
+          {...rest}
+        />
       </motion.div>
     </AnimatePresence>
   )
