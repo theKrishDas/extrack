@@ -58,7 +58,12 @@ export default function Island({
             // Renders "Income" and "Expense" buttons for transaction type
             // selection when the menu is open.
             // *
-            <Popover.Root open={open} onOpenChange={v => setOpen(v.open)}>
+            <Popover.Root
+              open={open}
+              onOpenChange={v => setOpen(v.open)}
+              lazyMount
+              unmountOnExit
+            >
               <Popover.Content className="inline-flex gap-1">
                 <Popover.Title className="sr-only">Title</Popover.Title>
                 <Popover.Description className="sr-only">
