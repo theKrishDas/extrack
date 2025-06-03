@@ -3,17 +3,23 @@ import {ark} from "@ark-ui/react/factory"
 
 import {cn} from "@/lib/utils"
 
-const Root = ({className, ...rest}: ComponentProps<typeof ark.ul>) => {
+const Root = ({
+  className,
+  noSpacing = false,
+  ...rest
+}: ComponentProps<typeof ark.ul> & {noSpacing?: boolean}) => {
   return (
     <ark.ul
       className={cn(
         "ListRoot",
-        "[&:has(+.ListRoot)]:mb-8.5",
-        // "[&:not(:has(.ListFooter))]:ring",
-        "[&:has(.ListFooter):has(~_ul.ListRoot_.ListHeading)]:mb-5.5",
-        "[&:not(:has(.ListFooter)):has(~_ul_.ListHeading)]:mb-8",
-        "[&:has(.ListFooter):not(:has(~_ul.ListRoot_.ListHeading))]:mb-10",
-        "last-of-type:[&:has(.ListFooter)]:mb-10 last-of-type:[&:not(:has(.ListFooter))]:mb-12.5",
+        !noSpacing && [
+          "[&:has(+.ListRoot)]:mb-8.5",
+          // "[&:not(:has(.ListFooter))]:ring",
+          "[&:has(.ListFooter):has(~_ul.ListRoot_.ListHeading)]:mb-5.5",
+          "[&:not(:has(.ListFooter)):has(~_ul_.ListHeading)]:mb-8",
+          "[&:has(.ListFooter):not(:has(~_ul.ListRoot_.ListHeading))]:mb-10",
+          "last-of-type:[&:has(.ListFooter)]:mb-10 last-of-type:[&:not(:has(.ListFooter))]:mb-12.5",
+        ],
         className
       )}
       {...rest}
@@ -50,7 +56,7 @@ function Content({className, ...rest}: ComponentProps<typeof ark.div>) {
 function Icon({className, ...rest}: ComponentProps<typeof ark.div>) {
   return (
     <ark.div
-      className={cn("ListIcon", "-ml-0.5 text-lg", className)}
+      className={cn("ListIcon", "-ml-0.5 text-[1.32rem]", className)}
       {...rest}
     />
   )
