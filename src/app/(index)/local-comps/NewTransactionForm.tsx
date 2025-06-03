@@ -10,7 +10,11 @@ import {IonAddCircle, IonChevronForward} from "@/components/icons/ion"
 import {MatWallet} from "@/components/icons/mat"
 import {CalendarToday, SquareRounded} from "@/components/icons/others"
 
-export default function NewTrasactionForm() {
+export default function NewTrasactionForm({
+  afterSubmit,
+}: {
+  afterSubmit?: () => void
+}) {
   return (
     <div>
       <NumberField name="amount" minValue={0.1} isRequired className="relative">
@@ -88,7 +92,12 @@ export default function NewTrasactionForm() {
         </List.Item>
       </List.Root>
 
-      <Button className="rounded-2xl" variant="filled" fullWidth>
+      <Button
+        className="rounded-2xl"
+        variant="filled"
+        fullWidth
+        onPress={afterSubmit}
+      >
         Save
       </Button>
     </div>
