@@ -5,6 +5,7 @@ import {MatHistoryRounded} from "./history"
 import {MatPlannerReviewRounded} from "./planner"
 import {MatRefreshRounded} from "./refresh"
 import {MatSettingsOutlineRounded, MatSettingsRounded} from "./settings"
+import {MatWallet} from "./wallet"
 
 export {
   MatRefreshRounded,
@@ -17,4 +18,5 @@ export {
   MatHistoryRounded,
   MatSettingsRounded,
   MatSettingsOutlineRounded,
+  MatWallet,
 }
