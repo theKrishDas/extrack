@@ -5,6 +5,7 @@
       "name": "nextkit",
       "dependencies": {
         "@ark-ui/react": "^5.11.0",
+        "@hookform/resolvers": "^5.0.1",
         "@radix-ui/react-slot": "^1.2.3",
         "@tailwindcss/postcss": "^4.1.7",
         "class-variance-authority": "^0.7.1",
@@ -16,6 +17,7 @@
         "react": "^19.1.0",
         "react-aria-components": "^1.9.0",
         "react-dom": "^19.1.0",
+        "react-hook-form": "^7.57.0",
         "react-use-measure": "^2.1.7",
         "tailwind-merge": "^3.3.0",
         "tailwindcss": "^4.1.7",
@@ -143,6 +145,8 @@
     "@formatjs/icu-skeleton-parser": ["@formatjs/icu-skeleton-parser@1.8.14", "", { "dependencies": { "@formatjs/ecma402-abstract": "2.3.4", "tslib": "^2.8.0" } }, "sha512-i4q4V4qslThK4Ig8SxyD76cp3+QJ3sAqr7f6q9VVfeGtxG9OhiAk3y9XF6Q41OymsKzsGQ6OQQoJNY4/lI8TcQ=="],
 
     "@formatjs/intl-localematcher": ["@formatjs/intl-localematcher@0.6.1", "", { "dependencies": { "tslib": "^2.8.0" } }, "sha512-ePEgLgVCqi2BBFnTMWPfIghu6FkbZnnBVhO2sSxvLfrdFw7wCHAHiDoM2h4NRgjbaY7+B7HgOLZGkK187pZTZg=="],
+
+    "@hookform/resolvers": ["@hookform/resolvers@5.0.1", "", { "dependencies": { "@standard-schema/utils": "^0.3.0" }, "peerDependencies": { "react-hook-form": "^7.55.0" } }, "sha512-u/+Jp83luQNx9AdyW2fIPGY6Y7NG68eN2ZW8FOJYL+M0i4s49+refdJdOp/A9n9HFQtQs3HIDHQvX3ZET2o7YA=="],
 
     "@humanfs/core": ["@humanfs/core@0.19.1", "", {}, "sha512-5DyQ4+1JEUzejeK1JGICcideyfUbGixgS9jNgex5nqkW+cY7WZhxBigmieN5Qnw9ZosSNVC9KQKyb+GUaGyKUA=="],
 
@@ -493,6 +497,8 @@
     "@rtsao/scc": ["@rtsao/scc@1.1.0", "", {}, "sha512-zt6OdqaDoOnJ1ZYsCYGt9YmWzDXl4vQdKTyJev62gFhRGKdx7mcT54V9KIjg+d2wi9EXsPvAPKe7i7WjfVWB8g=="],
 
     "@rushstack/eslint-patch": ["@rushstack/eslint-patch@1.10.5", "", {}, "sha512-kkKUDVlII2DQiKy7UstOR1ErJP8kUKAQ4oa+SQtM0K+lPdmmjj0YnnxBgtTVYH7mUKtbsxeFC9y0AmK7Yb78/A=="],
+
+    "@standard-schema/utils": ["@standard-schema/utils@0.3.0", "", {}, "sha512-e7Mew686owMaPJVNNLs55PUvgz371nKgwsc4vxE49zsODpJEnxgxRo2y/OKrqueavXgZNMDVj3DdHFlaSAeU8g=="],
 
     "@swc/counter": ["@swc/counter@0.1.3", "", {}, "sha512-e2BR4lsJkkRlKZ/qCHPw9ZaSxc0MVUd7gtbtaB7aMvHeJVYe8sOB8DBZkP2DtISHGSku9sCK6T6cnY0CtXrOCQ=="],
 
@@ -1143,6 +1149,8 @@
     "react-aria-components": ["react-aria-components@1.9.0", "", { "dependencies": { "@internationalized/date": "^3.8.1", "@internationalized/string": "^3.2.6", "@react-aria/autocomplete": "3.0.0-beta.3", "@react-aria/collections": "3.0.0-rc.1", "@react-aria/dnd": "^3.9.3", "@react-aria/focus": "^3.20.3", "@react-aria/interactions": "^3.25.1", "@react-aria/live-announcer": "^3.4.2", "@react-aria/overlays": "^3.27.1", "@react-aria/ssr": "^3.9.8", "@react-aria/toolbar": "3.0.0-beta.16", "@react-aria/utils": "^3.29.0", "@react-aria/virtualizer": "^4.1.5", "@react-stately/autocomplete": "3.0.0-beta.1", "@react-stately/layout": "^4.3.0", "@react-stately/selection": "^3.20.2", "@react-stately/table": "^3.14.2", "@react-stately/utils": "^3.10.6", "@react-stately/virtualizer": "^4.4.0", "@react-types/form": "^3.7.12", "@react-types/grid": "^3.3.2", "@react-types/shared": "^3.29.1", "@react-types/table": "^3.13.0", "@swc/helpers": "^0.5.0", "client-only": "^0.0.1", "react-aria": "^3.40.0", "react-stately": "^3.38.0", "use-sync-external-store": "^1.4.0" }, "peerDependencies": { "react": "^16.8.0 || ^17.0.0-rc.1 || ^18.0.0 || ^19.0.0-rc.1", "react-dom": "^16.8.0 || ^17.0.0-rc.1 || ^18.0.0 || ^19.0.0-rc.1" } }, "sha512-7cOYxvODDPn8PlWh7eM6/hcydM9sem9PJfL9XD90hIUGfX/f5wMu4lplpjFVzkoCPe4UcOrqC77k3vpRN+1eaw=="],
 
     "react-dom": ["react-dom@19.1.0", "", { "dependencies": { "scheduler": "^0.26.0" }, "peerDependencies": { "react": "^19.1.0" } }, "sha512-Xs1hdnE+DyKgeHJeJznQmYMIBG3TKIHJJT95Q58nHLSrElKlGQqDTR2HQ9fx5CN/Gk6Vh/kupBTDLU11/nDk/g=="],
+
+    "react-hook-form": ["react-hook-form@7.57.0", "", { "peerDependencies": { "react": "^16.8.0 || ^17 || ^18 || ^19" } }, "sha512-RbEks3+cbvTP84l/VXGUZ+JMrKOS8ykQCRYdm5aYsxnDquL0vspsyNhGRO7pcH6hsZqWlPOjLye7rJqdtdAmlg=="],
 
     "react-is": ["react-is@16.13.1", "", {}, "sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ=="],
 

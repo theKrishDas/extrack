@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@ark-ui/react": "^5.11.0",
+    "@hookform/resolvers": "^5.0.1",
     "@radix-ui/react-slot": "^1.2.3",
     "@tailwindcss/postcss": "^4.1.7",
     "class-variance-authority": "^0.7.1",
@@ -23,6 +24,7 @@
     "react": "^19.1.0",
     "react-aria-components": "^1.9.0",
     "react-dom": "^19.1.0",
+    "react-hook-form": "^7.57.0",
     "react-use-measure": "^2.1.7",
     "tailwind-merge": "^3.3.0",
     "tailwindcss": "^4.1.7",
