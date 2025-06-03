@@ -9,11 +9,11 @@ export const buttonVariants = cva(
   {
     variants: {
       variant: {
-        gray: "bg-[var(--button-bg)] text-[var(--button-color)] [--button-bg:var(--fill-tertiary)] [--button-highlight:var(--fill-primary)]",
+        gray: "dasabled:[--button-bg:var(--fill-secondary)] bg-[var(--button-bg)] text-[var(--button-color)] [--button-bg:var(--fill-tertiary)] [--button-highlight:var(--fill-primary)]",
         filled:
-          "bg-[var(--button-bg)] text-[var(--button-fg,_white)] [--button-bg:var(--button-color)] [--button-highlight:color-mix(in_oklch,var(--button-color),var(--button-fg,white)_30%)]",
+          "dasabled:[--button-bg:var(--fill-secondary)] bg-[var(--button-bg)] text-[var(--button-fg,_white)] [--button-bg:var(--button-color)] [--button-highlight:color-mix(in_oklch,var(--button-color),var(--button-fg,white)_30%)]",
         tinted:
-          "bg-[var(--button-bg)] text-[var(--button-color)] [--button-bg:color-mix(in_oklch,var(--button-color)_var(--fill-tertiary-opacity),transparent)] [--button-highlight:color-mix(in_oklch,var(--button-color)_var(--label-tertiary-opacity),transparent)]",
+          "dasabled:[--button-bg:var(--fill-secondary)] bg-[var(--button-bg)] text-[var(--button-color)] [--button-bg:color-mix(in_oklch,var(--button-color)_var(--fill-tertiary-opacity),transparent)] [--button-highlight:color-mix(in_oklch,var(--button-color)_var(--label-tertiary-opacity),transparent)]",
         ghost:
           "text-[var(--button-color)] bg-[var(--button-bg)] [--button-highlight:var(--fill-primary)] [--button-bg:var(--fill-opaque)]",
         // "hover:bg-[var(--button-color)]/[var(--fill-quaternary-opacity)]",
@@ -40,6 +40,10 @@ export const buttonVariants = cva(
       },
       isIconOnly: {
         true: "gap-0 rounded-full p-0 sm:p-0",
+        false: "",
+      },
+      fullWidth: {
+        true: "flex-1 w-full",
         false: "",
       },
       focusTreatment: {
@@ -71,6 +75,7 @@ export const buttonVariants = cva(
       color: "blue",
       size: "md",
       isIconOnly: false,
+      fullWidth: false,
       focusTreatment: true,
     },
   }

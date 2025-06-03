@@ -25,6 +25,7 @@ const Button = ({
   color,
   size,
   isIconOnly,
+  fullWidth,
   ref,
   style,
   ...rest
@@ -54,6 +55,7 @@ const Button = ({
           color,
           size,
           isIconOnly,
+          fullWidth,
           focusTreatment: false,
           className,
         })
