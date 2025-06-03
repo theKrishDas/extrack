@@ -11,6 +11,7 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from "@/components/ui/drawer"
+import {Provider as FormProvider} from "@/components/app/form/new-transaction/provider"
 import {IonArrowDown, IonArrowUp} from "@/components/icons/ion/arrow"
 import NewTrasactionForm from "@/app/(index)/local-comps/NewTransactionForm"
 
@@ -102,7 +103,9 @@ export default function Island({
           </DrawerHeader>
 
           <div className="p-4">
-            <NewTrasactionForm afterSubmit={() => setDrawerOpen(false)} />
+            <FormProvider>
+              <NewTrasactionForm afterSubmit={() => setDrawerOpen(false)} />
+            </FormProvider>
           </div>
         </DrawerContent>
       </Drawer>

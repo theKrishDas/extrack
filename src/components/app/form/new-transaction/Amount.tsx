@@ -1,19 +1,20 @@
 import {Fragment} from "react"
 import {Input, Label, NumberField, Text} from "react-aria-components"
-import {Control, Controller} from "react-hook-form"
+import {Controller} from "react-hook-form"
 
 import {
   MAXIMUM_TRANSACTION_AMOUNT,
   MINIMUM_TRANSACTION_AMOUNT,
 } from "@/lib/constants/defaults"
-import {NewTransactionSchemaType} from "@/lib/schema/new-transaction-schema"
 import {cn} from "@/lib/utils"
 
-export default function AmountInput({
-  control,
-}: {
-  control: Control<NewTransactionSchemaType>
-}) {
+import {useFormContext} from "./context-helpers"
+
+export default function AmountInput() {
+  const {
+    form: {control},
+  } = useFormContext()
+
   return (
     <Controller
       control={control}
