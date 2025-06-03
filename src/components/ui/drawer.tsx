@@ -25,6 +25,19 @@ const Drawer = ({
 )
 Drawer.displayName = "Drawer"
 
+const DrawerNested = ({
+  shouldScaleBackground = true,
+  setBackgroundColorOnScale = false,
+  ...props
+}: React.ComponentProps<typeof DrawerPrimitive.NestedRoot>) => (
+  <DrawerPrimitive.NestedRoot
+    shouldScaleBackground={shouldScaleBackground}
+    setBackgroundColorOnScale={setBackgroundColorOnScale}
+    {...props}
+  />
+)
+DrawerNested.displayName = "NestedDrawer"
+
 const DrawerHandle = DrawerPrimitive.Handle
 
 const DrawerTrigger = DrawerPrimitive.Trigger
@@ -151,6 +164,7 @@ DrawerDescription.displayName = DrawerPrimitive.Description.displayName
 
 export {
   Drawer,
+  DrawerNested,
   DrawerPortal,
   DrawerOverlay,
   DrawerTrigger,
