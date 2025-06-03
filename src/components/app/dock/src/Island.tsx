@@ -6,7 +6,6 @@ import {AnimatedContainer} from "@/components/ui/animated-container"
 import {Button} from "@/components/ui/button/animated-button"
 import {
   Drawer,
-  DrawerBody,
   DrawerContent,
   DrawerDescription,
   DrawerHeader,
@@ -14,6 +13,7 @@ import {
 } from "@/components/ui/drawer"
 import {IonArrowDown, IonArrowUp} from "@/components/icons/ion/arrow"
 import InputComponent from "@/app/(index)/local-comps/InputComponent"
+import NewTrasactionForm from "@/app/(index)/local-comps/NewTransactionForm"
 
 import {physics} from "./helpers"
 
@@ -102,9 +102,10 @@ export default function Island({
             </DrawerDescription>
           </DrawerHeader>
 
-          <DrawerBody>
-            <InputComponent afterSubmit={() => setDrawerOpen(false)} />
-          </DrawerBody>
+          <div className="p-4 pt-0">
+            {/* <InputComponent afterSubmit={() => setDrawerOpen(false)} /> */}
+            <NewTrasactionForm afterSubmit={() => setDrawerOpen(false)} />
+          </div>
         </DrawerContent>
       </Drawer>
     </>
