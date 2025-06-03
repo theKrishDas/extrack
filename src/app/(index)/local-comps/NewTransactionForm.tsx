@@ -1,11 +1,16 @@
 "use client"
 
-import {Fragment} from "react"
-import {Input, Label, NumberField, Text} from "react-aria-components"
+import {zodResolver} from "@hookform/resolvers/zod"
+import {Form} from "react-aria-components"
+import {useForm} from "react-hook-form"
 
-import {cn} from "@/lib/utils"
+import {
+  newTransactionSchema,
+  NewTransactionSchemaType,
+} from "@/lib/schema/new-transaction-schema"
 import {Button} from "@/components/ui/button/animated-button"
 import {List} from "@/components/ui/list"
+import AmountInput from "@/components/app/form/new-transaction/Amount"
 import {IonAddCircle, IonChevronForward} from "@/components/icons/ion"
 import {MatWallet} from "@/components/icons/mat"
 import {CalendarToday, SquareRounded} from "@/components/icons/others"
@@ -15,29 +20,22 @@ export default function NewTrasactionForm({
 }: {
   afterSubmit?: () => void
 }) {
+  const {handleSubmit, control} = useForm<NewTransactionSchemaType>({
+    defaultValues: {
+      amount: undefined,
+      note: undefined,
+      type: "expense",
+    },
+    resolver: zodResolver(newTransactionSchema),
+  })
+  const onSubmit = (data: NewTransactionSchemaType) => {
+    console.log(data)
+    afterSubmit?.()
+  }
+
   return (
-    <div>
-      <NumberField name="amount" minValue={0.1} isRequired className="relative">
-        {({state: {numberValue}}) => {
-          return (
-            <Fragment>
-              <Label className="sr-only">Amount</Label>
-              <Input
-                className={cn(
-                  "text-label-primary/90 h-55 w-full text-center text-7xl font-bold tracking-tight outline-none",
-                  "data-[focus-visible]:ring-ios-blue/[var(--separator-non-opaque-opacity)] data-[focus-visible]:rounded-xl data-[focus-visible]:ring-4",
-                  numberValue > 999_999 && "text-5xl",
-                  numberValue > 99_999_999 && "text-3xl"
-                )}
-                placeholder="0"
-              />
-              <Text slot="description" className="sr-only">
-                Minimum transaction amount is 0.1
-              </Text>
-            </Fragment>
-          )
-        }}
-      </NumberField>
+    <Form onSubmit={handleSubmit(onSubmit)}>
+      <AmountInput control={control} />
 
       <List.Root>
         <List.Item>
@@ -92,14 +90,9 @@ export default function NewTrasactionForm({
         </List.Item>
       </List.Root>
 
-      <Button
-        className="rounded-2xl"
-        variant="filled"
-        fullWidth
-        onPress={afterSubmit}
-      >
+      <Button className="rounded-2xl" variant="filled" fullWidth type="submit">
         Save
       </Button>
-    </div>
+    </Form>
   )
 }
