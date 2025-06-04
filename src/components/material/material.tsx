@@ -10,6 +10,8 @@ export const materialVariants = cva(["material-surface h-auto w-auto"], {
     thickness: {
       regular: "bg-fill-quaternary backdrop-blur-[8px]",
       thick: "bg-fill-quaternary backdrop-blur-2xl",
+      chrome:
+        "bg-fill-quaternary before:bg-background/50 relative isolate backdrop-blur-2xl before:absolute before:inset-0 before:-z-1 before:rounded-[inherit] before:content-['']",
     },
     withBorder: {
       true: "shadow-[inset_0_1px,inset_0_0_0_1px] shadow-white/[0.025]",

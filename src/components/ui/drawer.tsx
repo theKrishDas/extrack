@@ -2,11 +2,12 @@
 
 import * as React from "react"
 import {RefObject} from "react"
+import {VariantProps} from "class-variance-authority"
 import {Drawer as DrawerPrimitive} from "vaul"
 
 import {cn} from "@/lib/utils"
 
-import {Material} from "../material/material"
+import {Material, materialVariants} from "../material/material"
 
 interface RefType<T> {
   ref?: RefObject<T | null>
@@ -66,21 +67,28 @@ const DrawerContent = ({
   className,
   children,
   ref,
+  thickness = "thick",
+  withBorder = true,
   ...rest
 }: React.ComponentPropsWithoutRef<typeof DrawerPrimitive.Content> &
-  RefType<React.ComponentRef<typeof DrawerPrimitive.Content>>) => (
+  RefType<React.ComponentRef<typeof DrawerPrimitive.Content>> &
+  VariantProps<typeof materialVariants>) => (
   <DrawerPortal>
     <DrawerOverlay />
     <DrawerPrimitive.Content
       ref={ref}
       className={cn(
-        "fixed inset-x-0 bottom-0 z-50 mx-auto mt-24 flex h-auto max-w-xl flex-col p-1.5 pt-0 outline-none",
+        "fixed inset-x-0 bottom-0 z-50 mx-auto mt-24 flex h-auto max-w-xl flex-col p-2 pt-0 outline-none",
         // "[--initial-transform:calc(100%+0.375rem)]", // tailwind's 1.5 = 0.375rem
         className
       )}
       {...rest}
     >
-      <DrawerMaterial withBorder thickness="thick" className="rounded-2xl">
+      <DrawerMaterial
+        withBorder={withBorder}
+        thickness={thickness}
+        className="rounded-3xl"
+      >
         {children}
       </DrawerMaterial>
     </DrawerPrimitive.Content>
