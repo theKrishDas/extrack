@@ -17,6 +17,7 @@ import {
 import {List} from "@/components/ui/list"
 import AmountInput from "@/components/app/form/new-transaction/Amount"
 import {useFormContext} from "@/components/app/form/new-transaction/context-helpers"
+import Note from "@/components/app/form/new-transaction/Note"
 import {IonAddCircle, IonChevronForward} from "@/components/icons/ion"
 import {MatWallet} from "@/components/icons/mat"
 import {CalendarToday, SquareRounded} from "@/components/icons/others"
@@ -57,7 +58,7 @@ export default function NewTrasactionForm({
       {
         icon: <IonAddCircle />,
         label: "Note",
-        children: <p>Add a note to yourself</p>,
+        children: <Note />,
       },
     ],
     [
@@ -84,7 +85,7 @@ export default function NewTrasactionForm({
             asChild
           >
             <div>
-              {node.map(({label, icon, value, children}, k) => (
+              {node.map(({label, icon, value, children: child}, k) => (
                 <DrawerNested key={k}>
                   <DrawerTrigger asChild>
                     <List.Item asChild>
