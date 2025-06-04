@@ -14,7 +14,7 @@ export function Provider({children}: {children: ReactNode}) {
     defaultValues: {
       amount: undefined,
       note: undefined,
-      type: "expense",
+      type: undefined,
     },
     resolver: zodResolver(newTransactionSchema),
   })

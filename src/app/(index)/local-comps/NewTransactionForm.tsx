@@ -3,13 +3,14 @@
 import {ReactNode} from "react"
 import {Form, Button as RacButton} from "react-aria-components"
 
-import {NewTransactionSchemaType} from "@/lib/schema/new-transaction-schema"
+import {
+  NewTransactionSchemaType,
+  TTransactionType,
+} from "@/lib/schema/new-transaction-schema"
 import {cn} from "@/lib/utils"
 import {Button} from "@/components/ui/button/animated-button"
 import {
   DrawerContent,
-  DrawerDescription,
-  DrawerHeader,
   DrawerNested,
   DrawerTitle,
   DrawerTrigger,
@@ -24,12 +25,17 @@ import {CalendarToday, SquareRounded} from "@/components/icons/others"
 
 export default function NewTrasactionForm({
   afterSubmit,
+  type,
 }: {
   afterSubmit?: () => void
+  type: TTransactionType
 }) {
   const {
-    form: {handleSubmit},
+    form: {handleSubmit, setValue},
   } = useNewTransaction()
+
+  // WARN: I don't like doing this
+  setValue("type", type)
 
   const onSubmit = (data: NewTransactionSchemaType) => {
     console.log(data)
@@ -103,7 +109,13 @@ export default function NewTrasactionForm({
                       </RacButton>
                     </List.Item>
                   </DrawerTrigger>
-                  <DrawerContent>{children}</DrawerContent>
+                  <DrawerContent>
+                    {/* TODO: Add the title dynamically */}
+                    <DrawerTitle className="sr-only">
+                      Add more details to your transaction
+                    </DrawerTitle>
+                    {children}
+                  </DrawerContent>
                 </DrawerNested>
               ))}
             </div>

@@ -25,12 +25,12 @@ export default function Island({
   setOpen: Dispatch<SetStateAction<boolean>>
 }) {
   const [drawerOpen, setDrawerOpen] = useState(false)
+  const [type, setType] = useState<TTransactionType | undefined>(undefined)
 
   const offset = 5
 
-  // Will implement later
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleButtonClick = (type: TTransactionType): void => {
+    setType(type)
     setOpen(false)
     setDrawerOpen(true)
   }
@@ -93,22 +93,27 @@ export default function Island({
         </AnimatedContainer.Content>
       </AnimatedContainer.Root>
 
-      <Drawer open={drawerOpen} onOpenChange={setDrawerOpen}>
-        <DrawerContent>
-          <DrawerHeader className="sr-only">
-            <DrawerTitle>Add a new transaction.</DrawerTitle>
-            <DrawerDescription>
-              Fill up this form to add new transaction.
-            </DrawerDescription>
-          </DrawerHeader>
+      {type && (
+        <Drawer open={drawerOpen} onOpenChange={setDrawerOpen}>
+          <DrawerContent>
+            <DrawerHeader className="sr-only">
+              <DrawerTitle>Add a new transaction.</DrawerTitle>
+              <DrawerDescription>
+                Fill up this form to add new transaction.
+              </DrawerDescription>
+            </DrawerHeader>
 
-          <div className="p-4">
-            <FormProvider>
-              <NewTrasactionForm afterSubmit={() => setDrawerOpen(false)} />
-            </FormProvider>
-          </div>
-        </DrawerContent>
-      </Drawer>
+            <div className="p-4">
+              <FormProvider>
+                <NewTrasactionForm
+                  afterSubmit={() => setDrawerOpen(false)}
+                  type={type}
+                />
+              </FormProvider>
+            </div>
+          </DrawerContent>
+        </Drawer>
+      )}
     </>
   )
 }
