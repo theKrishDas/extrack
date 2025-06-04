@@ -20,3 +20,10 @@ export const addTransaction = mutation({
     return newTransactionId
   },
 })
+
+export const remove = mutation({
+  args: {id: v.id("transactions")},
+  handler: async (ctx, {id}) => {
+    return await ctx.db.delete(id)
+  },
+})

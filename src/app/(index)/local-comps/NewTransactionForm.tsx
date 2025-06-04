@@ -1,6 +1,8 @@
 "use client"
 
 import {ReactNode} from "react"
+import {api} from "#/convex/_generated/api"
+import {useMutation} from "convex/react"
 import {Form, Button as RacButton} from "react-aria-components"
 
 import {
@@ -33,12 +35,13 @@ export default function NewTrasactionForm({
   const {
     form: {handleSubmit, setValue},
   } = useNewTransaction()
+  const addTransaction = useMutation(api.transactions.addTransaction)
 
   // WARN: I don't like doing this
   setValue("type", type)
 
   const onSubmit = (data: NewTransactionSchemaType) => {
-    console.log(data)
+    addTransaction(data)
     afterSubmit?.()
   }
 

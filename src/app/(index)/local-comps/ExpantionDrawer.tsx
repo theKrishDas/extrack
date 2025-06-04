@@ -1,4 +1,6 @@
 import {Dispatch, SetStateAction} from "react"
+import {api} from "#/convex/_generated/api"
+import {useMutation} from "convex/react"
 
 import {Transaction} from "@/lib/types/transactions"
 import {formatDate} from "@/lib/utils"
@@ -25,7 +27,8 @@ export default function ExpantionDrawer({
   setOpen: Dispatch<SetStateAction<boolean>>
   transaction: Transaction
 }) {
-  const {amount, note, _creationTime} = transaction
+  const removeTransaction = useMutation(api.transactions.remove)
+  const {amount, note, _creationTime, _id: id} = transaction
 
   const data: DataType = {
     header: ["Key", "value"],
@@ -57,7 +60,10 @@ export default function ExpantionDrawer({
           <ConfirmButton
             className="flex-1"
             restVariants={{color: "gray"}}
-            onConfirm={() => setOpen(false)}
+            onConfirm={() => {
+              setOpen(false)
+              removeTransaction({id})
+            }}
           />
         </DrawerFooter>
       </DrawerContent>
