@@ -8,12 +8,12 @@ import {
 } from "@/lib/constants/defaults"
 import {cn} from "@/lib/utils"
 
-import {useFormContext} from "./context-helpers"
+import {useNewTransaction} from "./context-helpers"
 
 export default function AmountInput() {
   const {
     form: {control},
-  } = useFormContext()
+  } = useNewTransaction()
 
   return (
     <Controller

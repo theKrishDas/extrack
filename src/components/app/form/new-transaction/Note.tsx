@@ -7,12 +7,12 @@ import {cn} from "@/lib/utils"
 import {Button} from "@/components/ui/button/animated-button"
 import {DrawerClose} from "@/components/ui/drawer"
 
-import {useFormContext} from "./context-helpers"
+import {useNewTransaction} from "./context-helpers"
 
 export default function Note() {
   const {
     form: {control},
-  } = useFormContext()
+  } = useNewTransaction()
 
   return (
     <Controller

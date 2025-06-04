@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/drawer"
 import {List} from "@/components/ui/list"
 import AmountInput from "@/components/app/form/new-transaction/Amount"
-import {useFormContext} from "@/components/app/form/new-transaction/context-helpers"
+import {useNewTransaction} from "@/components/app/form/new-transaction/context-helpers"
 import Note from "@/components/app/form/new-transaction/Note"
 import {IonAddCircle, IonChevronForward} from "@/components/icons/ion"
 import {MatWallet} from "@/components/icons/mat"
@@ -29,7 +29,7 @@ export default function NewTrasactionForm({
 }) {
   const {
     form: {handleSubmit},
-  } = useFormContext()
+  } = useNewTransaction()
 
   const onSubmit = (data: NewTransactionSchemaType) => {
     console.log(data)
@@ -85,7 +85,7 @@ export default function NewTrasactionForm({
             asChild
           >
             <div>
-              {node.map(({label, icon, value, children: child}, k) => (
+              {node.map(({label, icon, value, children}, k) => (
                 <DrawerNested key={k}>
                   <DrawerTrigger asChild>
                     <List.Item asChild>
