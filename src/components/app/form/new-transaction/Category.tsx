@@ -1,37 +1,55 @@
 import {createListCollection, Listbox} from "@ark-ui/react/listbox"
 
-import {DrawerHandle, DrawerTitle} from "@/components/ui/drawer"
+import {type Category} from "@/lib/schema/category"
+import {DrawerTitle} from "@/components/ui/drawer"
 import {List} from "@/components/ui/list"
 import {SquareRounded} from "@/components/icons/others"
 
-const categories: {
-  color:
-    | "gray"
-    | "blue"
-    | "red"
-    | "orange"
-    | "yellow"
-    | "green"
-    | "mint"
-    | "teal"
-    | "cyan"
-    | "indigo"
-    | "purple"
-    | "pink"
-    | "brown"
-  value: string
-  name: string
-  id: string
-}[] = [
-  {id: "one", name: "Groceries", color: "green", value: "Groceries"},
-  {id: "two", name: "Pink", color: "pink", value: "Pink"},
-  {id: "three", name: "Indigo", color: "indigo", value: "Indigo"},
-  {id: "four", name: "Orange", color: "orange", value: "Orange"},
-]
+//
+// This is to type the mock data
+// Remove this type when using convex querry
+//
+type DbCategory = {
+  _id: string
+  _createdTime: string
+  name: Category["name"]
+  color: Category["color"]
+  type: Category["type"]
+}
 
-const collection = createListCollection({items: categories})
+function createCollection(categories: DbCategory[]) {
+  const mappedCategories = categories.map(cat => ({...cat, value: cat._id}))
+  return createListCollection({items: mappedCategories})
+}
 
 const Category = () => {
+  //
+  // Mocking the Convex return type
+  //
+  // NOTE: This is a mock data.
+  // Use the following when mocking is done:
+  //
+  // const categories = useQuerry(api.categories.get)
+  // const collection = createCollection(categories)
+  //
+  const categories: DbCategory[] = [
+    {name: "Groceries", color: "green"},
+    {name: "Pink", color: "pink"},
+    {name: "Indigo", color: "indigo"},
+    {name: "Orange", color: "orange"},
+  ].map(
+    (c, idx) =>
+      ({
+        ...c,
+        _id: `item-${idx}`,
+        type: "income",
+        _createdTime: "now",
+      }) as DbCategory
+  )
+
+  // Creating the collection from the return-type
+  const collection = createCollection(categories)
+
   return (
     <>
       <DrawerTitle className="my-4 text-center">Categories</DrawerTitle>
@@ -47,7 +65,7 @@ const Category = () => {
         <Listbox.Content asChild>
           <List.Root className="ring-ios-blue/[var(--separator-non-opaque-opacity)] ring-offset-background rounded-2xl ring-offset-1 outline-none focus-visible:ring-4">
             {collection.items.map(item => {
-              const {id, name, color} = item
+              const {_id: id, name, color} = item
               return (
                 <Listbox.Item item={item} key={id} asChild>
                   <List.Item className="data-highlighted:bg-fill-secondary [&:has(+_*[data-highlighted])_.ListContent]:border-transparent data-highlighted:[&>.ListContent]:border-transparent">
