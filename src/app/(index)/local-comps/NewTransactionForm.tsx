@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/drawer"
 import {List} from "@/components/ui/list"
 import AmountInput from "@/components/app/form/new-transaction/Amount"
+import Category from "@/components/app/form/new-transaction/Category"
 import {useNewTransaction} from "@/components/app/form/new-transaction/context-helpers"
 import Note from "@/components/app/form/new-transaction/Note"
 import {IonAddCircle, IonChevronForward} from "@/components/icons/ion"
@@ -62,7 +63,7 @@ export default function NewTrasactionForm({
         icon: <SquareRounded className="[&]:text-ios-teal" />,
         label: "Category",
         value: "Groceries",
-        children: <p>Choose category</p>,
+        children: <Category />,
       },
       {
         icon: <IonAddCircle />,
@@ -112,13 +113,7 @@ export default function NewTrasactionForm({
                       </RacButton>
                     </List.Item>
                   </DrawerTrigger>
-                  <DrawerContent>
-                    {/* TODO: Add the title dynamically */}
-                    <DrawerTitle className="sr-only">
-                      Add more details to your transaction
-                    </DrawerTitle>
-                    {children}
-                  </DrawerContent>
+                  <DrawerContent>{children}</DrawerContent>
                 </DrawerNested>
               ))}
             </div>
