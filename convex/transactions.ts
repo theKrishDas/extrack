@@ -1,6 +1,7 @@
 import {v} from "convex/values"
 
 import {transactionTypes} from "../src/lib/constants/transaction-types"
+import {internal} from "./_generated/api"
 import {mutation, query} from "./_generated/server"
 
 export const getAll = query({
@@ -36,6 +37,7 @@ export const add = mutation({
     note: v.optional(v.string()),
     type: v.union(...transactionTypes.map(t => v.literal(t))),
     category: v.id("categories"),
+    account: v.id("accounts"),
   },
   handler: async (ctx, args) => {
     const category = await ctx.db.get(args.category)
@@ -48,11 +50,41 @@ export const add = mutation({
       throw new Error("Type of the transaction and category don't match!")
     }
 
-    return await ctx.db.insert("transactions", args)
+    await Promise.all([
+      ctx.db.insert("transactions", args),
+      ctx.runMutation(internal.accounts.updateCurrentBalance, {
+        id: args.account,
+        amount: args.amount,
+        type: args.type,
+      }),
+    ])
   },
 })
 
 export const remove = mutation({
   args: {id: v.id("transactions")},
-  handler: async (ctx, {id}) => await ctx.db.delete(id),
+  handler: async (ctx, {id}) => {
+    const transaction = await ctx.db.get(id)
+    if (!transaction) {
+      throw new Error("Transaction not found for the given ID")
+    }
+
+    const account = await ctx.db.get(transaction.account)
+    if (!account) {
+      throw new Error("Account not found for the given ID")
+    }
+
+    const {amount, type} = transaction
+
+    await Promise.all([
+      ctx.db.delete(id),
+      ctx.runMutation(internal.accounts.updateCurrentBalance, {
+        id: account._id,
+        amount,
+        type,
+      }),
+    ])
+
+    return id
+  },
 })
