@@ -12,10 +12,9 @@ export default defineSchema({
     category: v.id("categories"),
     account: v.id("accounts"),
     // ownerId
-  }),
-  // TODO: do indexing
-  // .index("by_owner_and_type", ["ownerId", "type"])
-  // .index("by_owner", ["ownerId"]),
+  })
+    .index("by_category", ["category"])
+    .index("by_account", ["account"]),
 
   categories: defineTable({
     name: v.string(),
