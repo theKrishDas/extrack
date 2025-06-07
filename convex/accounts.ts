@@ -1,7 +1,14 @@
 import {v} from "convex/values"
 
 import {transactionTypes} from "../src/lib/constants/transaction-types"
-import {internalMutation, mutation} from "./_generated/server"
+import {internalMutation, mutation, query} from "./_generated/server"
+
+export const getAll = query({
+  args: {},
+  handler: async ctx => {
+    return await ctx.db.query("accounts").collect()
+  },
+})
 
 export const add = mutation({
   args: {
@@ -16,7 +23,7 @@ export const add = mutation({
     const existing = await ctx.db
       .query("accounts")
       .withIndex("by_name", q => q.eq("name", name))
-      .first()
+      .unique()
 
     if (existing) {
       throw new Error(`Account with name "${args.name}" already exists`)

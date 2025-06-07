@@ -17,7 +17,7 @@ export const getById = query({
     return await ctx.db
       .query("transactions")
       .withIndex("by_id", q => q.eq("_id", id))
-      .first()
+      .unique()
   },
 })
 
