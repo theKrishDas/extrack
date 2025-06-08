@@ -12,6 +12,7 @@ import AccountSelect from "./Account"
 import AmountInput from "./Amount"
 import CategorySelect from "./Category"
 import {setLastUsedAccount, setLastUsedCategory} from "./helpers"
+import Note from "./Note"
 
 const Form = ({afterSubmit}: {afterSubmit?: () => void}) => {
   const {form, transactionType} = useNewTransaction()
@@ -32,12 +33,14 @@ const Form = ({afterSubmit}: {afterSubmit?: () => void}) => {
     <RacForm onSubmit={handleSubmit(onSubmit)}>
       <AmountInput />
 
-      <List.Root asChild>
+      <List.Root className="mb-4" noSpacing asChild>
         <div>
           <CategorySelect />
           <AccountSelect />
         </div>
       </List.Root>
+
+      <Note />
 
       <Button className="rounded-2xl" variant="filled" fullWidth type="submit">
         Save
