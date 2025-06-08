@@ -15,48 +15,43 @@ import {
 import {List} from "@/components/ui/list"
 import {Skeleton} from "@/components/ui/loading/skeleton"
 import {IonChevronForward} from "@/components/icons/ion"
-import {SquareRounded} from "@/components/icons/others"
 
-import {getLastUsedCategory, setLastUsedCategory} from "./helpers"
+import {getLastUsedAccount, setLastUsedAccount} from "./helpers"
 import {useNewTransaction} from "./provider"
 
-function createCollection(categories: Doc<"categories">[]) {
-  const mappedCategories = categories.map(cat => ({...cat, value: cat._id}))
-  return createListCollection({items: mappedCategories})
+function createCollection(accounts: Doc<"accounts">[]) {
+  const mappedAccounts = accounts.map(acc => ({...acc, value: acc._id}))
+  return createListCollection({items: mappedAccounts})
 }
 
-const CategorySelect = () => {
+const AccountSelect = () => {
   const {
     form: {control, setValue},
     transactionType,
   } = useNewTransaction()
 
-  const availableCategories = useQuery(api.categories.getByType, {
-    type: transactionType,
-  })
-  const categoryFromLocalStorage = getLastUsedCategory(transactionType)
+  const accounts = useQuery(api.accounts.getAll)
+  const accountFromLocalStorage = getLastUsedAccount()
 
   useEffect(() => {
-    if (!availableCategories?.length) return
+    if (!accounts?.length) return
 
-    let categoryId: string
+    let accountId: string
 
-    if (categoryFromLocalStorage) {
-      const validCategory = availableCategories.find(
-        category => category._id === categoryFromLocalStorage.id
+    if (accountFromLocalStorage) {
+      const validAccount = accounts.find(
+        acc => acc._id === accountFromLocalStorage.id
       )
-      categoryId = validCategory
-        ? validCategory._id
-        : availableCategories[0]._id
+      accountId = validAccount ? validAccount._id : accounts[0]._id
     } else {
-      categoryId = availableCategories[0]._id
+      accountId = accounts[0]._id
     }
 
-    setLastUsedCategory(transactionType, categoryId)
-    setValue("category", categoryId)
-  }, [availableCategories, categoryFromLocalStorage, transactionType, setValue])
+    setLastUsedAccount(accountId)
+    setValue("account", accountId)
+  }, [accounts, accountFromLocalStorage, transactionType, setValue])
 
-  if (!availableCategories)
+  if (!accounts)
     return (
       <List.Root asChild>
         <div>
@@ -67,20 +62,20 @@ const CategorySelect = () => {
       </List.Root>
     )
 
-  if (availableCategories.length <= 0) {
+  if (accounts.length <= 0) {
     // TODO: Handle this properly
     return <p>No categories found: Add one</p>
   }
 
   // Creating the collection from the return-type
-  const collection = createCollection(availableCategories)
+  const collection = createCollection(accounts)
 
   return (
     <Controller
       control={control}
-      name="category"
+      name="account"
       render={({field: {value, onChange, onBlur, ref}}) => {
-        const selectedCategory = collection.find(value)
+        const selectedAccount = collection.find(value)
 
         return (
           <List.Root>
@@ -89,21 +84,16 @@ const CategorySelect = () => {
                 <List.Item asChild>
                   <RacButton className="w-full">
                     <List.Content>
-                      <List.Text>Category</List.Text>
+                      <List.Text>Account</List.Text>
                       <div className="inline-flex flex-row-reverse items-center gap-1">
                         <IonChevronForward className="text-label-secondary" />
-                        {selectedCategory ? (
+                        {selectedAccount ? (
                           <List.Text level="1">
-                            {selectedCategory.name}
+                            {selectedAccount.name}
                           </List.Text>
                         ) : (
                           <List.Text level="3">Empty</List.Text>
                         )}
-                        <SquareRounded
-                          style={{
-                            color: `var(--ios-${selectedCategory?.color})`,
-                          }}
-                        />
                       </div>
                     </List.Content>
                   </RacButton>
@@ -111,9 +101,7 @@ const CategorySelect = () => {
               </DrawerTrigger>
 
               <DrawerContent>
-                <DrawerTitle className="my-4 text-center">
-                  Categories
-                </DrawerTitle>
+                <DrawerTitle className="my-4 text-center">Accounts</DrawerTitle>
 
                 <Listbox.Root
                   className="px-4"
@@ -127,21 +115,15 @@ const CategorySelect = () => {
                   loopFocus
                 >
                   <Listbox.Label className="sr-only">
-                    Select a category
+                    Select your Account
                   </Listbox.Label>
                   <Listbox.Content asChild>
                     <List.Root className="ring-ios-blue/[var(--separator-non-opaque-opacity)] ring-offset-background rounded-2xl ring-offset-1 outline-none focus-visible:ring-4">
                       {collection.items.map(item => {
-                        const {_id: id, name, color} = item
+                        const {_id: id, name} = item
                         return (
                           <Listbox.Item item={item} key={id} asChild>
                             <List.Item className="data-highlighted:bg-fill-secondary [&:has(+_*[data-highlighted])_.ListContent]:border-transparent data-highlighted:[&>.ListContent]:border-transparent">
-                              <List.Icon asChild>
-                                <SquareRounded
-                                  style={{color: `var(--ios-${color})`}}
-                                  className="relative"
-                                />
-                              </List.Icon>
                               <List.Content>
                                 <Listbox.ItemText asChild>
                                   <List.Text level="1" className="relative">
@@ -166,4 +148,4 @@ const CategorySelect = () => {
   )
 }
 
-export default CategorySelect
+export default AccountSelect

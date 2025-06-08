@@ -7,9 +7,10 @@ import {NewTransactionSchemaType} from "@/lib/schema/transactions"
 import {Button} from "@/components/ui/button/animated-button"
 import {useNewTransaction} from "@/components/form/transaction/new/provider"
 
+import AccountSelect from "./Account"
 import AmountInput from "./Amount"
 import CategorySelect from "./Category"
-import {setLastUsedCategory} from "./helpers"
+import {setLastUsedAccount, setLastUsedCategory} from "./helpers"
 
 const Form = ({afterSubmit}: {afterSubmit?: () => void}) => {
   const {form, transactionType} = useNewTransaction()
@@ -17,14 +18,12 @@ const Form = ({afterSubmit}: {afterSubmit?: () => void}) => {
 
   useEffect(() => {
     setValue("type", transactionType)
-
-    // Remove this setValue later
-    setValue("account", "Acc")
   }, [setValue, transactionType])
 
   const onSubmit = (data: NewTransactionSchemaType) => {
     console.log(data)
     setLastUsedCategory(transactionType, data.category)
+    setLastUsedAccount(data.account)
     afterSubmit?.()
   }
 
@@ -32,6 +31,7 @@ const Form = ({afterSubmit}: {afterSubmit?: () => void}) => {
     <RacForm onSubmit={handleSubmit(onSubmit)}>
       <AmountInput />
       <CategorySelect />
+      <AccountSelect />
 
       <Button className="rounded-2xl" variant="filled" fullWidth type="submit">
         Save
