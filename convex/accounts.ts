@@ -10,6 +10,16 @@ export const getAll = query({
   },
 })
 
+export const getById = query({
+  args: {id: v.id("accounts")},
+  handler: async (ctx, {id}) => {
+    return await ctx.db
+      .query("accounts")
+      .withIndex("by_id", q => q.eq("_id", id))
+      .unique()
+  },
+})
+
 export const add = mutation({
   args: {
     name: v.string(),

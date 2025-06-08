@@ -1,6 +1,6 @@
 import {Dispatch, SetStateAction} from "react"
 import {api} from "#/convex/_generated/api"
-import {useMutation} from "convex/react"
+import {useMutation, useQuery} from "convex/react"
 
 import {Transaction} from "@/lib/types/transactions"
 import {formatDate} from "@/lib/utils"
@@ -28,14 +28,24 @@ export default function ExpantionDrawer({
   transaction: Transaction
 }) {
   const removeTransaction = useMutation(api.transactions.remove)
-  const {amount, note, _creationTime, _id: id} = transaction
+  const {
+    amount,
+    note,
+    _creationTime,
+    _id: id,
+    category: categoryId,
+    account: accountId,
+  } = transaction
+  const category = useQuery(api.categories.getById, {id: categoryId})
+  const account = useQuery(api.accounts.getById, {id: accountId})
 
   const data: DataType = {
     header: ["Key", "value"],
     body: [
       ["Amount", amount],
       ["Date", formatDate(_creationTime)],
-      ["Category", undefined],
+      ["Category", category?.name],
+      ["Account", account?.name],
       ["Note", note],
     ],
   }

@@ -19,10 +19,11 @@ export const newTransactionSchema = z.object({
     }),
   note: z
     .string()
-    .max(MAX_NOTE_LENGTH)
-    .min(1, {message: "Note can be undefined but not an empty string"})
+    .max(MAX_NOTE_LENGTH, {
+      message: `Note must be within ${MAX_NOTE_LENGTH} characters`,
+    })
+    .transform(val => val?.trim() || undefined)
     .optional(),
-  // category: z.string().nullable().optional(),
   type: z.union([z.literal("income"), z.literal("expense")], {
     message: "Type must be `income` or `expense`",
   }),

@@ -1,6 +1,9 @@
 "use client"
 
 import {useEffect} from "react"
+import {api} from "#/convex/_generated/api"
+import {Id} from "#/convex/_generated/dataModel"
+import {useMutation} from "convex/react"
 import {Form as RacForm} from "react-aria-components"
 
 import {NewTransactionSchemaType} from "@/lib/schema/transactions"
@@ -17,15 +20,23 @@ import Note from "./Note"
 const Form = ({afterSubmit}: {afterSubmit?: () => void}) => {
   const {form, transactionType} = useNewTransaction()
   const {handleSubmit, setValue} = form
+  const addTransaction = useMutation(api.transactions.add)
 
   useEffect(() => {
     setValue("type", transactionType)
   }, [setValue, transactionType])
 
   const onSubmit = (data: NewTransactionSchemaType) => {
-    console.log(data)
-    setLastUsedCategory(transactionType, data.category)
-    setLastUsedAccount(data.account)
+    const {amount, type, category, note, account} = data
+    addTransaction({
+      amount,
+      type,
+      note,
+      account: account as Id<"accounts">,
+      category: category as Id<"categories">,
+    })
+    setLastUsedCategory(transactionType, category)
+    setLastUsedAccount(account)
     afterSubmit?.()
   }
 
