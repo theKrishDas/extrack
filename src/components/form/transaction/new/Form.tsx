@@ -5,6 +5,7 @@ import {Form as RacForm} from "react-aria-components"
 
 import {NewTransactionSchemaType} from "@/lib/schema/transactions"
 import {Button} from "@/components/ui/button/animated-button"
+import {List} from "@/components/ui/list"
 import {useNewTransaction} from "@/components/form/transaction/new/provider"
 
 import AccountSelect from "./Account"
@@ -30,8 +31,13 @@ const Form = ({afterSubmit}: {afterSubmit?: () => void}) => {
   return (
     <RacForm onSubmit={handleSubmit(onSubmit)}>
       <AmountInput />
-      <CategorySelect />
-      <AccountSelect />
+
+      <List.Root asChild>
+        <div>
+          <CategorySelect />
+          <AccountSelect />
+        </div>
+      </List.Root>
 
       <Button className="rounded-2xl" variant="filled" fullWidth type="submit">
         Save
