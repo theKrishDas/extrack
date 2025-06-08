@@ -1,7 +1,7 @@
 import {Dispatch, SetStateAction, useState} from "react"
 import {Popover} from "@ark-ui/react/popover"
 
-import {TTransactionType} from "@/lib/schema/new-transaction-schema"
+import {TTransactionType} from "@/lib/schema/transactions"
 import {AnimatedContainer} from "@/components/ui/animated-container"
 import {Button} from "@/components/ui/button/animated-button"
 import {
@@ -11,9 +11,11 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from "@/components/ui/drawer"
-import {Provider as FormProvider} from "@/components/app/form/new-transaction/provider"
+import {
+  Form,
+  Provider as NewTransactionProvider,
+} from "@/components/form/transaction/new"
 import {IonArrowDown, IonArrowUp} from "@/components/icons/ion/arrow"
-import NewTrasactionForm from "@/app/(index)/local-comps/NewTransactionForm"
 
 import {physics} from "./helpers"
 
@@ -25,12 +27,14 @@ export default function Island({
   setOpen: Dispatch<SetStateAction<boolean>>
 }) {
   const [drawerOpen, setDrawerOpen] = useState(false)
-  const [type, setType] = useState<TTransactionType | undefined>(undefined)
+  const [transactionType, setTransactionType] = useState<
+    TTransactionType | undefined
+  >(undefined)
 
   const offset = 5
 
   const handleButtonClick = (type: TTransactionType): void => {
-    setType(type)
+    setTransactionType(type)
     setOpen(false)
     setDrawerOpen(true)
   }
@@ -93,7 +97,7 @@ export default function Island({
         </AnimatedContainer.Content>
       </AnimatedContainer.Root>
 
-      {type && (
+      {transactionType && (
         <Drawer open={drawerOpen} onOpenChange={setDrawerOpen}>
           <DrawerContent>
             <DrawerHeader className="sr-only">
@@ -104,12 +108,9 @@ export default function Island({
             </DrawerHeader>
 
             <div className="p-4">
-              <FormProvider>
-                <NewTrasactionForm
-                  afterSubmit={() => setDrawerOpen(false)}
-                  type={type}
-                />
-              </FormProvider>
+              <NewTransactionProvider transactionType={transactionType}>
+                <Form afterSubmit={() => setDrawerOpen(false)} />
+              </NewTransactionProvider>
             </div>
           </DrawerContent>
         </Drawer>

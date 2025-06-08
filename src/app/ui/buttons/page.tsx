@@ -9,14 +9,7 @@ export default function Page() {
   return (
     <main className="p-6">
       <section className="">
-        <Button
-          ref={thatRef}
-          onPress={() => {
-            console.log(thatRef.current)
-          }}
-        >
-          Download CV.
-        </Button>
+        <Button ref={thatRef}>Download CV.</Button>
       </section>
 
       <section className="mt-2 flex flex-wrap gap-1">
@@ -37,7 +30,11 @@ export default function Page() {
               "pink",
               "brown",
             ].map(color => (
-              <Button variant={variant as never} color={color as never} key={color}>
+              <Button
+                variant={variant as never}
+                color={color as never}
+                key={color}
+              >
                 {color}
               </Button>
             ))}

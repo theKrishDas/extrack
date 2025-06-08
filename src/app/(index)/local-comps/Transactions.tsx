@@ -10,7 +10,7 @@ import {buttonVariants} from "@/components/ui/button"
 import TransactionListItem from "./TransactionListItem"
 
 export default function Transactions() {
-  const transactions = useQuery(api.transactions.get)
+  const transactions = useQuery(api.transactions.getAll)
 
   // Loading state
   if (!transactions)

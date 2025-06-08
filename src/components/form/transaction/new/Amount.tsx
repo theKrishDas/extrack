@@ -8,7 +8,7 @@ import {
 } from "@/lib/constants/defaults"
 import {cn} from "@/lib/utils"
 
-import {useNewTransaction} from "./context-helpers"
+import {useNewTransaction} from "./provider"
 
 export default function AmountInput() {
   const {
