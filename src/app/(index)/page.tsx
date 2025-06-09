@@ -4,6 +4,7 @@ import Summary from "@/components/app/Summary"
 import {IonChevronForward} from "@/components/icons/ion"
 import {Container} from "@/components/layout/container"
 
+import TransactionDisplay from "./local-comps/TransactionDisplay"
 import Transactions from "./local-comps/Transactions"
 
 export default function Home() {
@@ -26,6 +27,7 @@ export default function Home() {
             </Button>
           </div>
           <Transactions />
+          <TransactionDisplay />
         </Container>
       </main>
     </>
