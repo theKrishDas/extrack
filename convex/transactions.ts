@@ -7,7 +7,22 @@ import {mutation, query} from "./_generated/server"
 export const getAll = query({
   args: {},
   handler: async ctx => {
-    return await ctx.db.query("transactions").collect()
+    return await ctx.db
+      .query("transactions")
+      .withIndex("by_creation_time")
+      .order("desc")
+      .collect()
+  },
+})
+
+export const getLimited = query({
+  args: {limit: v.number()},
+  handler: async (ctx, {limit}) => {
+    return await ctx.db
+      .query("transactions")
+      .withIndex("by_creation_time")
+      .order("desc")
+      .take(limit)
   },
 })
 
