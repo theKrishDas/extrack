@@ -13,7 +13,7 @@ export default defineSchema({
     account: v.id("accounts"),
     // ownerId
   })
-    .index("by_category_type_account", ["category", "type", "account"])
+    .index("by_category_account", ["category", "account"])
     .index("by_category", ["category"])
     .index("by_account", ["account"]),
 
