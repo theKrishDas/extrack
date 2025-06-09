@@ -15,17 +15,15 @@ export default defineSchema({
   })
     .index("by_category_account", ["category", "account"])
     .index("by_category", ["category"])
-    .index("by_account", ["account"]),
+    .index("by_account", ["account"])
+    .index("by_type", ["type"]),
 
   categories: defineTable({
     name: v.string(),
     color: v.union(...colors.map(c => v.literal(c))),
     type: v.union(...transactionTypes.map(t => v.literal(t))),
     // ownerId
-  }),
-  // TODO: do indexing
-  // .index("by_owner_and_type", ["ownerId", "type"])
-  // .index("by_owner", ["ownerId"]),
+  }).index("by_type", ["type"]),
 
   accounts: defineTable({
     //ownerId

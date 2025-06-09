@@ -62,7 +62,7 @@ export const add = mutation({
     }
 
     if (args.type !== category.type) {
-      throw new Error("Type of the transaction and category don't match!")
+      throw new Error("Type of the transaction and category doesn't match!")
     }
 
     await Promise.all([
