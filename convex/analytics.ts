@@ -1,5 +1,6 @@
 import {v} from "convex/values"
 
+import {Id} from "./_generated/dataModel"
 import {query} from "./_generated/server"
 
 export const getTopCategoriesByType = query({
@@ -36,5 +37,72 @@ export const getTopCategoriesByType = query({
     return categoryStats
       .filter(category => category.usageCount > 0)
       .sort((a, b) => b.usageCount - a.usageCount)
+  },
+})
+
+export const getCategoryUsageStats = query({
+  args: {
+    categoryId: v.id("categories"),
+  },
+  handler: async (ctx, args) => {
+    const {categoryId} = args
+
+    // Get the category details
+    const category = await ctx.db.get(categoryId)
+    if (!category) {
+      throw new Error("Category not found")
+    }
+
+    // Get all transactions for this category
+    const transactions = await ctx.db
+      .query("transactions")
+      .withIndex("by_category", q => q.eq("category", categoryId))
+      .collect()
+
+    // Calculate statistics
+    const totalTransactions = transactions.length
+    const totalAmount = transactions.reduce((sum, t) => sum + t.amount, 0)
+    const averageAmount =
+      totalTransactions > 0 ? totalAmount / totalTransactions : 0
+
+    // Get transactions by account
+    const accountUsage = new Map<Id<"accounts">, number>()
+    for (const transaction of transactions) {
+      const count = accountUsage.get(transaction.account) || 0
+      accountUsage.set(transaction.account, count + 1)
+    }
+
+    // Get account details for the top accounts
+    const topAccounts = []
+    for (const [accountId, count] of accountUsage.entries()) {
+      const account = await ctx.db.get(accountId)
+      if (!account) {
+        throw new Error("Account not found")
+      }
+
+      topAccounts.push({
+        accountId,
+        accountName: account.name,
+        transactionCount: count,
+      })
+    }
+
+    // Sort accounts by usage
+    topAccounts.sort((a, b) => b.transactionCount - a.transactionCount)
+
+    return {
+      category: {
+        id: category._id,
+        name: category.name,
+        color: category.color,
+        type: category.type,
+      },
+      stats: {
+        totalTransactions,
+        totalAmount,
+        averageAmount,
+      },
+      topAccounts: topAccounts.slice(0, 5), // Top 5 accounts
+    }
   },
 })
