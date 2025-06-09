@@ -3,6 +3,38 @@ import {v} from "convex/values"
 import {Id} from "./_generated/dataModel"
 import {query} from "./_generated/server"
 
+export const getTopTransactionAmounts = query({
+  args: {
+    startTime: v.number(),
+    endTime: v.number(),
+    limit: v.optional(v.number()),
+  },
+  handler: async (ctx, args) => {
+    const {startTime, endTime, limit = 5} = args
+
+    // Get transactions within the date range using the by_creation_time index
+    const transactions = await ctx.db
+      .query("transactions")
+      .withIndex("by_creation_time", q =>
+        q.gte("_creationTime", startTime).lte("_creationTime", endTime)
+      )
+      .collect()
+
+    // Count occurrences of each amount
+    const amountCounts = new Map<number, number>()
+    transactions.forEach(transaction => {
+      const amount = transaction.amount
+      amountCounts.set(amount, (amountCounts.get(amount) || 0) + 1)
+    })
+
+    // Convert to array, sort by amount descending
+    return Array.from(amountCounts.entries())
+      .map(([amount, count]) => ({amount, count}))
+      .sort((a, b) => b.amount - a.amount)
+      .slice(0, limit)
+  },
+})
+
 export const getTopCategories = query({
   args: {
     transactionType: v.union(v.literal("income"), v.literal("expense")),
