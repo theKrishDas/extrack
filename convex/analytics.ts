@@ -147,3 +147,47 @@ export const getCategoryUsageStats = query({
     }
   },
 })
+
+export const getTransactionCount = query({
+  args: {
+    startTime: v.number(),
+    endTime: v.number(),
+    account: v.optional(v.id("accounts")),
+  },
+  handler: async (ctx, args) => {
+    const {startTime, endTime, account} = args
+
+    const allTransactions = await ctx.db
+      .query("transactions")
+      .withIndex("by_creation_time", q =>
+        q.gte("_creationTime", startTime).lte("_creationTime", endTime)
+      )
+      .collect()
+
+    const relevantTransactions = account
+      ? allTransactions.filter(transaction => transaction.account === account)
+      : allTransactions
+
+    const incomeTransactions = relevantTransactions.filter(
+      transaction => transaction.type === "income"
+    )
+    const expenseTransactions = relevantTransactions.filter(
+      transaction => transaction.type === "expense"
+    )
+
+    const count = {
+      all: relevantTransactions.length,
+      income: incomeTransactions.length,
+      expense: expenseTransactions.length,
+    }
+    const transactions = {
+      income: incomeTransactions,
+      expense: expenseTransactions,
+    }
+
+    return {
+      count,
+      transactions,
+    }
+  },
+})
