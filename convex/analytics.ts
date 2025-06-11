@@ -10,7 +10,7 @@ export const getTopTransactionAmounts = query({
     limit: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
-    const {startTime, endTime, limit = 5} = args
+    const {startTime, endTime} = args
 
     // Get transactions within the date range using the by_creation_time index
     const transactions = await ctx.db
@@ -31,7 +31,6 @@ export const getTopTransactionAmounts = query({
     return Array.from(amountCounts.entries())
       .map(([amount, count]) => ({amount, count}))
       .sort((a, b) => b.amount - a.amount)
-      .slice(0, limit)
   },
 })
 
