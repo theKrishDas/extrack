@@ -117,7 +117,7 @@ export const getTransactionsByTimeframe = query({
 
     return {
       // Raw data organized by day
-      daily: {
+      transactions: {
         raw: dailyTransactionGroups,
         breakdown: dailyBreakdown,
       },
