@@ -1,5 +1,3 @@
-"use client"
-
 import TransactionSummary from "./TransactionSummary"
 
 const Summary = () => {

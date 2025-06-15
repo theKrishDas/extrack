@@ -13,3 +13,7 @@ export function getRelativeDate(date: DateArg<Date>): string {
   // For other dates, you may choose your preferred format.
   return format(date, "MMMM d")
 }
+
+// TODO: use real locale instead of hard-coding it!
+export const LOCALE = "IN" as const
+export const CURRENCY = "INR" as const

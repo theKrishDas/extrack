@@ -1,3 +1,8 @@
+"use client"
+
+import {ReactNode} from "react"
+import {Icon} from "@iconify/react"
+import {useNumberFormatter} from "@react-aria/i18n"
 import {api} from "#/convex/_generated/api"
 import {useQuery} from "convex/react"
 import {FunctionReturnType} from "convex/server"
@@ -5,182 +10,184 @@ import {
   eachDayOfInterval,
   endOfDay,
   endOfWeek,
-  formatDate,
+  format,
   isToday,
   startOfDay,
   startOfToday,
   startOfWeek,
 } from "date-fns"
-import {I18nProvider, useNumberFormatter} from "react-aria"
 import {Button} from "react-aria-components"
 
+import {CURRENCY} from "@/lib/date-utils"
 import {cn} from "@/lib/utils"
 
-const today = startOfToday()
-const startOfThisWeek = startOfWeek(today)
-const endOfThisWeek = endOfWeek(today)
-const timeframes = eachDayOfInterval({
-  start: startOfThisWeek,
-  end: endOfThisWeek,
-})
-
-function percentComparison(args: {percentage: number; label: string}[]) {
-  const maxPercentage = Math.max(...args.map(a => a.percentage))
-  const objectWithMaxPercentage = args.find(v => v.percentage === maxPercentage)
-  if (!objectWithMaxPercentage) throw new Error("Object not found")
-
-  const readablePercentage = Math.round(maxPercentage)
-
-  const overOrUnder = readablePercentage < maxPercentage ? "over" + " " : ""
-
-  return `${overOrUnder}${readablePercentage}% is ${objectWithMaxPercentage.label}`
-}
-
 const TransactionSummary = () => {
-  const summary = useQuery(api.summary.getTransactionsByTimeframe, {
-    timeFrames: timeframes.map(day => ({
-      start: startOfDay(day).getTime(),
-      end: endOfDay(day).getTime(),
-    })),
+  const today = startOfToday()
+  const frameStart = startOfWeek(today)
+  const frameEnd = endOfWeek(today)
+  const timeframes = eachDayOfInterval({start: frameStart, end: frameEnd})
+  const timeframesInNumber = timeframes.map(f => ({
+    start: startOfDay(f).getTime(),
+    end: endOfDay(f).getTime(),
+  }))
+
+  const summary = useQuery(api.summary.getTransactionSummaryByTimeframe, {
+    timeframes: timeframesInNumber,
+    accounts: [],
   })
-  const decimalFormatter = useNumberFormatter({
-    style: "decimal",
-    minimumFractionDigits: 0,
-  })
 
-  if (!summary) return <p>Loading...</p>
-
-  const totalTransactions = decimalFormatter.format(
-    summary.stats.totalTransactionCount
-  )
-  const percentageText = percentComparison([
-    {
-      percentage:
-        (summary.overview.expense.count / summary.overview.all.count) * 100,
-      label: "expense",
-    },
-    {
-      percentage:
-        (summary.overview.income.count / summary.overview.all.count) * 100,
-      label: "income",
-    },
-  ])
-
+  if (!summary) return <p>Loading transaction summary...</p>
   console.clear()
-  console.dir(summary)
+  console.info("summary:", summary)
 
-  return (
-    <I18nProvider locale="en-US">
-      <div className="bg-fill-quaternary rounded-[0.95rem] p-4 pr-0">
-        <div className="flex items-center pr-4">
-          <h4 className="flex-1 text-xl leading-loose font-bold">
-            <span className="tracking-tighter">{totalTransactions}</span>{" "}
-            <span className="tracking-tight">transactions</span>
-          </h4>
-          <span className="text-label-tertiary bg-fill-tertiary inline-flex h-6 items-center justify-center rounded-lg px-1.5 text-sm leading-0 font-medium capitalize">
-            This Week
-          </span>
-        </div>
-
-        <p className="text-label-tertiary pr-4 leading-tight tracking-tight">
-          {percentageText}
-        </p>
-
-        <Separator />
-
-        <div className="mb-4 grid grid-cols-7 gap-2 pr-4">
-          <TextBlock
-            label="Highest"
-            number={summary.stats.extremes.highest.amount}
-          />
-          <TextBlock
-            label="Expense"
-            number={summary.stats.totalExpenseAmount}
-          />
-          <TextBlock label="Income" number={summary.stats.totalIncomeAmount} />
-        </div>
-
-        <div className="grid grid-cols-7 gap-2 pr-4">
-          <Bars summary={summary} />
-        </div>
-      </div>
-    </I18nProvider>
-  )
-}
-
-export default TransactionSummary
-
-const Bars = ({
-  summary,
-}: {
-  summary: FunctionReturnType<typeof api.summary.getTransactionsByTimeframe>
-}) => {
   return (
     <>
-      {summary.daily.breakdown.map(({all, expense, timeframe}, idx) => {
-        const transactionDate = timeframe.start
-        const today = isToday(transactionDate)
-
-        const height =
-          (all.count / summary.stats.highestDailyTransactionCount) * 100
-
-        return (
-          <div
-            className="flex flex-col items-center justify-end gap-2"
-            key={idx}
-          >
-            <div className="relative flex h-30 w-full flex-col justify-end">
-              <div
-                className={cn(
-                  "flex w-full flex-col justify-end overflow-hidden rounded-md",
-                  today ? "bg-fill-quaternary" : "bg-fill-primary"
-                )}
-                style={{
-                  height: `${height}%`,
-                }}
-              >
-                {today && (
-                  <div
-                    className="bg-ios-red w-full"
-                    style={{
-                      height: `${(expense.count / all.count) * 100}%`,
-                    }}
-                  />
-                )}
-              </div>
-              <Button className="hover:bg-fill-primary absolute -inset-0.5 rounded-lg mix-blend-color-burn dark:mix-blend-color-dodge" />
-            </div>
-
-            <span
-              className={cn(
-                "text-label-secondary inline-grid h-6 w-6 place-content-center rounded-full text-xs leading-0 font-semibold uppercase",
-                today && "bg-ios-red text-label-primary font-bold"
-              )}
-            >
-              {formatDate(timeframe.start, "EEEEE")}
-            </span>
-          </div>
-        )
-      })}
+      <div className="bg-fill-quaternary rounded-[0.95rem] pl-4">
+        <Overview summary={summary} />
+        <Bars summary={summary} />
+        {/* <Details /> */}
+      </div>
     </>
   )
 }
 
-const TextBlock = ({label, number}: {label: string; number: number}) => {
+const Overview = ({
+  summary,
+}: {
+  summary: FunctionReturnType<
+    typeof api.summary.getTransactionSummaryByTimeframe
+  >
+}) => {
+  const {netFlow, expenseAmount, incomeAmount} = summary.breakdown
   const formatter = useNumberFormatter({
     style: "currency",
-    currency: "INR",
+    currency: CURRENCY,
     minimumFractionDigits: 0,
   })
 
+  const Stats = ({
+    label,
+    value,
+    icon,
+    span = 2,
+  }: {
+    label: string
+    value: string | number
+    icon?: ReactNode
+    span?: number
+  }) => {
+    return (
+      <div className={cn("w-full", `col-span-${span}`)}>
+        <div className="inline-flex w-full flex-col">
+          <span className="text-label-secondary text-sm font-medium">
+            {label}
+          </span>
+          <div className="flex items-center gap-1">
+            <span className="text-label-primary font-bold">{value}</span>
+            {icon}
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   return (
-    <div className="col-span-2 flex flex-col text-sm tracking-tight sm:col-span-1">
-      <p className="text-label-secondary">{label}</p>
-      <p className="text-label-primary font-bold">{formatter.format(number)}</p>
+    <div className="grid grid-cols-8 gap-2 pr-4">
+      <Stats label={"Spent"} value={formatter.format(expenseAmount)} />
+      <Stats label={"Earned"} value={formatter.format(incomeAmount)} />
+      <Stats
+        label={"Net Flow"}
+        value={formatter.format(netFlow)}
+        span={3}
+        icon={
+          <Icon
+            icon={netFlow < 0 ? "ion:ios-trending-down" : "ion:ios-trending-up"}
+            className={cn(
+              "text-[1em] font-bold",
+              netFlow < 0 ? "text-ios-red" : "text-ios-green"
+            )}
+          />
+        }
+      />
     </div>
   )
 }
 
-const Separator = () => (
-  <div className="separator bg-separator-non-opaque mt-4 mb-2.5 h-0.5 w-full rounded-full mix-blend-color-burn dark:mix-blend-color-dodge" />
-)
+const Bars = ({
+  summary,
+  onBarClick,
+}: {
+  summary: FunctionReturnType<
+    typeof api.summary.getTransactionSummaryByTimeframe
+  >
+  onBarClick?: (idx: number) => void
+}) => {
+  const {breakdown, byFrames} = summary
+  const {totalFlow} = breakdown
+
+  return (
+    <div
+      className="grid gap-2 pr-4"
+      style={{
+        gridTemplateColumns: `repeat(${byFrames.length}, 1fr)`,
+      }}
+    >
+      {byFrames.map((frame, idx) => {
+        const {timeframe, breakdown} = frame
+        const {totalFlow: totalFlowInFrame, expenseAmount} = breakdown
+        const flowPercentage = (totalFlowInFrame / totalFlow) * 100
+        const expensePercentage = (expenseAmount / totalFlow) * 100
+        const today = isToday(timeframe.start)
+        const isActive = today
+
+        const Bar = ({
+          barHeight,
+          childHeight,
+        }: {
+          barHeight: number
+          childHeight: number
+        }) => {
+          return (
+            <div
+              className={cn(
+                "pointer-events-none flex w-full flex-col justify-end overflow-hidden rounded-md",
+                isActive ? "bg-fill-primary" : "bg-fill-tertiary"
+              )}
+              style={{
+                height: `${barHeight}%`,
+              }}
+            >
+              {isActive && (
+                <div
+                  className="bg-ios-red w-full rounded-t-[0.2em]"
+                  style={{height: `${childHeight}%`}}
+                />
+              )}
+            </div>
+          )
+        }
+
+        return (
+          <Button
+            className="flex h-30 w-full flex-col items-center justify-end outline-none select-none"
+            key={idx}
+            onPress={() => onBarClick?.(idx)}
+          >
+            <Bar barHeight={flowPercentage} childHeight={expensePercentage} />
+            <time
+              className={cn(
+                "text-label-secondary pointer-events-none inline-grid h-6 w-6 place-content-center rounded-full text-xs leading-0 font-medium uppercase",
+                today &&
+                  "text-ios-red font-extrabold mix-blend-plus-darker dark:mix-blend-plus-lighter"
+              )}
+            >
+              {format(timeframe.start, "EEEEE")}
+            </time>
+          </Button>
+        )
+      })}
+    </div>
+  )
+}
+
+export default TransactionSummary
