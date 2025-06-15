@@ -1,6 +1,6 @@
 "use client"
 
-import {ReactNode} from "react"
+import {ReactNode, useState} from "react"
 import {Icon} from "@iconify/react"
 import {useNumberFormatter} from "@react-aria/i18n"
 import {api} from "#/convex/_generated/api"
@@ -22,7 +22,8 @@ import {CURRENCY} from "@/lib/date-utils"
 import {cn} from "@/lib/utils"
 
 const TransactionSummary = () => {
-  const today = startOfToday()
+  // TODO: Remove the override controle when testing is done
+  const today = true ? startOfToday() : startOfDay(new Date(2025, 5, 9))
   const frameStart = startOfWeek(today)
   const frameEnd = endOfWeek(today)
   const timeframes = eachDayOfInterval({start: frameStart, end: frameEnd})
@@ -31,20 +32,48 @@ const TransactionSummary = () => {
     end: endOfDay(f).getTime(),
   }))
 
+  const todaysIndex = timeframesInNumber.findIndex(
+    v => v.start === startOfDay(today).getTime()
+  )
+  const [showingSubBreakdown, setShowingSubBreakdown] = useState(false)
+  const [activeIndex, setActiveIndex] = useState(todaysIndex)
   const summary = useQuery(api.summary.getTransactionSummaryByTimeframe, {
     timeframes: timeframesInNumber,
     accounts: [],
   })
+  const subSummary = useQuery(api.summary.getTransactionSummaryByTimeframe, {
+    timeframes: [
+      {
+        // TODO: default to today
+        start: timeframesInNumber[activeIndex].start,
+        end: timeframesInNumber[activeIndex].end,
+      },
+    ],
+    accounts: [],
+  })
 
   if (!summary) return <p>Loading transaction summary...</p>
-  console.clear()
-  console.info("summary:", summary)
 
   return (
     <>
       <div className="bg-fill-quaternary rounded-[0.95rem] pl-4">
-        <Overview summary={summary} />
-        <Bars summary={summary} />
+        {true ? (
+          <Overview
+            // TODO: make the summary value-optional and handle the loading inside the overview
+            summary={showingSubBreakdown && subSummary ? subSummary : summary}
+          />
+        ) : (
+          <p>Loading sub...</p>
+        )}
+        <Bars
+          summary={summary}
+          onBarClick={idx => {
+            setActiveIndex(idx === activeIndex ? todaysIndex : idx)
+            setShowingSubBreakdown(v => (idx === activeIndex ? !v : true))
+          }}
+          setActive={idx => idx === activeIndex}
+          showingSubBreakdown={showingSubBreakdown}
+        />
         {/* <Details /> */}
       </div>
     </>
@@ -77,7 +106,12 @@ const Overview = ({
     span?: number
   }) => {
     return (
-      <div className={cn("w-full", `col-span-${span}`)}>
+      <div
+        className="w-full"
+        style={{
+          gridColumn: `span ${span} / span ${span}`,
+        }}
+      >
         <div className="inline-flex w-full flex-col">
           <span className="text-label-secondary text-sm font-medium">
             {label}
@@ -116,11 +150,15 @@ const Overview = ({
 const Bars = ({
   summary,
   onBarClick,
+  setActive,
+  showingSubBreakdown,
 }: {
   summary: FunctionReturnType<
     typeof api.summary.getTransactionSummaryByTimeframe
   >
   onBarClick?: (idx: number) => void
+  setActive: (idx: number) => boolean
+  showingSubBreakdown: boolean
 }) => {
   const {breakdown, byFrames} = summary
   const {totalFlow} = breakdown
@@ -138,7 +176,7 @@ const Bars = ({
         const flowPercentage = (totalFlowInFrame / totalFlow) * 100
         const expensePercentage = (expenseAmount / totalFlow) * 100
         const today = isToday(timeframe.start)
-        const isActive = today
+        const isActive = setActive(idx)
 
         const Bar = ({
           barHeight,
@@ -151,7 +189,9 @@ const Bars = ({
             <div
               className={cn(
                 "pointer-events-none flex w-full flex-col justify-end overflow-hidden rounded-md",
-                isActive ? "bg-fill-primary" : "bg-fill-tertiary"
+                "bg-fill-tertiary",
+                showingSubBreakdown && isActive && "bg-fill-primary",
+                showingSubBreakdown && !isActive && "opacity-30"
               )}
               style={{
                 height: `${barHeight}%`,
@@ -166,13 +206,28 @@ const Bars = ({
             </div>
           )
         }
+        const Indicator = () => {
+          return (
+            <span
+              className={cn(
+                "rounded-[0.5em] mix-blend-plus-darker dark:mix-blend-plus-lighter",
+                "absolute -inset-x-0.5 top-0",
+                showingSubBreakdown && isActive && "bg-fill-quaternary",
+                // Formula for the height:
+                // 100% + 2px(tw: 0.5 or 0.125rem) - line-height(1.5rem: changes with font-size)
+                "h-[calc(100%+0.125rem-1.5rem)]"
+              )}
+            />
+          )
+        }
 
         return (
           <Button
-            className="flex h-30 w-full flex-col items-center justify-end outline-none select-none"
+            className="relative flex h-30 w-full flex-col items-center justify-end outline-none select-none"
             key={idx}
             onPress={() => onBarClick?.(idx)}
           >
+            <Indicator />
             <Bar barHeight={flowPercentage} childHeight={expensePercentage} />
             <time
               className={cn(
