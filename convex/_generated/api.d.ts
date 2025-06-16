@@ -18,6 +18,7 @@ import type * as analytics from "../analytics.js";
 import type * as categories from "../categories.js";
 import type * as summary from "../summary.js";
 import type * as transactions from "../transactions.js";
+import type * as utils from "../utils.js";
 
 /**
  * A utility for referencing Convex functions in your app's API.
@@ -33,6 +34,7 @@ declare const fullApi: ApiFromModules<{
   categories: typeof categories;
   summary: typeof summary;
   transactions: typeof transactions;
+  utils: typeof utils;
 }>;
 export declare const api: FilterApi<
   typeof fullApi,

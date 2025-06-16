@@ -1,6 +1,7 @@
 import {v} from "convex/values"
 
 import {query} from "./_generated/server"
+import {formatTransactionSummary} from "./utils"
 
 export const getTransactionsByTimeframe = query({
   args: {timeFrames: v.array(v.object({start: v.number(), end: v.number()}))},
@@ -164,7 +165,7 @@ export const getTransactionSummaryByTimeframe = query({
     /*
      * DB Query to get the transactions by each timeframe
      */
-    const transactionsByTimeframes = await Promise.all(
+    const transactions = await Promise.all(
       timeframes.map(async frame => {
         const {start, end} = frame
 
@@ -187,65 +188,10 @@ export const getTransactionSummaryByTimeframe = query({
     )
 
     /*
-     * Calculate breakdowns for each timeframe
+     * Format the return data
      */
-    const breakdownsForEachFrame = transactionsByTimeframes.map(data => {
-      const {transactions} = data
+    const formattedData = formatTransactionSummary(transactions)
 
-      const incomes = transactions.filter(t => t.type == "income")
-      const expenses = transactions.filter(t => t.type == "expense")
-
-      const totalFlow = transactions.reduce((acc, v) => acc + v.amount, 0)
-      const expenseAmount = expenses.reduce((acc, v) => acc + v.amount, 0)
-      const incomeAmount = totalFlow - expenseAmount
-      const netFlow = incomeAmount - expenseAmount
-      const eiRatio = expenseAmount / incomeAmount // this Could be infinity
-
-      const count = transactions.length
-
-      const breakdown = {
-        totalFlow,
-        expenseAmount,
-        incomeAmount,
-        netFlow,
-        eiRatio,
-        count,
-      }
-
-      return {...data, incomes, expenses, breakdown}
-    })
-
-    /*
-     * Get only the breakdown info for each timeframe
-     */
-    const breakdownsByFrame = breakdownsForEachFrame.map(t => t.breakdown)
-
-    /*
-     * Breakdown accross all the timeframes
-     */
-    const totalFlow = breakdownsByFrame
-      .map(b => b.totalFlow)
-      .reduce((acc, v) => acc + v, 0)
-    const expenseAmount = breakdownsByFrame
-      .map(b => b.expenseAmount)
-      .reduce((acc, v) => acc + v, 0)
-    const incomeAmount = totalFlow - expenseAmount
-    const netFlow = incomeAmount - expenseAmount
-    const eiRatio = expenseAmount / incomeAmount // this Could be infinity
-
-    const count = breakdownsByFrame
-      .map(b => b.count)
-      .reduce((acc, v) => acc + v, 0)
-
-    const breakdown = {
-      totalFlow,
-      expenseAmount,
-      incomeAmount,
-      netFlow,
-      eiRatio,
-      count,
-    }
-
-    return {breakdown, byFrames: breakdownsForEachFrame}
+    return formattedData
   },
 })
