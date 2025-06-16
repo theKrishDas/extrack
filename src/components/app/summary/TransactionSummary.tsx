@@ -4,6 +4,7 @@ import {ReactNode, useState} from "react"
 import {Icon} from "@iconify/react"
 import {useNumberFormatter} from "@react-aria/i18n"
 import {api} from "#/convex/_generated/api"
+import {formatTransactionSummary} from "#/convex/utils"
 import {useQuery} from "convex/react"
 import {FunctionReturnType} from "convex/server"
 import {
@@ -22,6 +23,9 @@ import {CURRENCY} from "@/lib/date-utils"
 import {cn} from "@/lib/utils"
 
 const TransactionSummary = () => {
+  /*
+   * Getting the right dates for the timeframes
+   */
   // TODO: Remove the override controle when testing is done
   const today = true ? startOfToday() : startOfDay(new Date(2025, 5, 9))
   const frameStart = startOfWeek(today)
@@ -32,6 +36,9 @@ const TransactionSummary = () => {
     end: endOfDay(f).getTime(),
   }))
 
+  /*
+   * Using those dates get the summary
+   */
   const todaysIndex = timeframesInNumber.findIndex(
     v => v.start === startOfDay(today).getTime()
   )
@@ -41,30 +48,23 @@ const TransactionSummary = () => {
     timeframes: timeframesInNumber,
     accounts: [],
   })
-  const subSummary = useQuery(api.summary.getTransactionSummaryByTimeframe, {
-    timeframes: [
-      {
-        // TODO: default to today
-        start: timeframesInNumber[activeIndex].start,
-        end: timeframesInNumber[activeIndex].end,
-      },
-    ],
-    accounts: [],
-  })
 
   if (!summary) return <p>Loading transaction summary...</p>
+
+  /*
+   * Using the util function to format the sub-summary
+   */
+  const subSummary = formatTransactionSummary([
+    {
+      transactions: summary.byFrames[activeIndex].transactions,
+      timeframe: summary.byFrames[activeIndex].timeframe,
+    },
+  ])
 
   return (
     <>
       <div className="bg-fill-quaternary rounded-[0.95rem] pl-4">
-        {true ? (
-          <Overview
-            // TODO: make the summary value-optional and handle the loading inside the overview
-            summary={showingSubBreakdown && subSummary ? subSummary : summary}
-          />
-        ) : (
-          <p>Loading sub...</p>
-        )}
+        <Overview summary={showingSubBreakdown ? subSummary : summary} />
         <Bars
           summary={summary}
           onBarClick={idx => {
@@ -174,7 +174,7 @@ const Bars = ({
         const {timeframe, breakdown} = frame
         const {totalFlow: totalFlowInFrame, expenseAmount} = breakdown
         const flowPercentage = (totalFlowInFrame / totalFlow) * 100
-        const expensePercentage = (expenseAmount / totalFlow) * 100
+        const expensePercentage = (expenseAmount / totalFlowInFrame) * 100
         const today = isToday(timeframe.start)
         const isActive = setActive(idx)
 
