@@ -53,6 +53,9 @@ function formatTransactionSummary(args: FormatTransactionSummaryType[]) {
   const netFlow = incomeAmount - expenseAmount
   const eiRatio = expenseAmount / incomeAmount // this Could be infinity
 
+  const highestFlow = Math.max(...breakdownsByFrame.map(b => b.totalFlow))
+  const lowestFlow = Math.min(...breakdownsByFrame.map(b => b.totalFlow))
+
   const count = breakdownsByFrame
     .map(b => b.count)
     .reduce((acc, v) => acc + v, 0)
@@ -62,6 +65,8 @@ function formatTransactionSummary(args: FormatTransactionSummaryType[]) {
     expenseAmount,
     incomeAmount,
     netFlow,
+    highestFlow,
+    lowestFlow,
     eiRatio,
     count,
   }
