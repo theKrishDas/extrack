@@ -21,6 +21,7 @@ import {Button} from "react-aria-components"
 
 import {CURRENCY} from "@/lib/date-utils"
 import {cn} from "@/lib/utils"
+import Bar from "@/components/ui/bar"
 
 const TransactionSummary = () => {
   /*
@@ -161,7 +162,23 @@ const Bars = ({
   showingSubBreakdown: boolean
 }) => {
   const {breakdown, byFrames} = summary
-  const {totalFlow} = breakdown
+  const {highestFlow} = breakdown
+
+  function formatPercentage(arg: number): number {
+    const num = Math.floor(arg)
+
+    if (num > 0 && num < 5) return 3
+
+    const remainder = num % 5
+
+    if (remainder === 0) {
+      return num
+    } else if (remainder <= 2) {
+      return num - remainder
+    } else {
+      return num + (5 - remainder)
+    }
+  }
 
   return (
     <div
@@ -172,40 +189,12 @@ const Bars = ({
     >
       {byFrames.map((frame, idx) => {
         const {timeframe, breakdown} = frame
-        const {totalFlow: totalFlowInFrame, expenseAmount} = breakdown
-        const flowPercentage = (totalFlowInFrame / totalFlow) * 100
-        const expensePercentage = (expenseAmount / totalFlowInFrame) * 100
+        const {totalFlow, expenseAmount} = breakdown
+        const flowPercentage = (totalFlow / highestFlow) * 100
+        const expensePercentage = (expenseAmount / totalFlow) * 100
         const today = isToday(timeframe.start)
         const isActive = setActive(idx)
 
-        const Bar = ({
-          barHeight,
-          childHeight,
-        }: {
-          barHeight: number
-          childHeight: number
-        }) => {
-          return (
-            <div
-              className={cn(
-                "pointer-events-none flex w-full flex-col justify-end overflow-hidden rounded-md",
-                "bg-fill-tertiary",
-                showingSubBreakdown && isActive && "bg-fill-primary",
-                showingSubBreakdown && !isActive && "opacity-30"
-              )}
-              style={{
-                height: `${barHeight}%`,
-              }}
-            >
-              {isActive && (
-                <div
-                  className="bg-ios-red w-full rounded-t-[0.2em]"
-                  style={{height: `${childHeight}%`}}
-                />
-              )}
-            </div>
-          )
-        }
         const Indicator = () => {
           return (
             <span
@@ -222,23 +211,40 @@ const Bars = ({
         }
 
         return (
-          <Button
-            className="relative flex h-30 w-full flex-col items-center justify-end outline-none select-none"
-            key={idx}
-            onPress={() => onBarClick?.(idx)}
-          >
-            <Indicator />
-            <Bar barHeight={flowPercentage} childHeight={expensePercentage} />
+          <div key={idx} className="flex flex-col items-center justify-end">
+            <Button
+              className={cn(
+                "relative flex h-30 w-full flex-col justify-end overflow-hidden rounded-md outline-none select-none",
+                showingSubBreakdown && isActive && "bg-fill-quaternary"
+              )}
+              onPress={() => onBarClick?.(idx)}
+            >
+              <Bar
+                size={formatPercentage(flowPercentage)}
+                className={cn(
+                  "bg-fill-secondary flex flex-col justify-end overflow-hidden rounded-[0.3em]",
+                  showingSubBreakdown && isActive && "bg-fill-primary",
+                  showingSubBreakdown && !isActive && "opacity-18"
+                )}
+              >
+                <Bar
+                  // size={isActive ? formatPercentage(expensePercentage) : 0}
+                  size={formatPercentage(expensePercentage)}
+                  className="bg-ios-red transition-normal duration-250"
+                />
+              </Bar>
+            </Button>
+
             <time
               className={cn(
-                "text-label-secondary pointer-events-none inline-grid h-6 w-6 place-content-center rounded-full text-xs leading-0 font-medium uppercase",
+                "text-label-secondary pointer-events-none inline-grid h-6 w-6 place-content-center rounded-full text-xs leading-0 font-medium uppercase select-none",
                 today &&
                   "text-ios-red font-extrabold mix-blend-plus-darker dark:mix-blend-plus-lighter"
               )}
             >
               {format(timeframe.start, "EEEEE")}
             </time>
-          </Button>
+          </div>
         )
       })}
     </div>
