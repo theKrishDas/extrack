@@ -86,3 +86,28 @@ export const remove = mutation({
   args: {id: v.id("accounts")},
   handler: async (ctx, {id}) => await ctx.db.delete(id),
 })
+
+/*
+ * Balance Querries
+ */
+export const getBalance = query({
+  args: {account: v.union(v.literal("all"), v.id("accounts"))},
+  handler: async (ctx, {account}) => {
+    if (account === "all") {
+      const accounts = await ctx.db.query("accounts").collect()
+      const balance = accounts.reduce((acc, v) => acc + v.currentBalance, 0)
+      return balance
+    }
+
+    const relevantAccount = await ctx.db
+      .query("accounts")
+      .withIndex("by_id", q => q.eq("_id", account))
+      .unique()
+
+    if (!relevantAccount)
+      throw new Error("Account with the given Id does not exist!")
+
+    const balance = relevantAccount.currentBalance
+    return balance
+  },
+})
