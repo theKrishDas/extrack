@@ -103,3 +103,15 @@ export const remove = mutation({
     return id
   },
 })
+
+export const transactionsBetween = query({
+  args: {start: v.number(), end: v.number()},
+  handler: async (ctx, {start, end}) => {
+    return await ctx.db
+      .query("transactions")
+      .withIndex("by_creation_time", q =>
+        q.gte("_creationTime", start).lte("_creationTime", end)
+      )
+      .collect()
+  },
+})
