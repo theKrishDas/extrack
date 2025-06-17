@@ -88,6 +88,37 @@ export const remove = mutation({
 })
 
 /*
+ * Expensive querry don't run very often!
+ */
+export const syncBalance = internalMutation({
+  args: {account: v.id("accounts")},
+  handler: async (ctx, {account: accountId}) => {
+    const account = await ctx.db.get(accountId)
+
+    if (!account) throw new Error("Account with the given Id does not exist!")
+
+    // Full table scan of transactions
+    const transactions = await ctx.db
+      .query("transactions")
+      .withIndex("by_account", q => q.eq("account", account._id))
+      .collect()
+
+    const net = transactions
+      .map(t => t.amount * (t.type === "expense" ? -1 : 1))
+      .reduce((acc, v) => acc + v, 0)
+
+    const newBalance = account.startingBalance + net
+
+    await ctx.db.patch(account._id, {currentBalance: newBalance})
+
+    return {
+      startingBalance: account.startingBalance,
+      currentBalance: newBalance,
+    }
+  },
+})
+
+/*
  * Balance Querries
  */
 export const getBalance = query({
