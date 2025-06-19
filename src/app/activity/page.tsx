@@ -4,22 +4,26 @@ import {useMemo} from "react"
 import {ark} from "@ark-ui/react/factory"
 import {useNumberFormatter} from "@react-aria/i18n"
 import {api} from "#/convex/_generated/api"
-import {Doc} from "#/convex/_generated/dataModel"
 import {usePaginatedQuery} from "convex/react"
+import {format, isToday, isYesterday} from "date-fns"
 import {GroupedVirtuoso} from "react-virtuoso"
 
 import {CURRENCY} from "@/lib/date-utils"
-import {cn} from "@/lib/utils"
+import {TransactionJoined} from "@/lib/types/convex-queries"
+import {cn, createCollection} from "@/lib/utils"
 import {IonArrowDown, IonArrowUp} from "@/components/icons/ion"
 import {Container} from "@/components/layout/container"
-import {createCollection} from "@/app/(index)/local-comps/TransactionDisplay"
 
 const Page = () => {
   const {
     results: transactions,
     loadMore,
     isLoading,
-  } = usePaginatedQuery(api.transactions.getPaginated, {}, {initialNumItems: 6})
+  } = usePaginatedQuery(
+    api.transactions.getJoinedPaginated,
+    {},
+    {initialNumItems: 12}
+  )
 
   return (
     <>
@@ -45,13 +49,19 @@ const Virtuoso = ({
   isLoading,
   loadMore,
 }: {
-  transactions: Doc<"transactions">[]
+  transactions: TransactionJoined[]
   isLoading: boolean
   loadMore: (n: number) => void
 }) => {
   const {groupCounts, groupNames, allItemsGrouped, allItemsFlat} =
     useMemo(() => {
-      const collection = createCollection(transactions)
+      const collection = createCollection(transactions, "_id", item =>
+        isToday(item._creationTime)
+          ? "Today"
+          : isYesterday(item._creationTime)
+            ? "Yesterday"
+            : format(item._creationTime, "EEEE, MMMM dd")
+      )
       const groups = collection.group()
 
       return {
@@ -75,10 +85,10 @@ const Virtuoso = ({
     <GroupedVirtuoso
       style={{height: "100%"}}
       groupCounts={groupCounts}
-      endReached={() => loadMore(5)}
+      endReached={() => loadMore(10)}
       useWindowScroll
       groupContent={index => (
-        <h4 className="text-label-tertiary px-4 pt-6 text-sm leading-8 font-medium uppercase">
+        <h4 className="text-label-tertiary px-4 pt-6 text-sm leading-8 font-medium">
           {groupNames[index]}
         </h4>
       )}
@@ -123,9 +133,7 @@ const Virtuoso = ({
              */}
             <div className="flex-1">
               <div className="border-separator-opaque flex h-12 w-full items-center pr-4">
-                <p className="font-medium">
-                  {transaction.category.slice(0, 6)}
-                </p>
+                <p className="font-medium">{transaction.category.name}</p>
                 <div className="flex-1" />
                 <p className="text-label-secondary">
                   {formatter.format(transaction.amount)}

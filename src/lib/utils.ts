@@ -1,3 +1,4 @@
+import {createListCollection} from "@ark-ui/react/collection"
 import {clsx, type ClassValue} from "clsx"
 import {twMerge} from "tailwind-merge"
 
@@ -27,3 +28,17 @@ export function formatDate(creationTime: number) {
 export type Prettify<T> = {
   [K in keyof T]: T[K]
 } & {}
+
+export function createCollection<T>(
+  data: T[],
+  value: keyof T,
+  groupBy?: (item: T, index: number) => string
+) {
+  const mapped = data.map(t => ({...t, value: t[value]}))
+
+  const collection = createListCollection({
+    items: mapped,
+    groupBy,
+  })
+  return collection
+}
