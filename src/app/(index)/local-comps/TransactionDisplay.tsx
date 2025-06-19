@@ -8,7 +8,7 @@ import {useQuery} from "convex/react"
 import {getRelativeDate} from "@/lib/date-utils"
 import {List} from "@/components/ui/list"
 
-function createCollection(transactions: Doc<"transactions">[]) {
+export function createCollection(transactions: Doc<"transactions">[]) {
   const mappedTransactions = transactions.map(transaction => ({
     ...transaction,
     value: transaction._id,

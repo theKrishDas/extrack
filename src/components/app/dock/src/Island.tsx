@@ -18,6 +18,7 @@ import {
 import {IonArrowDown, IonArrowUp} from "@/components/icons/ion/arrow"
 
 import {physics} from "./helpers"
+import IdleNav from "./Idle"
 
 export default function Island({
   open,
@@ -56,7 +57,7 @@ export default function Island({
             // *
             // Dock content when idle.
             // *
-            <Button color="gray">Home</Button>
+            <IdleNav />
           ) : (
             // *
             // Renders "Income" and "Expense" buttons for transaction type

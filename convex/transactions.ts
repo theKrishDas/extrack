@@ -1,3 +1,4 @@
+import {paginationOptsValidator} from "convex/server"
 import {v} from "convex/values"
 
 import {transactionTypes} from "../src/lib/constants/transaction-types"
@@ -113,5 +114,17 @@ export const transactionsBetween = query({
         q.gte("_creationTime", start).lte("_creationTime", end)
       )
       .collect()
+  },
+})
+
+export const getPaginated = query({
+  args: {paginationOpts: paginationOptsValidator},
+  handler: async (ctx, args) => {
+    const transactions = await ctx.db
+      .query("transactions")
+      .order("desc")
+      .paginate(args.paginationOpts)
+
+    return transactions
   },
 })
