@@ -1,9 +1,11 @@
+import {stream} from "convex-helpers/server/stream"
 import {paginationOptsValidator} from "convex/server"
 import {v} from "convex/values"
 
 import {transactionTypes} from "../src/lib/constants/transaction-types"
 import {internal} from "./_generated/api"
 import {mutation, query} from "./_generated/server"
+import schema from "./schema"
 
 export const getAll = query({
   args: {},
@@ -126,5 +128,33 @@ export const getPaginated = query({
       .paginate(args.paginationOpts)
 
     return transactions
+  },
+})
+
+export const getJoinedPaginated = query({
+  args: {paginationOpts: paginationOptsValidator},
+  handler: async (ctx, {paginationOpts}) => {
+    const transactionStream = stream(ctx.db, schema)
+      .query("transactions")
+      .order("desc")
+      .map(async transaction => {
+        const [category, account] = await Promise.all([
+          await ctx.db.get(transaction.category)!,
+          await ctx.db.get(transaction.account)!,
+        ])
+
+        // This check ensures that the return types for `category` and `account`
+        // do not include null values.
+        // This condition should never be met, as any attempt to retrieve an
+        // invalid account or category using `ctx.db.get(id)` would have already
+        // resulted in an error from Convex.
+        if (!category || !account) {
+          throw new Error("Invariant violated: missing related record")
+        }
+
+        return {...transaction, category, account}
+      })
+
+    return transactionStream.paginate({...paginationOpts, maximumRowsRead: 50})
   },
 })
