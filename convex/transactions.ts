@@ -2,6 +2,7 @@ import {stream} from "convex-helpers/server/stream"
 import {paginationOptsValidator} from "convex/server"
 import {v} from "convex/values"
 
+import {FAKE_USER_NAME_DO_NOT_PUSH_TO_PRODUCTION} from "../src/lib/constants/fake-username"
 import {transactionTypes} from "../src/lib/constants/transaction-types"
 import {internal} from "./_generated/api"
 import {mutation, query} from "./_generated/server"
@@ -10,43 +11,19 @@ import schema from "./schema"
 export const getAll = query({
   args: {},
   handler: async ctx => {
-    return await ctx.db
-      .query("transactions")
-      .withIndex("by_creation_time")
-      .order("desc")
-      .collect()
-  },
-})
+    const ownerId = FAKE_USER_NAME_DO_NOT_PUSH_TO_PRODUCTION
 
-export const getLimited = query({
-  args: {limit: v.number()},
-  handler: async (ctx, {limit}) => {
     return await ctx.db
       .query("transactions")
-      .withIndex("by_creation_time")
-      .order("desc")
-      .take(limit)
+      .withIndex("by_owner", q => q.eq("ownerId", ownerId))
+      .order("asc")
+      .collect()
   },
 })
 
 export const getById = query({
   args: {id: v.id("transactions")},
-  handler: async (ctx, {id}) => {
-    return await ctx.db
-      .query("transactions")
-      .withIndex("by_id", q => q.eq("_id", id))
-      .unique()
-  },
-})
-
-export const getByType = query({
-  args: {type: v.union(...transactionTypes.map(t => v.literal(t)))},
-  handler: async (ctx, {type}) => {
-    return await ctx.db
-      .query("transactions")
-      .filter(q => q.eq(q.field("type"), type))
-      .collect()
-  },
+  handler: async (ctx, {id}) => await ctx.db.get(id),
 })
 
 export const add = mutation({
@@ -56,9 +33,17 @@ export const add = mutation({
     type: v.union(...transactionTypes.map(t => v.literal(t))),
     category: v.id("categories"),
     account: v.id("accounts"),
+    date: v.number(),
   },
   handler: async (ctx, args) => {
-    const category = await ctx.db.get(args.category)
+    const [account, category] = await Promise.all([
+      ctx.db.get(args.account),
+      ctx.db.get(args.category),
+    ])
+
+    if (!account) {
+      throw new Error("Account not found for the given ID.")
+    }
 
     if (!category) {
       throw new Error("Category not found for the given ID.")
@@ -68,9 +53,19 @@ export const add = mutation({
       throw new Error("Type of the transaction and category doesn't match!")
     }
 
+    const ownerId = FAKE_USER_NAME_DO_NOT_PUSH_TO_PRODUCTION
+
     await Promise.all([
-      ctx.db.insert("transactions", args),
-      ctx.runMutation(internal.accounts.updateCurrentBalance, {
+      ctx.db.insert("transactions", {
+        ownerId,
+        account: account._id,
+        category: category._id,
+        amount: args.amount,
+        date: args.date,
+        type: args.type,
+        note: args.note,
+      }),
+      ctx.runMutation(internal.accounts.applyTransaction, {
         id: args.account,
         amount: args.amount,
         type: args.type,
@@ -96,10 +91,10 @@ export const remove = mutation({
 
     await Promise.all([
       ctx.db.delete(id),
-      ctx.runMutation(internal.accounts.updateCurrentBalance, {
+      ctx.runMutation(internal.accounts.applyTransaction, {
         id: account._id,
         amount,
-        type,
+        type: type === "expense" ? "income" : "expense",
       }),
     ])
 
@@ -107,35 +102,30 @@ export const remove = mutation({
   },
 })
 
-export const transactionsBetween = query({
+export const getBetweenTimeframe = query({
   args: {start: v.number(), end: v.number()},
   handler: async (ctx, {start, end}) => {
     return await ctx.db
       .query("transactions")
-      .withIndex("by_creation_time", q =>
-        q.gte("_creationTime", start).lte("_creationTime", end)
+      .withIndex("by_date", q =>
+        q
+          .eq("ownerId", FAKE_USER_NAME_DO_NOT_PUSH_TO_PRODUCTION)
+          .gte("date", start)
+          .lte("date", end)
       )
-      .collect()
-  },
-})
-
-export const getPaginated = query({
-  args: {paginationOpts: paginationOptsValidator},
-  handler: async (ctx, args) => {
-    const transactions = await ctx.db
-      .query("transactions")
       .order("desc")
-      .paginate(args.paginationOpts)
-
-    return transactions
+      .collect()
   },
 })
 
 export const getJoinedPaginated = query({
   args: {paginationOpts: paginationOptsValidator},
   handler: async (ctx, {paginationOpts}) => {
+    const ownerId = FAKE_USER_NAME_DO_NOT_PUSH_TO_PRODUCTION
+
     const transactionStream = stream(ctx.db, schema)
       .query("transactions")
+      .withIndex("by_date", q => q.eq("ownerId", ownerId))
       .order("desc")
       .map(async transaction => {
         const [category, account] = await Promise.all([
@@ -147,7 +137,7 @@ export const getJoinedPaginated = query({
         // do not include null values.
         // This condition should never be met, as any attempt to retrieve an
         // invalid account or category using `ctx.db.get(id)` would have already
-        // resulted in an error from Convex.
+        // resulted in an error from Convex by now.
         if (!category || !account) {
           throw new Error("Invariant violated: missing related record")
         }

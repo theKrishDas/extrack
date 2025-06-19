@@ -36,7 +36,7 @@ export const useBalanceOn = ({
   const {start, end} = getDateRange(date)
 
   // Fetch all transactions that occurred within the calculated date range from Convex.
-  const transactionsBetween = useQuery(api.transactions.transactionsBetween, {
+  const transactionsBetween = useQuery(api.transactions.getBetweenTimeframe, {
     start,
     end,
   })

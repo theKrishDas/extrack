@@ -1,11 +1,6 @@
-import {Button} from "@/components/ui/button/animated-button"
 import {Dock} from "@/components/app/dock"
 import {Summary} from "@/components/app/summary"
-import {IonChevronForward} from "@/components/icons/ion"
 import {Container} from "@/components/layout/container"
-
-import TransactionDisplay from "./local-comps/TransactionDisplay"
-import Transactions from "./local-comps/Transactions"
 
 export default function Home() {
   return (
@@ -21,13 +16,7 @@ export default function Home() {
         <Container className="flex flex-col gap-0.5" as="section">
           <div className="">
             <h3 className="sr-only">Recent transactions</h3>
-            <Button variant="ghost" color="gray">
-              All transactions
-              <IonChevronForward />
-            </Button>
           </div>
-          <Transactions />
-          <TransactionDisplay />
         </Container>
       </main>
     </>

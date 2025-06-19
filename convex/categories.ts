@@ -1,13 +1,19 @@
 import {v} from "convex/values"
 
 import {colors} from "../src/lib/constants/colors"
+import {FAKE_USER_NAME_DO_NOT_PUSH_TO_PRODUCTION} from "../src/lib/constants/fake-username"
 import {transactionTypes} from "../src/lib/constants/transaction-types"
 import {mutation, query} from "./_generated/server"
 
 export const getAll = query({
   args: {},
   handler: async ctx => {
-    return await ctx.db.query("categories").collect()
+    return await ctx.db
+      .query("categories")
+      .withIndex("by_owner", q =>
+        q.eq("ownerId", FAKE_USER_NAME_DO_NOT_PUSH_TO_PRODUCTION)
+      )
+      .collect()
   },
 })
 
@@ -26,7 +32,11 @@ export const getByType = query({
   handler: async (ctx, {type}) => {
     return await ctx.db
       .query("categories")
-      .filter(q => q.eq(q.field("type"), type))
+      .withIndex("by_type", q =>
+        q
+          .eq("ownerId", FAKE_USER_NAME_DO_NOT_PUSH_TO_PRODUCTION)
+          .eq("type", type)
+      )
       .collect()
   },
 })
@@ -36,8 +46,37 @@ export const add = mutation({
     name: v.string(),
     color: v.union(...colors.map(c => v.literal(c))),
     type: v.union(...transactionTypes.map(t => v.literal(t))),
+    icon: v.optional(v.string()),
   },
-  handler: async (ctx, args) => await ctx.db.insert("categories", args),
+  handler: async (ctx, {name, type, color, icon: argIcon}) => {
+    const existing = await ctx.db
+      .query("categories")
+      .withIndex("by_type_name", q =>
+        q
+          .eq("ownerId", FAKE_USER_NAME_DO_NOT_PUSH_TO_PRODUCTION)
+          .eq("type", type)
+          .eq("name", name)
+      )
+      .unique()
+
+    if (existing) {
+      throw new Error(`Category with name "${name}" already exists`)
+    }
+
+    const ownerId = FAKE_USER_NAME_DO_NOT_PUSH_TO_PRODUCTION
+    const is_vendor = false
+    const icon =
+      argIcon || type === "expense" ? "ion:arrow-down" : "ion:arrow-up"
+
+    return await ctx.db.insert("categories", {
+      ownerId,
+      color,
+      icon,
+      is_vendor,
+      name,
+      type,
+    })
+  },
 })
 
 export const remove = mutation({

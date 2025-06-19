@@ -1,12 +1,18 @@
 import {v} from "convex/values"
 
+import {FAKE_USER_NAME_DO_NOT_PUSH_TO_PRODUCTION} from "../src/lib/constants/fake-username"
 import {transactionTypes} from "../src/lib/constants/transaction-types"
 import {internalMutation, mutation, query} from "./_generated/server"
 
 export const getAll = query({
   args: {},
   handler: async ctx => {
-    return await ctx.db.query("accounts").collect()
+    return await ctx.db
+      .query("accounts")
+      .withIndex("by_owner", q =>
+        q.eq("ownerId", FAKE_USER_NAME_DO_NOT_PUSH_TO_PRODUCTION)
+      )
+      .collect()
   },
 })
 
@@ -24,15 +30,25 @@ export const add = mutation({
   args: {
     name: v.string(),
     balance: v.optional(v.number()),
+    icon: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
+    /**
+     * Changed through user settings
+     */
     const name = args.name
     const balance = args.balance || 0
     const is_active = true
+    const is_default = false
+    const icon = args.icon || "material-symbols:wallet"
 
     const existing = await ctx.db
       .query("accounts")
-      .withIndex("by_name", q => q.eq("name", name))
+      .withIndex("by_name", q =>
+        q
+          .eq("ownerId", FAKE_USER_NAME_DO_NOT_PUSH_TO_PRODUCTION)
+          .eq("name", name)
+      )
       .unique()
 
     if (existing) {
@@ -40,10 +56,13 @@ export const add = mutation({
     }
 
     return await ctx.db.insert("accounts", {
+      ownerId: FAKE_USER_NAME_DO_NOT_PUSH_TO_PRODUCTION,
       name,
       startingBalance: balance,
       currentBalance: balance,
       is_active,
+      icon,
+      is_default,
     })
   },
 })
@@ -61,7 +80,7 @@ export const toggleActive = mutation({
   },
 })
 
-export const updateCurrentBalance = internalMutation({
+export const applyTransaction = internalMutation({
   args: {
     id: v.id("accounts"),
     type: v.union(...transactionTypes.map(t => v.literal(t))),
@@ -91,8 +110,11 @@ export const remove = mutation({
  * Expensive querry don't run very often!
  */
 export const syncBalance = internalMutation({
-  args: {account: v.id("accounts")},
-  handler: async (ctx, {account: accountId}) => {
+  args: {
+    ownerId: v.string(),
+    account: v.id("accounts"),
+  },
+  handler: async (ctx, {ownerId, account: accountId}) => {
     const account = await ctx.db.get(accountId)
 
     if (!account) throw new Error("Account with the given Id does not exist!")
@@ -100,7 +122,9 @@ export const syncBalance = internalMutation({
     // Full table scan of transactions
     const transactions = await ctx.db
       .query("transactions")
-      .withIndex("by_account", q => q.eq("account", account._id))
+      .withIndex("by_account", q =>
+        q.eq("ownerId", ownerId).eq("account", account._id)
+      )
       .collect()
 
     const net = transactions

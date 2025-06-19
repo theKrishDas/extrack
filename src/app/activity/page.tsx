@@ -2,6 +2,7 @@
 
 import {useMemo} from "react"
 import {ark} from "@ark-ui/react/factory"
+import {Icon} from "@iconify/react/"
 import {useNumberFormatter} from "@react-aria/i18n"
 import {api} from "#/convex/_generated/api"
 import {usePaginatedQuery} from "convex/react"
@@ -56,11 +57,11 @@ const Virtuoso = ({
   const {groupCounts, groupNames, allItemsGrouped, allItemsFlat} =
     useMemo(() => {
       const collection = createCollection(transactions, "_id", item =>
-        isToday(item._creationTime)
+        isToday(item.date)
           ? "Today"
-          : isYesterday(item._creationTime)
+          : isYesterday(item.date)
             ? "Yesterday"
-            : format(item._creationTime, "EEEE, MMMM dd")
+            : format(item.date, "EEEE, MMMM dd")
       )
       const groups = collection.group()
 
@@ -118,13 +119,13 @@ const Virtuoso = ({
             <ark.div className="flex items-center pr-2">
               <div
                 className={cn(
-                  "inline-grid aspect-square place-content-center rounded-full p-0.5 text-xl [&_svg]:mix-blend-plus-darker [&_svg]:dark:mix-blend-plus-lighter",
+                  "inline-grid aspect-square place-content-center rounded-full p-1.5 text-base [&_svg]:mix-blend-plus-darker [&_svg]:dark:mix-blend-plus-lighter",
                   isExpense
                     ? "text-ios-red bg-ios-red/[var(--fill-tertiary-opacity)]"
                     : "text-ios-green bg-ios-green/[var(--fill-tertiary-opacity)]"
                 )}
               >
-                {isExpense ? <IonArrowDown /> : <IonArrowUp />}
+                <Icon icon={transaction.category.icon} />
               </div>
             </ark.div>
 
