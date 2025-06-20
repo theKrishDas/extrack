@@ -8,10 +8,11 @@ import {usePaginatedQuery} from "convex/react"
 import {format, isToday, isYesterday} from "date-fns"
 import {Button} from "react-aria-components"
 import {GroupedVirtuoso} from "react-virtuoso"
+import {Drawer} from "vaul"
 
 import {CURRENCY} from "@/lib/date-utils"
-import {TransactionJoined} from "@/lib/types/convex-queries"
 import {cn, createCollection} from "@/lib/utils"
+import {DataTable, DataType} from "@/app/(index)/local-comps/DataTable"
 
 export default function TransactionsList() {
   /**
@@ -47,45 +48,7 @@ export default function TransactionsList() {
   const allItemsGrouped = groups.map(([, t]) => t)
 
   /**
-   * Render the Virtusuo list
-   */
-  return (
-    <GroupedVirtuoso
-      style={{height: "100%"}}
-      groupCounts={groupCounts}
-      endReached={() => loadMore(10)}
-      useWindowScroll
-      groupContent={index => (
-        <h4 className="text-label-tertiary px-4 pt-6 text-sm leading-8 font-medium">
-          {groupNames[index]}
-        </h4>
-      )}
-      itemContent={(idx, groupIndex) => {
-        const groupLength = allItemsGrouped[groupIndex].length
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const lastIndex = groupLength - 1
-        const indexInGroup =
-          idx -
-          groupCounts
-            .slice(0, groupIndex)
-            .reduce((sum, count) => sum + count, 0)
-        const transaction = allItemsFlat[idx]
-
-        return <ListItem transaction={transaction} />
-      }}
-      components={{
-        Item: props => <ark.div className="groupItem" asChild {...props} />,
-        Group: props => <ark.div className="groupGroup" asChild {...props} />,
-        List: props => <ark.div className="groupList" {...props} />,
-        Footer: () => <Footer isLoading={isLoading} />,
-      }}
-    />
-  )
-}
-
-const ListItem = ({transaction}: {transaction: TransactionJoined}) => {
-  /**
-   * Format hook to format the amounts
+   * To format the amounts by locale
    */
   const formatter = useNumberFormatter({
     style: "currency",
@@ -93,45 +56,127 @@ const ListItem = ({transaction}: {transaction: TransactionJoined}) => {
     minimumFractionDigits: 0,
   })
 
+  /**
+   * Render the Virtusuo list
+   */
   return (
-    <Button
-      className={cn(
-        "bg-fill-quaternary flex w-full items-center gap-2 pl-4 select-none",
-        "[&:first-child]:rounded-t-[0.95rem]", // Pretty self-explanatory
-        "[&:is(h4_+_*)]:rounded-t-[0.95rem]", // Button right after the heading
-        "[&:not(:has(+button))]:rounded-b-[0.95em]", // The last button in the group
-        "[&:not(:has(+button))_.separator]:bg-transparent", // Separator of the last button
-        // "[&:not(:has(+_h4))]:ring"
-        "focus-visible:ring-ios-blue/[var(--separator-non-opaque-opacity)] outline-none focus-visible:rounded-xl focus-visible:ring-4"
-      )}
-      // onPress={() => onPress(idx, indexInGroup, groupIndex)}
-    >
-      {/*
-       * Wrapper for the icon
-       */}
-      <ark.div className="h-7.5 w-7.5 overflow-hidden" asChild>
-        <div className="inline-grid place-content-center rounded-full text-xl">
-          <Icon icon={transaction.category.icon} />
-        </div>
-      </ark.div>
+    <>
+      <GroupedVirtuoso
+        // overscan={{main: 500, reverse: 500}}
+        increaseViewportBy={{top: 400, bottom: 400}}
+        groupCounts={groupCounts}
+        endReached={() => loadMore(10)}
+        useWindowScroll
+        groupContent={index => (
+          <h4 className="text-label-tertiary px-4 pt-6 text-sm leading-8 font-medium">
+            {groupNames[index]}
+          </h4>
+        )}
+        itemContent={(idx, groupIndex) => {
+          const transaction = allItemsFlat[idx]
+          const groupLength = allItemsGrouped[groupIndex].length
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          const lastIndex = groupLength - 1
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          const indexInGroup =
+            idx -
+            groupCounts
+              .slice(0, groupIndex)
+              .reduce((sum, count) => sum + count, 0)
 
-      {/*
-       * Wraper for the content and the separator
-       */}
-      <div className="flex-1">
-        <div className="border-separator-opaque flex h-12 w-full items-center pr-4">
-          <p className="font-medium">{transaction.category.name}</p>
-          <div className="flex-1" />
-          <p className="text-label-secondary">
-            {formatter.format(transaction.amount)}
-          </p>
-        </div>
+          return (
+            <div
+              className={cn(
+                "flex h-full w-full items-center gap-2 px-4",
+                "ring-ios-blue/[var(--separator-non-opaque-opacity)] rounded-2xl group-focus-visible:ring-4"
+              )}
+            >
+              {/*
+               * Wrapper for the icon
+               */}
+              <ark.div className="h-7.5 w-7.5 overflow-hidden" asChild>
+                <div className="inline-grid place-content-center text-xl">
+                  <Icon icon={transaction.category.icon} />
+                </div>
+              </ark.div>
 
-        <div className="bg-separator-opaque separator h-px w-full mix-blend-color-dodge" />
-      </div>
-    </Button>
+              {/*
+               * Rest of the content
+               */}
+              <div className="flex h-full w-full flex-1 flex-col">
+                <div className="fle-1 flex h-full w-full items-center">
+                  <p className="font-medium">{transaction.category.name}</p>
+                  <div className="flex-1" />
+                  <p className="text-label-secondary">
+                    {formatter.format(transaction.amount)}
+                  </p>
+                </div>
+
+                <div className="border-b-separator-opaque listSeparator w-full border-b-1 mix-blend-color-dodge group-focus-visible:border-b-transparent" />
+              </div>
+            </div>
+          )
+        }}
+        components={{
+          Item: props => {
+            /**
+             * Getting the index of the item from the data-attributes
+             */
+            const itemIndex = Number(props["data-item-index"])
+            const {
+              amount,
+              date,
+              account: {name: accountName},
+              category: {name: categorName},
+              note,
+            } = allItemsFlat[itemIndex]
+            const data: DataType = {
+              header: ["Key", "value"],
+              body: [
+                ["Amount", formatter.format(amount)],
+                ["Date", format(date, "dd MMM 'at' hh:mm a")],
+                ["Category", categorName],
+                ["Account", accountName],
+                ["Note", note],
+              ],
+            }
+
+            return (
+              <Drawer.Root>
+                <Drawer.Trigger asChild>
+                  <Button
+                    className={cn(
+                      "bg-fill-quaternary group flex h-12 w-full outline-none select-none",
+                      "[&:first-child]:rounded-t-2xl", // Pretty self-explanatory
+                      "[&:is(.groupTitle_+_*)]:rounded-t-2xl", // Button right after the heading
+                      "[&:not(:has(+button))]:rounded-b-2xl", // The last button in the group
+                      "[&:not(:has(+button))_.listSeparator]:border-b-0", // Separator of the last button
+                      "focus-visible:ring-ios-blue/[var(--separator-non-opaque-opacity)]"
+                      // "focus-visible:rounded-2xls focus-visible: focus-visible:[&_.listSeparator]:border-b-transparent [&_.listWrapper]:ring-4"
+                    )}
+                    {...props}
+                  />
+                </Drawer.Trigger>
+                <Drawer.Portal>
+                  <Drawer.Overlay className="bg-background/60 fixed inset-0 z-50" />
+                  <Drawer.Content className="fixed inset-x-0 bottom-0 z-50 mx-auto mt-24 flex h-auto max-w-xl flex-col bg-[#1c1c1e] p-2 pt-0 outline-none">
+                    <Drawer.Handle />
+                    <Drawer.Title>This is a title</Drawer.Title>
+                    <DataTable data={data} ariaLabel="Transaction details" />
+                  </Drawer.Content>
+                </Drawer.Portal>
+              </Drawer.Root>
+            )
+          },
+          Group: props => <div className="groupTitle" {...props} />,
+          List: props => <div className="groupList" {...props} />,
+          Footer: () => <Footer isLoading={isLoading} />,
+        }}
+      />
+    </>
   )
 }
+
 const Footer = ({isLoading}: {isLoading: boolean}) => {
   return (
     <p className="text-center">{isLoading ? "Loading..." : "End Reached"}</p>
