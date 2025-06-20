@@ -34,6 +34,7 @@ const Form = ({afterSubmit}: {afterSubmit?: () => void}) => {
       note,
       account: account as Id<"accounts">,
       category: category as Id<"categories">,
+      date: new Date().getTime(),
     })
     setLastUsedCategory(transactionType, category)
     setLastUsedAccount(account)
