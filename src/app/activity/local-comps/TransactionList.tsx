@@ -1,10 +1,11 @@
 "use client"
 
+import {useState} from "react"
 import {ark} from "@ark-ui/react/factory"
 import {Icon} from "@iconify/react/"
 import {useNumberFormatter} from "@react-aria/i18n"
 import {api} from "#/convex/_generated/api"
-import {usePaginatedQuery} from "convex/react"
+import {useMutation, usePaginatedQuery} from "convex/react"
 import {format, isToday, isYesterday} from "date-fns"
 import {Button} from "react-aria-components"
 import {GroupedVirtuoso} from "react-virtuoso"
@@ -12,6 +13,8 @@ import {Drawer} from "vaul"
 
 import {CURRENCY} from "@/lib/date-utils"
 import {cn, createCollection} from "@/lib/utils"
+import {Button as AnimatedButton} from "@/components/ui/button/animated-button"
+import {ConfirmButton} from "@/components/ui/confirm-button"
 import {DataTable, DataType} from "@/app/(index)/local-comps/DataTable"
 
 export default function TransactionsList() {
@@ -124,6 +127,7 @@ export default function TransactionsList() {
              */
             const itemIndex = Number(props["data-item-index"])
             const {
+              _id: id,
               amount,
               date,
               account: {name: accountName},
@@ -140,9 +144,11 @@ export default function TransactionsList() {
                 ["Note", note],
               ],
             }
+            const [open, setOpen] = useState(false)
+            const removeTransaction = useMutation(api.transactions.remove)
 
             return (
-              <Drawer.Root>
+              <Drawer.Root open={open} onOpenChange={setOpen}>
                 <Drawer.Trigger asChild>
                   <Button
                     className={cn(
@@ -159,10 +165,35 @@ export default function TransactionsList() {
                 </Drawer.Trigger>
                 <Drawer.Portal>
                   <Drawer.Overlay className="bg-background/60 fixed inset-0 z-50" />
-                  <Drawer.Content className="fixed inset-x-0 bottom-0 z-50 mx-auto mt-24 flex h-auto max-w-xl flex-col bg-[#1c1c1e] p-2 pt-0 outline-none">
-                    <Drawer.Handle />
-                    <Drawer.Title>This is a title</Drawer.Title>
-                    <DataTable data={data} ariaLabel="Transaction details" />
+                  <Drawer.Content className="fixed inset-x-0 bottom-0 z-50 mx-auto mt-24 flex h-auto max-w-xl flex-col rounded-t-xl bg-[#1c1c1e] p-4 pt-0 outline-none">
+                    <Drawer.Handle className="my-2" />
+                    <Drawer.Title className="text-2xl font-bold">
+                      Transaction
+                    </Drawer.Title>
+
+                    <DataTable
+                      data={data}
+                      ariaLabel="Transaction details"
+                      className="mt-5"
+                    />
+
+                    <div className="flex flex-row-reverse gap-2">
+                      <AnimatedButton
+                        className="flex-1"
+                        color="gray"
+                        isDisabled
+                      >
+                        Edit
+                      </AnimatedButton>
+                      <ConfirmButton
+                        className="flex-1"
+                        restVariants={{color: "gray"}}
+                        onConfirm={() => {
+                          setOpen(false)
+                          removeTransaction({id})
+                        }}
+                      />
+                    </div>
                   </Drawer.Content>
                 </Drawer.Portal>
               </Drawer.Root>
