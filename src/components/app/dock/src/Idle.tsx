@@ -1,4 +1,5 @@
 import {useRouter} from "next/navigation"
+import {FiActivity} from "react-icons/fi"
 
 import {Button} from "@/components/ui/button/animated-button"
 
@@ -11,7 +12,8 @@ const IdleNav = () => {
         Home
       </Button>
       <Button color="gray" onPress={() => router.push("/activity")}>
-        ✗ Activity
+        <FiActivity strokeWidth={1.8} />
+        Activity
       </Button>
     </div>
   )
