@@ -1,7 +1,6 @@
 "use client"
 
 import {ReactNode, useState} from "react"
-import {Icon} from "@iconify/react"
 import {useNumberFormatter} from "@react-aria/i18n"
 import {api} from "#/convex/_generated/api"
 import {formatTransactionSummary} from "#/convex/utils"
@@ -130,20 +129,7 @@ const Overview = ({
     <div className="grid grid-cols-8 gap-2 pr-4">
       <Stats label={"Spent"} value={formatter.format(expenseAmount)} />
       <Stats label={"Earned"} value={formatter.format(incomeAmount)} />
-      <Stats
-        label={"Net Flow"}
-        value={formatter.format(netFlow)}
-        span={3}
-        icon={
-          <Icon
-            icon={netFlow < 0 ? "ion:ios-trending-down" : "ion:ios-trending-up"}
-            className={cn(
-              "text-[1em] font-bold",
-              netFlow < 0 ? "text-ios-red" : "text-ios-green"
-            )}
-          />
-        }
-      />
+      <Stats label={"Net Flow"} value={formatter.format(netFlow)} span={3} />
     </div>
   )
 }

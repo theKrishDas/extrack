@@ -2,7 +2,7 @@
 
 import {useState} from "react"
 import {ark} from "@ark-ui/react/factory"
-import {Icon} from "@iconify/react/"
+import {Icon} from "@iconify/react/dist/iconify.cjs" // TODO: use a better approach
 import {useNumberFormatter} from "@react-aria/i18n"
 import {api} from "#/convex/_generated/api"
 import {useMutation, usePaginatedQuery} from "convex/react"

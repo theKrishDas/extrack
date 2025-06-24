@@ -1,5 +1,4 @@
 import {useRouter} from "next/navigation"
-import {Icon} from "@iconify/react"
 
 import {Button} from "@/components/ui/button/animated-button"
 
@@ -12,8 +11,7 @@ const IdleNav = () => {
         Home
       </Button>
       <Button color="gray" onPress={() => router.push("/activity")}>
-        <Icon icon="material-symbols:moving" />
-        Activity
+        ✗ Activity
       </Button>
     </div>
   )
