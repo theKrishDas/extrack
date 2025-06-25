@@ -12,12 +12,6 @@ export default function Home() {
         <Container className="flex flex-col gap-0.5" as="section">
           <Summary />
         </Container>
-
-        <Container className="flex flex-col gap-0.5" as="section">
-          <div className="">
-            <h3 className="sr-only">Recent transactions</h3>
-          </div>
-        </Container>
       </main>
     </>
   )
