@@ -2,6 +2,7 @@
 
 import {useNumberFormatter} from "@react-aria/i18n"
 import {startOfMonth, subMonths} from "date-fns"
+import {IoArrowDownCircle, IoArrowUpCircle} from "react-icons/io5"
 
 import {CURRENCY} from "@/lib/date-utils"
 import {useBalanceOn} from "@/hooks/convex/balance"
@@ -23,13 +24,16 @@ const Balance = () => {
   const {balance: prevBalance, currentBalance: balance} = balances
   const fmtBalance = formatter.format(balance)
   const balanceDiff = balance - prevBalance
-  const fmtBalanceDiff = formatter.format(balanceDiff)
+  const fmtBalanceDiff = formatter.format(Math.abs(balanceDiff))
 
   return (
-    <>
-      <p>{fmtBalance}</p>
-      <p>{fmtBalanceDiff} from last month</p>
-    </>
+    <div className="flex h-110 flex-col items-center justify-center pb-18 text-center">
+      <p className="text-6xl leading-snug font-bold">{fmtBalance}</p>
+      <p className="text-label-secondary flex items-center [&_svg]:mr-1 [&_svg]:text-lg">
+        {balanceDiff < 0 ? <IoArrowDownCircle /> : <IoArrowUpCircle />}
+        {fmtBalanceDiff} from last month
+      </p>
+    </div>
   )
 }
 
