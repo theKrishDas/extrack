@@ -15,7 +15,7 @@ body {
   color: var(--foreground);
   background: var(--background);
   font-family:
-    var(--font-inter),
+    var(--font-rnx-rounded),
     system-ui,
     -apple-system,
     "Segoe UI",
@@ -36,6 +36,10 @@ body {
     Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
   --font-geist-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular,
     Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+
+  --font-rnx-rounded: var(--font-rnx-rounded), system-ui, -apple-system,
+    Segoe UI, Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji",
+    "Segoe UI Emoji";
 }
 
 ::selection {

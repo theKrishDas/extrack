@@ -1,6 +1,8 @@
 import type {Metadata} from "next"
 import {Geist, Geist_Mono, Inter} from "next/font/google"
 
+import {rnxRounded} from "../fonts"
+
 import "./globals.css"
 
 import Provider from "@/components/provider"
@@ -35,7 +37,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${inter.variable}`}
+        className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} ${rnxRounded.variable}`}
       >
         <Provider>{children}</Provider>
       </body>
