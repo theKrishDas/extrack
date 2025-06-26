@@ -181,21 +181,6 @@ const Bars = ({
         const today = isToday(timeframe.start)
         const isActive = setActive(idx)
 
-        const Indicator = () => {
-          return (
-            <span
-              className={cn(
-                "rounded-[0.5em] mix-blend-plus-darker dark:mix-blend-plus-lighter",
-                "absolute -inset-x-0.5 top-0",
-                showingSubBreakdown && isActive && "bg-fill-quaternary",
-                // Formula for the height:
-                // 100% + 2px(tw: 0.5 or 0.125rem) - line-height(1.5rem: changes with font-size)
-                "h-[calc(100%+0.125rem-1.5rem)]"
-              )}
-            />
-          )
-        }
-
         return (
           <div key={idx} className="flex flex-col items-center justify-end">
             <Button

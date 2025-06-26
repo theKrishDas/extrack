@@ -1,14 +1,9 @@
-import ChartWrapper from "@/app/(index)/local-comps/ChartWrapper"
-
-import Balance from "./Balance"
-import TransactionSummary from "./TransactionSummary"
+import FlowSummary from "./FlowSummary"
 
 const Summary = () => {
   return (
     <>
-      {/* <Balance /> */}
-      {/* <TransactionSummary /> */}
-      <ChartWrapper />
+      <FlowSummary />
     </>
   )
 }
