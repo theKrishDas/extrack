@@ -1,22 +1,9 @@
 import {useState} from "react"
-import {_api} from "@iconify/react/dist/iconify.cjs"
 import {useNumberFormatter} from "@react-aria/i18n"
 import {api} from "#/convex/_generated/api"
 import {FunctionReturnType} from "convex/server"
 import {format} from "date-fns"
-import {IoArrowDown, IoArrowUp} from "react-icons/io5"
-import {
-  Bar,
-  BarChart,
-  CartesianGrid,
-  Cell,
-  Legend,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from "recharts"
-import {TooltipIndex} from "recharts/types/state/tooltipSlice"
+import {Bar, BarChart, CartesianGrid, Cell, XAxis} from "recharts"
 import z from "zod"
 
 import {CURRENCY} from "@/lib/date-utils"
@@ -24,8 +11,6 @@ import {cn} from "@/lib/utils"
 import {
   ChartConfig,
   ChartContainer,
-  ChartLegend,
-  ChartLegendContent,
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart"
@@ -44,7 +29,7 @@ export default function Component({
   const chartConfig = {
     total: {
       label: "Total",
-      color: "var(--ios-blue)",
+      color: "var(--ios-red)",
     },
   } satisfies ChartConfig
 
@@ -75,13 +60,42 @@ export default function Component({
 
   return (
     <>
-      <div className="bg-fill-quaternary my-5 rounded-2xl p-4">
+      <div className="bg-fill-quaternary my-5 rounded-2xl px-4.5 py-4">
         <div className="">
-          <p className="text-label-secondary text-sm">
-            Transactions in past {data.length} days
+          <p className="text-label-tertiary text-sm">
+            Cash flow in past {data.length} days
           </p>
         </div>
-        <div className="mt-6 mb-4 w-full">
+
+        <div className="border-b-separator-opaque mt-3 mb-4 w-full border-b-1 mix-blend-color-dodge" />
+
+        <div className="grid grid-cols-3 md:grid-cols-5">
+          {display.map((item, idx) => {
+            const [[key, value]] = Object.entries(item)
+            return (
+              <div className="" key={idx}>
+                <p className="grid w-full grid-rows-2 truncate [&_span]:leading-5.5">
+                  <span className="text-label-secondary text-sm">{key}</span>
+                  <span
+                    className="overflow-hidden text-lg font-semibold whitespace-nowrap ring"
+                    style={{
+                      WebkitMaskImage:
+                        "linear-gradient(to right, black 80%, transparent 96%)",
+                      maskImage:
+                        "linear-gradient(to right, black 80%, transparent 96%)",
+                      WebkitMaskRepeat: "no-repeat",
+                      maskRepeat: "no-repeat",
+                    }}
+                  >
+                    {formatter.format(value)}
+                  </span>
+                </p>
+              </div>
+            )
+          })}
+        </div>
+
+        <div className="mt-6 w-full">
           <ChartContainer config={chartConfig}>
             <BarChart
               accessibilityLayer
@@ -95,10 +109,6 @@ export default function Component({
                   .string()
                   .transform(v => parseInt(v))
                   .parse(state.activeIndex)
-
-                console.clear()
-                console.info("index:", index)
-                console.info("activeIndex:", activeIndex)
 
                 setActiveIndex(prev => (prev === index ? undefined : index)) // Toggle selection
               }}
@@ -118,6 +128,7 @@ export default function Component({
                 tickLine={false}
                 tickMargin={8}
                 axisLine={false}
+                className="select-none"
                 tickFormatter={value => format(value, "EEEEE")}
               />
               <Bar dataKey="total" radius={5}>
@@ -140,31 +151,6 @@ export default function Component({
               </Bar>
             </BarChart>
           </ChartContainer>
-        </div>
-        <div className="grid grid-cols-3 md:grid-cols-4">
-          {display.map((item, idx) => {
-            const [[key, value]] = Object.entries(item)
-            return (
-              <div className="" key={idx}>
-                <p className="grid w-full grid-rows-2 truncate [&_span]:leading-5.5">
-                  <span className="text-sm">{key}</span>
-                  <span
-                    className="text-label-secondary overflow-hidden text-lg font-bold tracking-tight whitespace-nowrap ring"
-                    style={{
-                      WebkitMaskImage:
-                        "linear-gradient(to right, black 80%, transparent 96%)",
-                      maskImage:
-                        "linear-gradient(to right, black 80%, transparent 96%)",
-                      WebkitMaskRepeat: "no-repeat",
-                      maskRepeat: "no-repeat",
-                    }}
-                  >
-                    {formatter.format(value)}
-                  </span>
-                </p>
-              </div>
-            )
-          })}
         </div>
       </div>
     </>
