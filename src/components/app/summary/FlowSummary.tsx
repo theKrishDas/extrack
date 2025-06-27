@@ -9,6 +9,7 @@ import {
   eachDayOfInterval,
   endOfDay,
   format,
+  isToday,
   startOfDay,
   startOfToday,
   subDays,
@@ -59,6 +60,7 @@ const Summary = ({
   data: FunctionReturnType<typeof api.summary.getTransactionSummaryByTimeframe>
 }) => {
   const [activeIndex, setActiveIndex] = useState<number | undefined>(undefined)
+  const isDaySelected = activeIndex !== undefined
 
   /**
    * Create chart data from the data
@@ -66,6 +68,7 @@ const Summary = ({
   const chartData = data.byFrames.map(d => ({
     date: d.timeframe.start,
     total: d.breakdown.totalFlow,
+    net: d.breakdown.netFlow,
     income: d.breakdown.incomeAmount,
     expense: d.breakdown.expenseAmount,
   }))
@@ -83,31 +86,32 @@ const Summary = ({
       color: "var(--ios-green)",
     },
   } satisfies ChartConfig
+  const activeChartData = isDaySelected ? chartData[activeIndex] : undefined
 
   const metrics: Record<string, number>[] = [
     {
-      Spent: activeIndex
-        ? chartData[activeIndex].expense
-        : data.breakdown.expenseAmount,
+      Spent: activeChartData?.expense ?? data.breakdown.expenseAmount,
     },
     {
-      Earned: activeIndex
-        ? chartData[activeIndex].income
-        : data.breakdown.incomeAmount,
+      Earned: activeChartData?.income ?? data.breakdown.incomeAmount,
     },
     {
-      "Net Flow": activeIndex
-        ? chartData[activeIndex].total
-        : data.breakdown.netFlow,
+      "Net Flow": activeChartData?.net ?? data.breakdown.netFlow,
     },
   ]
+
+  const timeDescription = isDaySelected
+    ? isToday(activeChartData!.date)
+      ? "Today"
+      : `on ${format(activeChartData!.date, "EEEE")}`
+    : `in past ${chartData.length} days`
 
   return (
     // TODO: Use Box component here
     <div className="bg-fill-quaternary rounded-2xl px-4.5 py-4">
       <div className="">
         <p className="text-label-tertiary text-sm">
-          Cash flow in past {chartData.length} days
+          Cash flow {timeDescription}
         </p>
       </div>
 
@@ -185,15 +189,16 @@ const Summary = ({
             />
             <Bar dataKey="total" radius={5}>
               {chartData.map((_, idx) => {
-                const isActive =
-                  activeIndex === undefined || idx === activeIndex
+                const isHighlighted = !isDaySelected || idx === activeIndex
 
                 return (
                   <Cell
                     key={`cell-${idx}`}
-                    className={cn(isActive ? "opacity-100" : "opacity-60")}
+                    className={cn(isHighlighted ? "opacity-100" : "opacity-60")}
                     fill={
-                      isActive ? "var(--color-total)" : "var(--fill-secondary)"
+                      isHighlighted
+                        ? "var(--color-total)"
+                        : "var(--fill-secondary)"
                     }
                   />
                 )
