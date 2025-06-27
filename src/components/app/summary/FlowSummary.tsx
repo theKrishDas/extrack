@@ -1,7 +1,7 @@
 "use client"
 
 import {useState} from "react"
-import {useNumberFormatter} from "@react-aria/i18n"
+import NumberFlow from "@number-flow/react"
 import {api} from "#/convex/_generated/api"
 import {useQuery} from "convex/react"
 import {FunctionReturnType} from "convex/server"
@@ -102,13 +102,6 @@ const Summary = ({
     },
   ]
 
-  // To format the amount
-  const formatter = useNumberFormatter({
-    style: "currency",
-    currency: CURRENCY,
-    minimumFractionDigits: 0,
-  })
-
   return (
     // TODO: Use Box component here
     <div className="bg-fill-quaternary rounded-2xl px-4.5 py-4">
@@ -126,10 +119,18 @@ const Summary = ({
           const [[key, value]] = Object.entries(item)
           return (
             <div className="" key={idx}>
-              <p className="grid w-full grid-rows-2 truncate [&_span]:leading-5.5">
-                <span className="text-label-secondary text-sm">{key}</span>
-                <span
-                  className="overflow-hidden text-lg font-semibold whitespace-nowrap ring"
+              <p className="flex w-full flex-col truncate">
+                <span className="text-label-secondary text-sm leading-5.5">
+                  {key}
+                </span>
+
+                <NumberFlow
+                  format={{
+                    style: "currency",
+                    currency: CURRENCY,
+                    trailingZeroDisplay: "stripIfInteger",
+                  }}
+                  className="overflow-hidden text-lg font-semibold whitespace-nowrap"
                   style={{
                     WebkitMaskImage:
                       "linear-gradient(to right, black 80%, transparent 96%)",
@@ -138,9 +139,8 @@ const Summary = ({
                     WebkitMaskRepeat: "no-repeat",
                     maskRepeat: "no-repeat",
                   }}
-                >
-                  {formatter.format(value)}
-                </span>
+                  value={value}
+                />
               </p>
             </div>
           )
