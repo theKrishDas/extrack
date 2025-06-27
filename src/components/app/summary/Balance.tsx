@@ -1,6 +1,7 @@
 "use client"
 
-import {useNumberFormatter} from "@react-aria/i18n"
+import {CSSProperties} from "react"
+import NumberFlow from "@number-flow/react"
 import {startOfMonth, subMonths} from "date-fns"
 import {IoArrowDownCircle, IoArrowUpCircle} from "react-icons/io5"
 
@@ -13,25 +14,36 @@ const Balance = () => {
     date: date.getTime(),
     account: "all",
   })
-  const formatter = useNumberFormatter({
-    style: "currency",
-    currency: CURRENCY,
-    minimumFractionDigits: 0,
-  })
-
   if (!balances) return <p>Loading balance...</p>
 
   const {balance: prevBalance, currentBalance: balance} = balances
-  const fmtBalance = formatter.format(balance)
   const balanceDiff = balance - prevBalance
-  const fmtBalanceDiff = formatter.format(Math.abs(balanceDiff))
 
   return (
     <div className="flex h-110 flex-col items-center justify-center pb-18 text-center">
-      <p className="text-6xl leading-snug font-bold">{fmtBalance}</p>
+      <NumberFlow
+        className="text-6xl font-bold"
+        style={{"--number-flow-char-height": "1.2ch"} as CSSProperties}
+        format={{
+          style: "currency",
+          currency: CURRENCY,
+          trailingZeroDisplay: "stripIfInteger",
+        }}
+        value={balance}
+      />
+
       <p className="text-label-secondary flex items-center [&_svg]:mr-1 [&_svg]:text-lg">
         {balanceDiff < 0 ? <IoArrowDownCircle /> : <IoArrowUpCircle />}
-        {fmtBalanceDiff} from last month
+        <NumberFlow
+          className="mr-[0.5ch]"
+          format={{
+            style: "currency",
+            currency: CURRENCY,
+            trailingZeroDisplay: "stripIfInteger",
+          }}
+          value={Math.abs(balanceDiff)}
+        />
+        from last month
       </p>
     </div>
   )
