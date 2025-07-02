@@ -37,6 +37,7 @@ export const buttonVariants = cva(
         lg: "h-14 rounded-[0.85rem] text-[1.05rem] sm:h-11 sm:px-4 sm:text-[0.9rem] [&_svg]:text-[1.2rem] sm:[&_svg]:text-[1.1rem]",
         md: "h-12 rounded-full text-base sm:h-9 sm:px-3 sm:text-sm [&_svg]:text-xl sm:[&_svg]:text-base",
         sm: "h-10 rounded-full px-4 text-sm sm:h-8 sm:px-3 sm:text-xs [&_svg]:text-base sm:[&_svg]:text-sm",
+        xs: "h-8 rounded-full px-3 text-[0.95rem] tracking-[0.02em] sm:h-7 sm:px-2.5 sm:text-[0.8rem] [&_svg]:text-base sm:[&_svg]:text-sm",
       },
       isIconOnly: {
         true: "gap-0 rounded-full p-0 sm:p-0",
@@ -68,6 +69,12 @@ export const buttonVariants = cva(
         size: "sm",
         class:
           "h-9 w-9 text-xl sm:h-8 sm:w-8 sm:text-sm [&_svg]:text-[1.2rem] sm:[&_svg]:text-base",
+      },
+      {
+        isIconOnly: true,
+        size: "xs",
+        class:
+          "h-7 w-7 text-sm sm:h-7 sm:w-7 sm:text-sm [&_svg]:text-[1.3rem] sm:[&_svg]:text-[1.1rem]",
       },
     ],
     defaultVariants: {

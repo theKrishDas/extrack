@@ -1,23 +1,18 @@
 "use client"
 
-import {RefObject} from "react"
+import {ComponentProps} from "react"
 import {mergeRefs} from "@react-aria/utils"
 import {VariantProps} from "class-variance-authority"
 import {useAnimate} from "motion/react-mini"
-import {
-  Button as RacButton,
-  type ButtonProps as RacButtonProps,
-} from "react-aria-components"
+import {Button as RacButton} from "react-aria-components"
 
 import {cn} from "@/lib/utils"
 
 import {buttonVariants} from "./button-variants"
 
 interface ButtonProps
-  extends RacButtonProps,
-    Omit<VariantProps<typeof buttonVariants>, "focusTreatment"> {
-  ref?: RefObject<HTMLButtonElement | null>
-}
+  extends ComponentProps<typeof RacButton>,
+    Omit<VariantProps<typeof buttonVariants>, "focusTreatment"> {}
 
 const Button = ({
   className,
@@ -69,4 +64,4 @@ const Button = ({
   )
 }
 
-export {Button}
+export {Button, type ButtonProps}
