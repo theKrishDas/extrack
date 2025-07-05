@@ -32,7 +32,7 @@ function Item({className, ...rest}: ComponentProps<typeof ark.li>) {
     <ark.li
       className={cn(
         "ListItem",
-        "bg-fill-quaternary flex h-12 items-center gap-2 pl-4 first-of-type:rounded-t-[0.95rem] last-of-type:rounded-b-[0.95rem]",
+        "bg-fill-quaternary flex min-h-12 items-center gap-2 pl-4 first-of-type:rounded-t-[0.95rem] last-of-type:rounded-b-[0.95rem] sm:min-h-10 sm:first-of-type:rounded-t-[0.8rem] sm:last-of-type:rounded-b-[0.8rem]",
         "last-of-type:[&_.ListContent]:border-none",
         className
       )}
@@ -90,9 +90,9 @@ function Text({
       className={cn(
         "ListText",
         "-tracking-[0.01em]",
-        level === "1" && "text-label font-semibold",
-        level === "2" && "text-label-secondary font-medium",
-        level === "3" && "text-label-tertiary",
+        level === "1" && "text-label font-medium tracking-[0.0125em]",
+        level === "2" && "text-label-secondary font-medium tracking-[0.01em]",
+        level === "3" && "text-label-tertiary tracking-[0.01em]",
         align === "left" && "text-left",
         align === "center" && "text-center",
         align === "right" && "text-right",
@@ -118,7 +118,7 @@ function Heading({
     <ark.h4
       className={cn(
         "ListHeading",
-        "text-label-tertiary px-4 pb-1.5 text-sm font-medium uppercase",
+        "text-label-secondary px-4 pb-1.5 text-sm font-medium uppercase",
         srOnly && "sr-only",
         className
       )}
@@ -136,7 +136,7 @@ function Footer({
     <ark.p
       className={cn(
         "ListFooter",
-        "text-label-tertiary px-4 pt-1.5 text-sm leading-snug",
+        "text-label-tertiary px-4 pt-1.5 text-sm leading-snug tracking-[0.013em]",
         srOnly && "sr-only",
         className
       )}
