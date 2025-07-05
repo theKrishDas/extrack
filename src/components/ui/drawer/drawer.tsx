@@ -6,8 +6,7 @@ import {VariantProps} from "class-variance-authority"
 import {Drawer as DrawerPrimitive} from "vaul"
 
 import {cn} from "@/lib/utils"
-
-import {Material, materialVariants} from "../material/material"
+import {Material, materialVariants} from "@/components/material/material"
 
 interface RefType<T> {
   ref?: RefObject<T | null>
