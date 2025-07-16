@@ -32,7 +32,7 @@ function Item({className, ...rest}: ComponentProps<typeof ark.li>) {
     <ark.li
       className={cn(
         "ListItem",
-        "bg-fill-quaternary flex min-h-12 items-center gap-2 pl-4 first-of-type:rounded-t-[0.95rem] last-of-type:rounded-b-[0.95rem] sm:min-h-10 sm:first-of-type:rounded-t-[0.8rem] sm:last-of-type:rounded-b-[0.8rem]",
+        "bg-fill-quaternary flex items-center gap-2 pl-4 first-of-type:rounded-t-[0.95rem] last-of-type:rounded-b-[0.95rem] sm:first-of-type:rounded-t-[0.8rem] sm:last-of-type:rounded-b-[0.8rem]",
         "last-of-type:[&_.ListContent]:border-none",
         className
       )}
@@ -45,7 +45,7 @@ function Content({className, ...rest}: ComponentProps<typeof ark.div>) {
   return (
     <ark.div
       className={cn(
-        "ListContent border-separator-non-opaque inline-flex h-full w-full flex-1 items-center justify-between gap-2 truncate border-b-1 pr-4",
+        "ListContent border-separator-non-opaque inline-flex min-h-12 w-full flex-1 items-center justify-between gap-2 truncate border-b-1 pr-4 sm:min-h-10",
         className
       )}
       {...rest}

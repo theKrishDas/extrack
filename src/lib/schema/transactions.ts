@@ -24,10 +24,8 @@ export const newTransactionSchema = z.object({
     })
     .transform(val => val?.trim() || undefined)
     .optional(),
-  type: z.union([z.literal("income"), z.literal("expense")], {
-    message: "Type must be `income` or `expense`",
-  }),
   category: z.string(),
   account: z.string(),
+  date: z.number(),
 })
 export type NewTransactionSchemaType = z.infer<typeof newTransactionSchema>

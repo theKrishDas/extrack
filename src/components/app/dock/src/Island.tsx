@@ -4,17 +4,11 @@ import {Popover} from "@ark-ui/react/popover"
 import {TTransactionType} from "@/lib/schema/transactions"
 import {AnimatedContainer} from "@/components/ui/animated-container"
 import {Button} from "@/components/ui/button/animated-button"
-import {
-  Drawer,
-  DrawerContent,
-  DrawerDescription,
-  DrawerHeader,
-  DrawerTitle,
-} from "@/components/ui/drawer"
+import {Drawer} from "@/components/ui/drawer/drawer-v2"
 import {
   Form,
-  Provider as NewTransactionProvider,
-} from "@/components/form/transaction/new"
+  Provider as FormProvider,
+} from "@/components/form/transaction/new-v2"
 import {IonArrowDown, IonArrowUp} from "@/components/icons/ion/arrow"
 
 import {physics} from "./helpers"
@@ -99,22 +93,25 @@ export default function Island({
       </AnimatedContainer.Root>
 
       {transactionType && (
-        <Drawer open={drawerOpen} onOpenChange={setDrawerOpen}>
-          <DrawerContent>
-            <DrawerHeader className="sr-only">
-              <DrawerTitle>Add a new transaction.</DrawerTitle>
-              <DrawerDescription>
-                Fill up this form to add new transaction.
-              </DrawerDescription>
-            </DrawerHeader>
+        <Drawer.Root
+          showHandle
+          useBlur
+          open={drawerOpen}
+          onOpenChange={setDrawerOpen}
+        >
+          <FormProvider
+            type={transactionType}
+            afterSubmit={() => setDrawerOpen(false)}
+          >
+            <Drawer.Content>
+              <Drawer.Header className="h-8">
+                <Drawer.Title srOnly>New {transactionType}</Drawer.Title>
+              </Drawer.Header>
 
-            <div className="p-4">
-              <NewTransactionProvider transactionType={transactionType}>
-                <Form afterSubmit={() => setDrawerOpen(false)} />
-              </NewTransactionProvider>
-            </div>
-          </DrawerContent>
-        </Drawer>
+              <Form />
+            </Drawer.Content>
+          </FormProvider>
+        </Drawer.Root>
       )}
     </>
   )
