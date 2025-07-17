@@ -3,7 +3,7 @@
 import {CSSProperties} from "react"
 import NumberFlow from "@number-flow/react"
 import {startOfMonth, subMonths} from "date-fns"
-import {IoArrowDownCircle, IoArrowUpCircle} from "react-icons/io5"
+import {IoArrowDown, IoArrowUp} from "react-icons/io5"
 
 import {CURRENCY} from "@/lib/date-utils"
 import {useBalanceOn} from "@/hooks/convex/balance"
@@ -33,7 +33,11 @@ const Balance = () => {
       />
 
       <p className="text-label-secondary flex items-center [&_svg]:mr-1 [&_svg]:text-lg">
-        {balanceDiff < 0 ? <IoArrowDownCircle /> : <IoArrowUpCircle />}
+        {balanceDiff < 0 ? (
+          <IoArrowDown color="var(--ios-red)" />
+        ) : (
+          <IoArrowUp color="var(--ios-green)" />
+        )}
         <NumberFlow
           className="mr-[0.5ch]"
           format={{

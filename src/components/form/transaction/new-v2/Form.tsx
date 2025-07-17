@@ -193,12 +193,6 @@ function DetailsDrawer() {
               <CategorySelectionDrawer categories={availableCategories} />
             ),
           },
-          {
-            symbol: "􀉊",
-            content: availableCategories && (
-              <CategorySelectionDrawer categories={availableCategories} />
-            ),
-          },
         ].map((item, idx) => (
           <Drawer.NestedRoot key={idx} showHandle>
             {availableCategories !== undefined ? (
@@ -207,7 +201,7 @@ function DetailsDrawer() {
                   buttonVariants({
                     size: "sm",
                     color: "gray",
-                    className: "border-separator-non-opaque touch-auto border",
+                    className: "touch-auto",
                   })
                 )}
               >
@@ -220,7 +214,7 @@ function DetailsDrawer() {
                     size: "sm",
                     color: "gray",
                     className:
-                      "border-separator-non-opaque bg-fill-tertiary text-label-tertiary pointer-events-none touch-auto border",
+                      "bg-fill-tertiary text-label-tertiary pointer-events-none touch-auto",
                   })
                 )}
               >
@@ -231,6 +225,10 @@ function DetailsDrawer() {
             {item.content}
           </Drawer.NestedRoot>
         ))}
+
+        <Button size="sm" color="gray" isDisabled>
+          􀉊
+        </Button>
       </div>
     </div>
   )

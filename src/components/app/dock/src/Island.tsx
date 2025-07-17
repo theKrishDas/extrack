@@ -99,18 +99,18 @@ export default function Island({
           open={drawerOpen}
           onOpenChange={setDrawerOpen}
         >
-          <FormProvider
-            type={transactionType}
-            afterSubmit={() => setDrawerOpen(false)}
-          >
-            <Drawer.Content>
-              <Drawer.Header className="h-8">
-                <Drawer.Title srOnly>New {transactionType}</Drawer.Title>
-              </Drawer.Header>
+          <Drawer.Content>
+            <Drawer.Header className="h-8">
+              <Drawer.Title srOnly>New {transactionType}</Drawer.Title>
+            </Drawer.Header>
 
+            <FormProvider
+              type={transactionType}
+              afterSubmit={() => setDrawerOpen(false)}
+            >
               <Form />
-            </Drawer.Content>
-          </FormProvider>
+            </FormProvider>
+          </Drawer.Content>
         </Drawer.Root>
       )}
     </>

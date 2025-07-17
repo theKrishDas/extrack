@@ -75,7 +75,7 @@ const Summary = ({
   const chartConfig = {
     total: {
       label: "Total",
-      color: "var(--ios-red)",
+      color: "var(--ios-blue)",
     },
     expense: {
       label: "Expense",
