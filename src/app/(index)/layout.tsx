@@ -1,12 +1,13 @@
 import {ReactNode} from "react"
 
+import {Spacer} from "@/components/ui/spacer"
+
 export default function Layout({children}: {children: ReactNode}) {
   return (
     <>
       {children}
 
-      {/* // TODO: Maybe convert this an a global component? */}
-      <div className="h-14 w-full min-w-1" />
+      <Spacer className="h-24 w-full min-w-1" />
     </>
   )
 }

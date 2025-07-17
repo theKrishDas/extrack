@@ -15,6 +15,7 @@ const Dock = () => {
       <nav className="fixed inset-x-0 bottom-4 z-40">
         <Material
           as="section"
+          thickness="chrome"
           className="mx-auto flex w-fit items-center justify-center gap-1 rounded-full p-1"
           withBorder
         >

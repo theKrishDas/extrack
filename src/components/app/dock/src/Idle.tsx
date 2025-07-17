@@ -1,5 +1,4 @@
 import {useRouter} from "next/navigation"
-import {FiActivity} from "react-icons/fi"
 
 import {Button} from "@/components/ui/button/animated-button"
 
@@ -9,11 +8,10 @@ const IdleNav = () => {
   return (
     <div className="flex gap-1">
       <Button color="gray" onPress={() => router.push("/")}>
-        Home
+        􀑰 Summary
       </Button>
       <Button color="gray" onPress={() => router.push("/activity")}>
-        <FiActivity strokeWidth={1.8} />
-        Activity
+        􀄭 Transactions
       </Button>
     </div>
   )
