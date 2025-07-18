@@ -12,16 +12,17 @@ const Dock = () => {
 
   return (
     <>
-      <nav className="fixed inset-x-0 bottom-4 z-40">
+      <nav className="fixed inset-x-0 bottom-4 z-40 flex items-center justify-center gap-1">
         <Material
           as="section"
           thickness="chrome"
-          className="mx-auto flex w-fit items-center justify-center gap-1 rounded-full p-1"
+          className="w-fit rounded-full p-1"
           withBorder
         >
           <Island open={open} setOpen={setOpen} />
-          <Fab open={open} setOpen={setOpen} />
         </Material>
+
+        <Fab open={open} setOpen={setOpen} />
       </nav>
     </>
   )
