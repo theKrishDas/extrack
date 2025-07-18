@@ -97,7 +97,7 @@ const Overlay = ({
       data-slot="drawer-overlay"
       className={cn(
         "fixed inset-0 z-50 bg-black/50",
-        useBlur && "backdrop-blur-[2px]",
+        useBlur && "backdrop-blur-[6px]",
         className
       )}
       {...rest}

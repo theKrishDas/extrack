@@ -16,9 +16,10 @@ export default function Fab({
   return (
     <Button
       color="gray"
+      variant="gray"
       isIconOnly
       onPress={() => setOpen(v => !v)}
-      className="h-12 w-12" // match the size with the other buttons
+      className="backdrop-blur-3xl"
     >
       <motion.span
         animate={open ? {rotate: 45} : {rotate: 0}}
