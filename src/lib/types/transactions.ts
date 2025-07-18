@@ -1,9 +1,10 @@
 import {Doc} from "#/convex/_generated/dataModel"
 
+import {ConvexReservedFields} from "./convex-queries"
+
 export type Transaction = Doc<"transactions">
-export type Transactions = Doc<"transactions">[]
 
 export type TransactionInsert = Omit<
-  Doc<"transactions">,
-  "_id" | "_creationTime"
+  Transaction,
+  ConvexReservedFields | "ownerId"
 >
