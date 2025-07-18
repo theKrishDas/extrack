@@ -42,6 +42,22 @@ body {
     "Segoe UI Emoji";
 }
 
+/* Custom scrollbar styling. Thanks @pranathiperii. */
+::-webkit-scrollbar {
+  width: 5px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--border));
+  border-radius: 5px;
+}
+* {
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--border)) transparent;
+}
+
 ::selection {
   color: var(--selection-foreground-color);
   background-color: color-mix(
