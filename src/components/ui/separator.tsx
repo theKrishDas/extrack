@@ -1,6 +1,5 @@
 "use client"
 
-import {ComponentProps} from "react"
 import {
   useSeparator,
   type SeparatorProps as SeparatorPrimitiveProps,
