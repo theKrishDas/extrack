@@ -134,7 +134,14 @@ function Text({
 
 function Accessories({className, ...rest}: ComponentProps<typeof ark.div>) {
   return (
-    <ark.div className={cn("ListAccessories", "h-full", className)} {...rest} />
+    <ark.div
+      className={cn(
+        "ListAccessories",
+        "inline-flex h-full items-center justify-items-end",
+        className
+      )}
+      {...rest}
+    />
   )
 }
 
