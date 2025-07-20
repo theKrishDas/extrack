@@ -8,6 +8,7 @@ import {
   TextField,
 } from "react-aria-components"
 import {Controller, useForm, UseFormReturn} from "react-hook-form"
+import {toast} from "sonner"
 import z from "zod"
 
 import {
@@ -19,12 +20,14 @@ import {cn, sanitizeName} from "@/lib/utils"
 import {Button} from "@/components/ui/button/animated-button"
 import {Drawer} from "@/components/ui/drawer/drawer-v2"
 import {Spacer} from "@/components/ui/spacer"
+import {EmojiSelect} from "@/app/settings/local-comps/EmojiSelect"
 
 export function Form() {
   const form = useForm<NewAccountSchemaType>({
     defaultValues: {
       name: undefined,
       balance: 0,
+      icon: "🌐",
     },
     resolver: zodResolver(newAccountSchema),
   })
@@ -33,27 +36,30 @@ export function Form() {
     <RacForm
       onSubmit={form.handleSubmit(data => {
         console.info(
-          "%cINFO",
+          "%cDATA",
           "color: black; background: #34c759; border-radius: 3px; padding: 1px 3px;",
-          "data:",
           data
         )
+        toast.info(JSON.stringify(data, null, 2), {position: "top-center"})
       })}
     >
+      <EmojiSelect form={form} />
+      <Spacer className="h-4" />
+
       <NameInput form={form} />
       <Spacer className="h-5" />
 
       <BalanceInput form={form} />
       <Spacer className="h-5" />
 
-      {/* <EmojiSelect /> */}
+      {form.formState.errors.icon?.message}
 
       <Drawer.Footer>
         <Button
           type="submit"
           variant="filled"
           fullWidth
-          isDisabled={!form.formState.isValid}
+          // isDisabled={!form.formState.isValid}
         >
           Save
         </Button>
@@ -151,5 +157,6 @@ export const newAccountSchema = z.object({
     })
     .trim(),
   balance: z.number().optional(),
+  icon: z.string().min(1),
 })
 export type NewAccountSchemaType = z.infer<typeof newAccountSchema>

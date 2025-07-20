@@ -12,8 +12,6 @@ import {List} from "@/components/ui/list-v2"
 import {Form} from "@/components/form/account/new"
 import {Spinner} from "@/components/loading/spinner"
 
-import {EmojiSelect} from "./EmojiSelect"
-
 export function Accounts() {
   const accounts = useQuery(api.accounts.getAll)
   const formatter = useNumberFormatter({
@@ -89,7 +87,7 @@ export function Accounts() {
             </List.Item>
 
             <Drawer.Content>
-              <Drawer.Header>
+              <Drawer.Header className="sr-only">
                 <Drawer.Title srOnly>New Account</Drawer.Title>
               </Drawer.Header>
 
