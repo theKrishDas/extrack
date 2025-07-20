@@ -42,3 +42,23 @@ export function createCollection<T>(
   })
   return collection
 }
+
+export function sanitizeName(raw: string, max?: number): string {
+  let s = raw
+  // Remove leading spaces
+  s = s.replace(/^ +/, "")
+
+  // Strip any char that is not [A-Za-z0-9_@\-\ ]
+  // Disabled as it only supports english
+  // s = s.replace(/[^A-Za-z0-9_@\-() ]+/g, "")
+
+  // Replace multiple consecutive spaces with single space
+  s = s.replace(/ +/g, " ")
+
+  // optional: Limit length
+  if (max) {
+    s = s.slice(0, max)
+  }
+  // Lowercase
+  return s.toLowerCase()
+}

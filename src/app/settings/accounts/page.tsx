@@ -5,7 +5,7 @@ import {Link} from "react-aria-components"
 
 import {Container} from "@/components/layout/container"
 
-import {Accounts as AccountSettings} from "../local-comps/accounts"
+import {Accounts as AccountSettings} from "../local-comps/Accounts"
 
 export default function Page() {
   return (

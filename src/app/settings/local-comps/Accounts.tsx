@@ -9,7 +9,10 @@ import {Button} from "react-aria-components"
 import {CURRENCY} from "@/lib/date-utils"
 import {Drawer} from "@/components/ui/drawer/drawer-v2"
 import {List} from "@/components/ui/list-v2"
+import {Form} from "@/components/form/account/new"
 import {Spinner} from "@/components/loading/spinner"
+
+import {EmojiSelect} from "./EmojiSelect"
 
 export function Accounts() {
   const accounts = useQuery(api.accounts.getAll)
@@ -87,8 +90,10 @@ export function Accounts() {
 
             <Drawer.Content>
               <Drawer.Header>
-                <Drawer.Title>New Account</Drawer.Title>
+                <Drawer.Title srOnly>New Account</Drawer.Title>
               </Drawer.Header>
+
+              <Form />
             </Drawer.Content>
           </Drawer.Root>
         </List.Wrapper>

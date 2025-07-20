@@ -15,3 +15,9 @@ export const MAX_NOTE_LENGTH = 50 as const
 //
 export const MAX_CATEGORY_NAME_LENGTH = 15 as const
 export const MIN_CATEGORY_NAME_LENGTH = 1 as const
+
+//
+// Accounts
+//
+export const MAX_ACCOUNT_NAME_LENGTH = 25 as const
+export const MIN_ACCOUNT_NAME_LENGTH = 1 as const
