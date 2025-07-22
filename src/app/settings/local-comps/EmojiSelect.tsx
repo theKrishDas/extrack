@@ -25,8 +25,10 @@ export function EmojiSelect({
         <div className="inline-grid w-full place-content-center">
           <Drawer.Trigger asChild>
             <Button
-              className="font-rnx-rounded size-32 rounded-2xl text-6xl sm:size-32 md:size-24 md:text-3xl"
+              className="font-rnx-rounded size-32 rounded-3xl text-6xl text-white sm:size-32 md:size-24 md:text-3xl"
               size="lg"
+              color="gray"
+              variant="tinted"
             >
               {selectedIcon}
             </Button>
@@ -52,10 +54,10 @@ export function EmojiSelect({
                     setOpen(false)
                   }}
                 >
-                  <Spacer className="h-2" />
+                  <Spacer className="h-1" />
                   <EmojiPicker.Search
                     className={cn(
-                      "placeholder-label-secondary bg-fill-quaternary z-10 h-12 w-full appearance-none rounded-xl pr-8.5 pl-3.5 text-lg leading-none tracking-[0.01em] sm:h-10 sm:pr-7.5",
+                      "placeholder-label-secondary bg-fill-quaternary z-10 h-12 w-full appearance-none rounded-[0.6rem] pr-8.5 pl-3.5 text-lg leading-none tracking-[0.01em] sm:h-10 sm:pr-7.5",
                       "data-[focus-visible]:ring-ios-blue/[var(--separator-non-opaque-opacity)] outline-none data-[focus-visible]:ring-4",
                       "[&::-webkit-search-cancel-button]:appearance-none [&::-webkit-search-decoration]:appearance-none"
                     )}
