@@ -2,11 +2,11 @@ import {useState} from "react"
 import {EmojiPicker} from "frimousse"
 import {Controller, UseFormReturn} from "react-hook-form"
 
+import {NewAccountSchemaType} from "@/lib/schema/accounts"
 import {cn} from "@/lib/utils"
 import {Button} from "@/components/ui/button/animated-button"
 import {Drawer} from "@/components/ui/drawer/drawer-v2"
 import {Spacer} from "@/components/ui/spacer"
-import {NewAccountSchemaType} from "@/components/form/account/new/Form"
 import {Spinner} from "@/components/loading/spinner"
 
 export function EmojiSelect({
@@ -21,7 +21,7 @@ export function EmojiSelect({
     <>
       <Spacer className="h-4" />
 
-      <Drawer.Root open={open} onOpenChange={setOpen} showHandle>
+      <Drawer.NestedRoot open={open} onOpenChange={setOpen} showHandle>
         <div className="inline-grid w-full place-content-center">
           <Drawer.Trigger asChild>
             <Button
@@ -109,7 +109,7 @@ export function EmojiSelect({
             }}
           />
         </Drawer.Content>
-      </Drawer.Root>
+      </Drawer.NestedRoot>
     </>
   )
 }

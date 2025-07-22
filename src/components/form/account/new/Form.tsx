@@ -9,20 +9,17 @@ import {
 } from "react-aria-components"
 import {Controller, useForm, UseFormReturn} from "react-hook-form"
 import {toast} from "sonner"
-import z from "zod"
 
-import {
-  MAX_ACCOUNT_NAME_LENGTH,
-  MIN_ACCOUNT_NAME_LENGTH,
-} from "@/lib/constants/defaults"
+import {MAX_ACCOUNT_NAME_LENGTH} from "@/lib/constants/defaults"
 import {CURRENCY} from "@/lib/date-utils"
+import {newAccountSchema, NewAccountSchemaType} from "@/lib/schema/accounts"
 import {cn, sanitizeName} from "@/lib/utils"
 import {Button} from "@/components/ui/button/animated-button"
 import {Drawer} from "@/components/ui/drawer/drawer-v2"
 import {Spacer} from "@/components/ui/spacer"
 import {EmojiSelect} from "@/app/settings/local-comps/EmojiSelect"
 
-export function Form() {
+export function Form({afterSumbmit}: {afterSumbmit?: () => void}) {
   const form = useForm<NewAccountSchemaType>({
     defaultValues: {
       name: undefined,
@@ -34,13 +31,17 @@ export function Form() {
 
   return (
     <RacForm
+      className="flex h-full flex-col"
       onSubmit={form.handleSubmit(data => {
+        // eslint-disable-next-line no-console
         console.info(
           "%cDATA",
           "color: black; background: #34c759; border-radius: 3px; padding: 1px 3px;",
           data
         )
         toast.info(JSON.stringify(data, null, 2), {position: "top-center"})
+
+        afterSumbmit?.()
       })}
     >
       <EmojiSelect form={form} />
@@ -50,17 +51,10 @@ export function Form() {
       <Spacer className="h-5" />
 
       <BalanceInput form={form} />
-      <Spacer className="h-5" />
-
-      {form.formState.errors.icon?.message}
+      <Spacer className="h-full flex-1" />
 
       <Drawer.Footer>
-        <Button
-          type="submit"
-          variant="filled"
-          fullWidth
-          // isDisabled={!form.formState.isValid}
-        >
+        <Button type="submit" variant="filled" fullWidth>
           Save
         </Button>
       </Drawer.Footer>
@@ -88,7 +82,9 @@ function NameInput({form}: {form: UseFormReturn<NewAccountSchemaType>}) {
             isInvalid={invalid}
             className="w-full px-4"
           >
-            <Label className="sr-only">Add a note to yourself</Label>
+            <Label className="text-label-secondary w-full px-4 pt-6 pb-1.5 text-sm font-medium uppercase">
+              Name
+            </Label>
             <Input
               ref={ref}
               // TODO: add a max and min length
@@ -131,7 +127,9 @@ function BalanceInput({form}: {form: UseFormReturn<NewAccountSchemaType>}) {
             maximumFractionDigits: 2,
           }}
         >
-          <Label className="sr-only">Amount</Label>
+          <Label className="text-label-secondary w-full px-4 pt-6 pb-1.5 text-sm font-medium uppercase">
+            Balance
+          </Label>
           <Input
             ref={ref}
             placeholder="₹0"
@@ -145,18 +143,3 @@ function BalanceInput({form}: {form: UseFormReturn<NewAccountSchemaType>}) {
     />
   )
 }
-
-export const newAccountSchema = z.object({
-  name: z
-    .string()
-    .min(MIN_ACCOUNT_NAME_LENGTH, {
-      message: `Name must be atleast ${MIN_ACCOUNT_NAME_LENGTH} characters`,
-    })
-    .max(MAX_ACCOUNT_NAME_LENGTH, {
-      message: `Name must be within ${MAX_ACCOUNT_NAME_LENGTH} characters`,
-    })
-    .trim(),
-  balance: z.number().optional(),
-  icon: z.string().min(1),
-})
-export type NewAccountSchemaType = z.infer<typeof newAccountSchema>
