@@ -28,7 +28,7 @@ function Item({className, ...rest}: ComponentProps<typeof ark.div>) {
     <ark.div
       className={cn(
         "ListItem",
-        "first:[&_[role='separator']]:bg-fill-opaque hover:[&_[role='separator']]:bg-fill-opaque group/item bg-fill-opaque hover:bg-fill-quaternary flex h-13 w-full gap-1 px-4 first:rounded-t-[1.625rem] last:rounded-b-[1.625rem]",
+        "first:[&_[role='separator']]:bg-fill-opaque group/item bg-fill-opaque flex h-13 w-full gap-1 px-4 first:rounded-t-[1.625rem] last:rounded-b-[1.625rem]",
         className
       )}
       {...rest}

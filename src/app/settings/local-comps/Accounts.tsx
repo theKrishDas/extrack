@@ -1,17 +1,14 @@
 import {CSSProperties, useState} from "react"
 import {Icon} from "@iconify/react/dist/iconify.js"
 import NumberFlow from "@number-flow/react"
-import {useNumberFormatter} from "@react-aria/i18n"
 import {api} from "#/convex/_generated/api"
 import {Doc} from "#/convex/_generated/dataModel"
 import {useQuery} from "convex/react"
 import {Link, Button as RacButton} from "react-aria-components"
 
 import {CURRENCY} from "@/lib/date-utils"
-import {Button} from "@/components/ui/button/animated-button"
 import {Drawer} from "@/components/ui/drawer/drawer-v2"
 import {List} from "@/components/ui/list-v2"
-import {Spacer} from "@/components/ui/spacer"
 import {Form} from "@/components/form/account/new"
 import {Spinner} from "@/components/loading/spinner"
 
@@ -51,14 +48,7 @@ export function Accounts() {
 }
 
 function AccountItems({account}: {account: Doc<"accounts">}) {
-  const formatter = useNumberFormatter({
-    style: "currency",
-    currency: CURRENCY,
-    minimumFractionDigits: 0,
-  })
-  const fmtBalance = formatter.format(account.currentBalance)
-  // const slug = account.name.toLowerCase()
-  const slug = "id"
+  const slug = account._id
 
   return (
     <>
