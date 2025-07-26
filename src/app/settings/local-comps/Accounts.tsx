@@ -21,7 +21,7 @@ export function Accounts() {
 
   return (
     <>
-      <div className="flex h-52 flex-col items-center justify-center pb-5 text-center">
+      <div className="flex h-44 flex-col items-center justify-center pb-5 text-center">
         <NumberFlow
           className="text-5xl font-bold"
           style={{"--number-flow-char-height": "1.2ch"} as CSSProperties}

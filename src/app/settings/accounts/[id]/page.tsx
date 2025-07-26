@@ -9,11 +9,7 @@ export default async function Page({params}: {params: Promise<{id: string}>}) {
   return (
     <main className="min-h-dvh px-4" data-vaul-drawer-wrapper="">
       <Spacer className="h-4" />
-      <Container
-        className="relative flex flex-col gap-0.5"
-        as="section"
-        asChild
-      >
+      <Container className="relative flex flex-col gap-0.5" as="section">
         <AccountInfo id={id} />
       </Container>
     </main>
