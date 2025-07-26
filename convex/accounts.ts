@@ -19,10 +19,16 @@ export const getAll = query({
 export const getById = query({
   args: {id: v.id("accounts")},
   handler: async (ctx, {id}) => {
-    return await ctx.db
-      .query("accounts")
-      .withIndex("by_id", q => q.eq("_id", id))
-      .unique()
+    return await ctx.db.get(id)
+  },
+})
+
+export const getByStringId = query({
+  args: {id: v.string()},
+  handler: async (ctx, args) => {
+    const normalizedId = ctx.db.normalizeId("accounts", args.id)
+    if (!normalizedId) return null
+    return await ctx.db.get(normalizedId)
   },
 })
 
@@ -64,6 +70,13 @@ export const add = mutation({
       icon,
       is_default,
     })
+  },
+})
+
+export const update = mutation({
+  args: {id: v.id("accounts"), name: v.string(), icon: v.string()},
+  handler: async (ctx, {id, ...rest}) => {
+    await ctx.db.patch(id, {...rest})
   },
 })
 

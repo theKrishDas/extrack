@@ -59,6 +59,5 @@ export function sanitizeName(raw: string, max?: number): string {
   if (max) {
     s = s.slice(0, max)
   }
-  // Lowercase
-  return s.toLowerCase()
+  return s
 }
