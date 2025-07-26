@@ -116,7 +116,23 @@ export const applyTransaction = internalMutation({
 
 export const remove = mutation({
   args: {id: v.id("accounts")},
-  handler: async (ctx, {id}) => await ctx.db.delete(id),
+  handler: async (ctx, {id: accountId}) => {
+    const transactions = await ctx.db
+      .query("transactions")
+      .withIndex("by_account", q =>
+        q
+          .eq("ownerId", FAKE_USER_NAME_DO_NOT_PUSH_TO_PRODUCTION)
+          .eq("account", accountId)
+      )
+      .collect()
+
+    await Promise.all([
+      transactions.forEach(txn => {
+        ctx.db.delete(txn._id)
+      }),
+      ctx.db.delete(accountId),
+    ])
+  },
 })
 
 /*

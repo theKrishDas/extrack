@@ -5,6 +5,8 @@ import {CURRENCY} from "@/lib/date-utils"
 import {cn} from "@/lib/utils"
 import {List} from "@/components/ui/list-v2"
 
+import {DeleteAccount} from "./DeleteAccount"
+
 export function OtherSettings({
   isEditing,
   account,
@@ -93,16 +95,8 @@ export function OtherSettings({
         <List.Text level="heading">Danger zone</List.Text>
       </List.Header>
       <List.Wrapper>
-        <List.Item>
-          <List.Image color="red">􀈒</List.Image>
-          <List.Content>
-            <List.Trailing>
-              <List.Title>
-                <List.Text>Delete Account</List.Text>
-              </List.Title>
-            </List.Trailing>
-          </List.Content>
-        </List.Item>
+        <DeleteAccount account={account} />
+
         <List.Item>
           <List.Image color="yellow">􀑪</List.Image>
           <List.Content>

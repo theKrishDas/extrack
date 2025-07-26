@@ -44,7 +44,7 @@ export const buttonVariants = cva(
         false: "",
       },
       fullWidth: {
-        true: "flex-1 w-full",
+        true: "w-full",
         false: "",
       },
       focusTreatment: {
