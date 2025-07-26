@@ -7,6 +7,7 @@ import {Link, Button as RacButton} from "react-aria-components"
 
 import {CURRENCY} from "@/lib/date-utils"
 import {Drawer} from "@/components/ui/drawer/drawer-v2"
+import {Emoji} from "@/components/ui/emoji"
 import {List} from "@/components/ui/list-v2"
 import {Spacer} from "@/components/ui/spacer"
 import {Form} from "@/components/form/account/new"
@@ -65,9 +66,7 @@ function AccountItems({account}: {account: Doc<"accounts">}) {
           }
         >
           <List.Image>
-            <p className="font-rnx-rounded text-xl text-white">
-              {account.icon}
-            </p>
+            <Emoji className="text-xl">{account.icon}</Emoji>
           </List.Image>
           <List.Content>
             <List.Trailing>

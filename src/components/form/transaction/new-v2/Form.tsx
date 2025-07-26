@@ -25,6 +25,7 @@ import {cn} from "@/lib/utils"
 import {buttonVariants} from "@/components/ui/button"
 import {Button} from "@/components/ui/button/animated-button"
 import {Drawer} from "@/components/ui/drawer/drawer-v2"
+import {Emoji} from "@/components/ui/emoji"
 import {ListBox} from "@/components/ui/list-box"
 import {Skeleton} from "@/components/ui/loading/skeleton"
 import {Spacer} from "@/components/ui/spacer"
@@ -421,7 +422,7 @@ function AccountSelectionDrawer({accounts}: {accounts: Doc<"accounts">[]}) {
               return (
                 <ListBox.Item key={_id} id={_id} isDisabled={!is_active}>
                   <ListBox.Icon asChild>
-                    <Icon icon={icon} />
+                    <Emoji className="text-xl">{icon}</Emoji>
                   </ListBox.Icon>
 
                   <Spacer className="h-0 w-0" />

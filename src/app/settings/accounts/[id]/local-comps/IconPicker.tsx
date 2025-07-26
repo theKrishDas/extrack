@@ -9,6 +9,7 @@ import {cn} from "@/lib/utils"
 import {Button} from "@/components/ui/button/animated-button"
 import {buttonVariants} from "@/components/ui/button/button-variants"
 import {Drawer} from "@/components/ui/drawer/drawer-v2"
+import {Emoji} from "@/components/ui/emoji"
 import {Spacer} from "@/components/ui/spacer"
 import {Spinner} from "@/components/loading/spinner"
 
@@ -62,18 +63,20 @@ export function IconPicker({
             {selectedIcon}
           </Button>
         ) : (
-          <div
-            className={cn(
-              buttonVariants({
-                size: "lg",
-                color: "gray",
-                className:
-                  "font-rnx-rounded size-32 overflow-hidden rounded-full text-6xl text-white sm:size-38 sm:text-6xl",
-              })
-            )}
-          >
-            {account.icon}
-          </div>
+          <Emoji asChild>
+            <div
+              className={cn(
+                buttonVariants({
+                  size: "lg",
+                  color: "gray",
+                  className:
+                    "size-32 overflow-hidden rounded-full text-6xl sm:size-38 sm:text-6xl",
+                })
+              )}
+            >
+              {account.icon}
+            </div>
+          </Emoji>
         )}
 
         <Drawer.Content className="h-full">
