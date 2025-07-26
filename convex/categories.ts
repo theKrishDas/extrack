@@ -81,5 +81,24 @@ export const add = mutation({
 
 export const remove = mutation({
   args: {id: v.id("categories")},
-  handler: async (ctx, {id}) => await ctx.db.delete(id),
+  handler: async (ctx, {id: categoryId}) => {
+    const category = await ctx.db.get(categoryId)
+    if (category?.is_vendor === true) return
+
+    const transactions = await ctx.db
+      .query("transactions")
+      .withIndex("by_category", q =>
+        q
+          .eq("ownerId", FAKE_USER_NAME_DO_NOT_PUSH_TO_PRODUCTION)
+          .eq("category", categoryId)
+      )
+      .collect()
+
+    await Promise.all([
+      transactions.forEach(txn => {
+        ctx.db.delete(txn._id)
+      }),
+      ctx.db.delete(categoryId),
+    ])
+  },
 })
