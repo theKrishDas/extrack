@@ -1,5 +1,4 @@
 import {CSSProperties, useState} from "react"
-import {Icon} from "@iconify/react/dist/iconify.js"
 import NumberFlow from "@number-flow/react"
 import {api} from "#/convex/_generated/api"
 import {Doc} from "#/convex/_generated/dataModel"
@@ -9,6 +8,7 @@ import {Link, Button as RacButton} from "react-aria-components"
 import {CURRENCY} from "@/lib/date-utils"
 import {Drawer} from "@/components/ui/drawer/drawer-v2"
 import {List} from "@/components/ui/list-v2"
+import {Spacer} from "@/components/ui/spacer"
 import {Form} from "@/components/form/account/new"
 import {Spinner} from "@/components/loading/spinner"
 
@@ -65,7 +65,9 @@ function AccountItems({account}: {account: Doc<"accounts">}) {
           }
         >
           <List.Image>
-            <Icon icon={account.icon} />
+            <p className="font-rnx-rounded text-xl text-white">
+              {account.icon}
+            </p>
           </List.Image>
           <List.Content>
             <List.Trailing>
@@ -99,6 +101,8 @@ function NewAccountDrawer() {
         <Drawer.Trigger asChild>
           <RacButton className="data-pressed:bg-fill-tertiary data-pressed:[&_[role='separator']]:bg-fill-opaque">
             <List.Image color="blue">􀅼</List.Image>
+            <Spacer className="" />
+
             <List.Content>
               <List.Trailing>
                 <List.Title>
