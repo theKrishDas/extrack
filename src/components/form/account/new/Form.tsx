@@ -1,5 +1,7 @@
 import {Fragment} from "react"
 import {zodResolver} from "@hookform/resolvers/zod"
+import {api} from "#/convex/_generated/api"
+import {useMutation} from "convex/react"
 import {
   Input,
   Label,
@@ -8,7 +10,6 @@ import {
   TextField,
 } from "react-aria-components"
 import {Controller, useForm, UseFormReturn} from "react-hook-form"
-import {toast} from "sonner"
 
 import {MAX_ACCOUNT_NAME_LENGTH} from "@/lib/constants/defaults"
 import {CURRENCY} from "@/lib/date-utils"
@@ -20,6 +21,7 @@ import {Spacer} from "@/components/ui/spacer"
 import {EmojiSelect} from "@/app/settings/local-comps/EmojiSelect"
 
 export function Form({afterSumbmit}: {afterSumbmit?: () => void}) {
+  const create = useMutation(api.accounts.add)
   const form = useForm<NewAccountSchemaType>({
     defaultValues: {
       name: undefined,
@@ -29,20 +31,15 @@ export function Form({afterSumbmit}: {afterSumbmit?: () => void}) {
     resolver: zodResolver(newAccountSchema),
   })
 
+  const onSubmit = (data: NewAccountSchemaType) => {
+    create(data)
+    afterSumbmit?.()
+  }
+
   return (
     <RacForm
       className="flex h-full flex-col"
-      onSubmit={form.handleSubmit(data => {
-        // eslint-disable-next-line no-console
-        console.info(
-          "%cDATA",
-          "color: black; background: #34c759; border-radius: 3px; padding: 1px 3px;",
-          data
-        )
-        toast.info(JSON.stringify(data, null, 2), {position: "top-center"})
-
-        afterSumbmit?.()
-      })}
+      onSubmit={form.handleSubmit(onSubmit)}
     >
       <EmojiSelect form={form} />
       <Spacer className="h-4" />
