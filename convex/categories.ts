@@ -79,6 +79,18 @@ export const add = mutation({
   },
 })
 
+export const update = mutation({
+  args: {
+    id: v.id("categories"),
+    name: v.string(),
+    color: v.union(...colors.map(c => v.literal(c))),
+    icon: v.optional(v.string()),
+  },
+  handler: async (ctx, {id, ...rest}) => {
+    await ctx.db.patch(id, {...rest})
+  },
+})
+
 export const remove = mutation({
   args: {id: v.id("categories")},
   handler: async (ctx, {id: categoryId}) => {
