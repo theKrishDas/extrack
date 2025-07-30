@@ -1,3 +1,4 @@
+import {Drawer as ActionDrawer} from "./action"
 import {
   Drawer,
   DrawerBody,
@@ -15,6 +16,7 @@ import {
   DrawerTrigger,
 } from "./drawer"
 import {Drawer as DrawerV2} from "./drawer-v2"
+import {Drawer as DrawerV3} from "./drawer-v3"
 
 export {
   Drawer,
@@ -32,4 +34,4 @@ export {
   DrawerDescription,
   DrawerHandle,
 }
-export {DrawerV2}
+export {DrawerV2, DrawerV3, ActionDrawer}
