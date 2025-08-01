@@ -22,7 +22,7 @@ import {
 import {newCategorySchema, NewCategorySchemaType} from "@/lib/schema/categories"
 import {cn, sanitizeName} from "@/lib/utils"
 import {Button} from "@/components/ui/button/animated-button"
-import {Drawer} from "@/components/ui/drawer/drawer-v2"
+import {ActionDrawer, DrawerV2 as Drawer} from "@/components/ui/drawer"
 import {Emoji} from "@/components/ui/emoji"
 import {List} from "@/components/ui/list-v2"
 import {Spacer} from "@/components/ui/spacer"
@@ -108,12 +108,7 @@ function CategoryActions({category}: {category: Doc<"categories">}) {
   }
 
   return (
-    <Drawer.Root
-      showHandle
-      shouldScaleBackground={false}
-      open={open}
-      onOpenChange={setOpen}
-    >
+    <ActionDrawer.Root open={open} onOpenChange={setOpen}>
       <Button
         variant="ghost"
         color="gray"
@@ -124,18 +119,17 @@ function CategoryActions({category}: {category: Doc<"categories">}) {
       >
         􀍠
       </Button>
-      <Drawer.Content>
-        <Drawer.Header>
-          <Drawer.Title srOnly>Actions</Drawer.Title>
-        </Drawer.Header>
+      <ActionDrawer.Content>
+        <ActionDrawer.Header>
+          <ActionDrawer.Title>Actions</ActionDrawer.Title>
+        </ActionDrawer.Header>
 
-        <div className="flex flex-col gap-2 px-4 [&_button]:w-full [&_button]:rounded-full">
+        <ActionDrawer.Footer>
           <EditCategory category={category} afterEdit={() => setOpen(false)} />
           <DeleteCategory category={category} onDelete={handleDelete} />
-        </div>
-        <Spacer className="h-4" />
-      </Drawer.Content>
-    </Drawer.Root>
+        </ActionDrawer.Footer>
+      </ActionDrawer.Content>
+    </ActionDrawer.Root>
   )
 }
 
@@ -175,9 +169,7 @@ function EditCategory({
   return (
     <Drawer.NestedRoot shouldScaleBackground={false}>
       <Drawer.Trigger asChild>
-        <Button color="gray" size="lg">
-          Edit
-        </Button>
+        <ActionDrawer.Action>Edit</ActionDrawer.Action>
       </Drawer.Trigger>
 
       <Drawer.Content className="h-full">
@@ -221,16 +213,59 @@ function DeleteCategory({
   onDelete: () => void
 }) {
   return (
+    <>
+      <ActionDrawer.Root>
+        <ActionDrawer.Trigger asChild>
+          <ActionDrawer.Action color="red" isDisabled={category.is_vendor}>
+            Delete
+          </ActionDrawer.Action>
+        </ActionDrawer.Trigger>
+        <ActionDrawer.Content>
+          <ActionDrawer.Header>
+            <ActionDrawer.Title>Delete {category.name}?</ActionDrawer.Title>
+
+            <ActionDrawer.Description>
+              You are about to delete this category. All your transactions with
+              this category will be deleted aswell!
+            </ActionDrawer.Description>
+          </ActionDrawer.Header>
+
+          <ActionDrawer.Footer>
+            <ActionDrawer.ClosePrimitive asChild>
+              <ActionDrawer.Action>Cancel</ActionDrawer.Action>
+            </ActionDrawer.ClosePrimitive>
+
+            <ActionDrawer.ClosePrimitive asChild>
+              <ActionDrawer.Action
+                color="red"
+                variant="filled"
+                onPress={onDelete}
+              >
+                Confirm Delete
+              </ActionDrawer.Action>
+            </ActionDrawer.ClosePrimitive>
+          </ActionDrawer.Footer>
+        </ActionDrawer.Content>
+      </ActionDrawer.Root>
+
+      {category.is_vendor && (
+        <List.Text className="text-center" level="footer">
+          This is a pre-shipped category and can’t be deleted.
+        </List.Text>
+      )}
+    </>
+  )
+
+  return (
     <Drawer.NestedRoot shouldScaleBackground={false}>
       <Drawer.Trigger asChild>
-        <Button
+        <ActionDrawer.Action
           color="red"
           variant="tinted"
-          size="lg"
           isDisabled={category.is_vendor}
         >
           Delete
-        </Button>
+        </ActionDrawer.Action>
       </Drawer.Trigger>
 
       {category.is_vendor && (
