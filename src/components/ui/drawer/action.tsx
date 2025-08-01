@@ -1,15 +1,12 @@
 "use client"
 
 import {ComponentProps} from "react"
-import {ark} from "@ark-ui/react/factory"
 import {Drawer as DrawerPrimitive} from "vaul"
 
 import {cn} from "@/lib/utils"
 import {Container} from "@/components/layout/container"
 
 import {Button, ButtonProps} from "../button/animated-button"
-import {ProgressiveBlur} from "../progressive-blur"
-import {Spacer} from "../spacer"
 
 const Root = ({
   shouldScaleBackground = false,
