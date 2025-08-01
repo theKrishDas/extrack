@@ -42,5 +42,6 @@ export default defineSchema({
     icon: v.string(),
   })
     .index("by_owner", ["ownerId"])
-    .index("by_name", ["ownerId", "name"]),
+    .index("by_name", ["ownerId", "name"])
+    .index("by_default", ["ownerId", "is_default"]),
 })

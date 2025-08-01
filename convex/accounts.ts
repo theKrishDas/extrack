@@ -93,6 +93,35 @@ export const toggleActive = mutation({
   },
 })
 
+export const setDefault = mutation({
+  args: {id: v.id("accounts"), default: v.boolean()},
+  handler: async (ctx, {id, default: defaultValue}) => {
+    const existing = await ctx.db.get(id)
+    if (!existing) {
+      throw new Error("Account doesn't exists")
+    }
+
+    if (defaultValue === false) {
+      await ctx.db.patch(id, {is_default: false})
+    } else {
+      const previouslyDefault = await ctx.db
+        .query("accounts")
+        .withIndex("by_default", q =>
+          q
+            .eq("ownerId", FAKE_USER_NAME_DO_NOT_PUSH_TO_PRODUCTION)
+            .eq("is_default", true)
+        )
+        .unique()
+
+      if (previouslyDefault)
+        ctx.db.patch(previouslyDefault?._id, {is_default: false})
+
+      ctx.db.patch(id, {is_default: true})
+    }
+    return id
+  },
+})
+
 export const applyTransaction = internalMutation({
   args: {
     id: v.id("accounts"),

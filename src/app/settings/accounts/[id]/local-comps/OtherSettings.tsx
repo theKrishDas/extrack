@@ -1,9 +1,13 @@
 import {useNumberFormatter} from "@react-aria/i18n"
+import {api} from "#/convex/_generated/api"
 import {Doc} from "#/convex/_generated/dataModel"
+import {useMutation} from "convex/react"
+import {Label} from "react-aria-components"
 
 import {CURRENCY} from "@/lib/date-utils"
 import {cn} from "@/lib/utils"
 import {List} from "@/components/ui/list-v2"
+import {Switch} from "@/components/ui/switch/Switch"
 
 import {DeleteAccount} from "./DeleteAccount"
 
@@ -20,6 +24,30 @@ export function OtherSettings({
     minimumFractionDigits: 0,
   })
   const fmtBalance = formatter.format(account.currentBalance)
+  const toggleActive = useMutation(
+    api.accounts.toggleActive
+  ).withOptimisticUpdate((localStore, {id}) => {
+    const existing = localStore.getQuery(api.accounts.getByStringId, {id})
+    if (!!existing) {
+      localStore.setQuery(
+        api.accounts.getByStringId,
+        {id},
+        {...existing, is_active: !existing.is_active}
+      )
+    }
+  })
+  const setDefault = useMutation(api.accounts.setDefault).withOptimisticUpdate(
+    (localStore, {id, default: val}) => {
+      const existing = localStore.getQuery(api.accounts.getByStringId, {id})
+      if (!!existing) {
+        localStore.setQuery(
+          api.accounts.getByStringId,
+          {id},
+          {...existing, is_default: val}
+        )
+      }
+    }
+  )
 
   return (
     <List.Root
@@ -63,10 +91,21 @@ export function OtherSettings({
           <List.Content>
             <List.Trailing>
               <List.Title>
-                <List.Text>Active</List.Text>
+                <List.Text className="select-none">
+                  <Label htmlFor="activate-account">Active</Label>
+                </List.Text>
               </List.Title>
               <List.Accessories>
-                <List.Text className="text-ios-green">􀁣</List.Text>
+                <Switch
+                  id="activate-account"
+                  isSelected={account.is_active}
+                  onChange={() => {
+                    toggleActive({id: account._id})
+                    setDefault({id: account._id, default: false})
+                  }}
+                >
+                  Toggle active
+                </Switch>
               </List.Accessories>
             </List.Trailing>
           </List.Content>
@@ -75,10 +114,19 @@ export function OtherSettings({
           <List.Content>
             <List.Trailing>
               <List.Title>
-                <List.Text>Default</List.Text>
+                <List.Text className="select-none">
+                  <Label htmlFor="default-account">Set as Default</Label>
+                </List.Text>
               </List.Title>
               <List.Accessories>
-                <List.Text level="3">􀁣</List.Text>
+                <Switch
+                  id="default-account"
+                  isSelected={account.is_default}
+                  isDisabled={!account.is_active}
+                  onChange={v => setDefault({id: account._id, default: v})}
+                >
+                  Default account
+                </Switch>
               </List.Accessories>
             </List.Trailing>
           </List.Content>
