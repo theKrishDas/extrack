@@ -2,6 +2,7 @@ import {v} from "convex/values"
 
 import {FAKE_USER_NAME_DO_NOT_PUSH_TO_PRODUCTION} from "../src/lib/constants/fake-username"
 import {transactionTypes} from "../src/lib/constants/transaction-types"
+import {internal} from "./_generated/api"
 import {internalMutation, mutation, query} from "./_generated/server"
 
 export const getAll = query({
@@ -161,6 +162,18 @@ export const remove = mutation({
       }),
       ctx.db.delete(accountId),
     ])
+  },
+})
+
+export const updateCurrentBalance = mutation({
+  args: {id: v.id("accounts"), balance: v.number()},
+  handler: async (ctx, {id, balance: newBalance}) => {
+    await ctx.db.patch(id, {startingBalance: newBalance})
+    ctx.runMutation(internal.accounts.syncBalance, {
+      account: id,
+      ownerId: FAKE_USER_NAME_DO_NOT_PUSH_TO_PRODUCTION,
+    })
+    return id
   },
 })
 
