@@ -2,7 +2,6 @@
 
 import {useState} from "react"
 import {ark} from "@ark-ui/react/factory"
-import {Icon} from "@iconify/react/dist/iconify.cjs" // TODO: use a better approach
 import {useNumberFormatter} from "@react-aria/i18n"
 import {api} from "#/convex/_generated/api"
 import {useMutation, usePaginatedQuery} from "convex/react"
@@ -15,6 +14,7 @@ import {CURRENCY} from "@/lib/date-utils"
 import {cn, createCollection} from "@/lib/utils"
 import {Button as AnimatedButton} from "@/components/ui/button/animated-button"
 import {ConfirmButton} from "@/components/ui/confirm-button"
+import {Emoji} from "@/components/ui/emoji"
 import {DataTable, DataType} from "@/app/(index)/local-comps/DataTable"
 
 export default function TransactionsList() {
@@ -98,9 +98,11 @@ export default function TransactionsList() {
                * Wrapper for the icon
                */}
               <ark.div className="h-7.5 w-7.5 overflow-hidden" asChild>
-                <div className="inline-grid place-content-center text-xl">
-                  <Icon icon={transaction.category.icon} />
-                </div>
+                <Emoji asChild>
+                  <p className="inline-grid place-content-center text-lg">
+                    {transaction.category.icon}
+                  </p>
+                </Emoji>
               </ark.div>
 
               {/*
