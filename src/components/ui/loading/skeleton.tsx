@@ -1,15 +1,15 @@
-import {ComponentProps} from "react"
-import {ark} from "@ark-ui/react/factory"
+import { ark } from "@ark-ui/react/factory"
+import type { ComponentProps } from "react"
 
-import {cn} from "@/lib/utils"
+import { cn } from "@/lib/utils"
 
-function Skeleton({className, ...rest}: ComponentProps<typeof ark.div>) {
+function Skeleton({ className, ...rest }: ComponentProps<typeof ark.div>) {
   return (
     <ark.div
-      className={cn("bg-fill-primary animate-pulse", className)}
+      className={cn("animate-pulse bg-fill-primary", className)}
       {...rest}
     />
   )
 }
 
-export {Skeleton}
+export { Skeleton }

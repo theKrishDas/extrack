@@ -1,8 +1,13 @@
-import {ComponentPropsWithoutRef, createContext, Key, use} from "react"
-import {AnimatePresence, motion, MotionProps} from "motion/react"
+import { AnimatePresence, type MotionProps, motion } from "motion/react"
+import {
+  type ComponentPropsWithoutRef,
+  createContext,
+  type Key,
+  use,
+} from "react"
 import useMeasure from "react-use-measure"
 
-import {cn} from "@/lib/utils"
+import { cn } from "@/lib/utils"
 
 interface AnimatedContainerContextType {
   ref: (element: HTMLOrSVGElement | null) => void
@@ -16,8 +21,8 @@ export interface RootProps
   extends Omit<ComponentPropsWithoutRef<typeof motion.div>, "animate"> {
   animate?: "height" | "width" | "both"
 }
-const Root = ({animate = "both", className, ...rest}: RootProps) => {
-  const [ref, {height, width}] = useMeasure()
+const Root = ({ animate = "both", className, ...rest }: RootProps) => {
+  const [ref, { height, width }] = useMeasure()
   const value: AnimatedContainerContextType = {
     height,
     width,
@@ -33,11 +38,11 @@ const Root = ({animate = "both", className, ...rest}: RootProps) => {
         }}
         className={cn(
           "pointer-events-none relative overflow-hidden",
-          animate === "height"
-            ? "h-fit w-auto"
-            : animate === "width"
-              ? "h-auto w-fit"
-              : "h-fit w-fit",
+          {
+            height: "h-fit w-auto",
+            width: "h-auto w-fit",
+            both: "h-fit w-fit",
+          }[animate],
           className
         )}
         {...rest}
@@ -68,17 +73,17 @@ const Content = ({
       "AnimatedContainer.Content must be used within AnimatedContainer.Root"
     )
 
-  const {ref} = context
+  const { ref } = context
 
   return (
     <AnimatePresence initial={false} mode="popLayout">
       <motion.div
-        key={animationKey}
+        animate={animate || { opacity: 1 }}
         className={cn("h-fit w-fit", wrapperClass)}
         // TODO: Add these
-        initial={initial || {opacity: 0}}
-        animate={animate || {opacity: 1}}
-        exit={exit || {opacity: 0}}
+        exit={exit || { opacity: 0 }}
+        initial={initial || { opacity: 0 }}
+        key={animationKey}
         transition={transition}
       >
         <div
@@ -112,5 +117,5 @@ export function ignoreCircularReferences(): (
   }
 }
 
-const AnimatedContainer = {Root, Content}
-export {AnimatedContainer}
+const AnimatedContainer = { Root, Content }
+export { AnimatedContainer }

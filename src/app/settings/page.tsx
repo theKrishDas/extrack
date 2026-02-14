@@ -1,11 +1,10 @@
 "use client"
 
-import {CSSProperties} from "react"
-import {Button, Link} from "react-aria-components"
-
-import {List} from "@/components/ui/list-v2"
-import {Dock} from "@/components/app/dock"
-import {Container} from "@/components/layout/container"
+import type { CSSProperties } from "react"
+import { Button, Link } from "react-aria-components"
+import { Dock } from "@/components/app/dock"
+import { Container } from "@/components/layout/container"
+import { List } from "@/components/ui/list-v2"
 
 export default function Page() {
   return (
@@ -14,8 +13,8 @@ export default function Page() {
 
       {/* // WARN: this main container has a height */}
       <main className="min-h-dvh px-4 pt-6" data-vaul-drawer-wrapper="">
-        <Container className="flex flex-col gap-0.5" as="section">
-          <h3 className="mt-4 mb-4.5 pl-4 text-3xl font-semibold tracking-tight">
+        <Container as="section" className="flex flex-col gap-0.5">
+          <h3 className="mt-4 mb-4.5 pl-4 font-semibold text-3xl tracking-tight">
             Settings
           </h3>
 
@@ -26,8 +25,8 @@ export default function Page() {
             <List.Wrapper>
               <List.Item asChild>
                 <Link
+                  className="cursor-auto data-pressed:bg-fill-tertiary"
                   href="/settings/accounts"
-                  className="data-pressed:bg-fill-tertiary cursor-auto"
                   style={
                     {
                       WebkitUserDrag: "none",
@@ -46,7 +45,7 @@ export default function Page() {
                       </List.Title>
 
                       <List.Accessories>
-                        <Button className="text-label-secondary inline-flex h-full items-center justify-end gap-1 font-semibold">
+                        <Button className="inline-flex h-full items-center justify-end gap-1 font-semibold text-label-secondary">
                           􀆊
                         </Button>
                       </List.Accessories>
@@ -57,8 +56,8 @@ export default function Page() {
 
               <List.Item asChild>
                 <Link
+                  className="cursor-auto data-pressed:bg-fill-tertiary"
                   href="/settings/categories"
-                  className="data-pressed:bg-fill-tertiary cursor-auto"
                   style={
                     {
                       WebkitUserDrag: "none",
@@ -77,7 +76,7 @@ export default function Page() {
                       </List.Title>
 
                       <List.Accessories>
-                        <Button className="text-label-secondary inline-flex h-full items-center justify-end gap-1 font-semibold">
+                        <Button className="inline-flex h-full items-center justify-end gap-1 font-semibold text-label-secondary">
                           􀆊
                         </Button>
                       </List.Accessories>
@@ -139,7 +138,7 @@ export default function Page() {
   )
 }
 
-function Icon({children}: {children: React.ReactNode}) {
+function Icon({ children }: { children: React.ReactNode }) {
   return (
     <div className="inline-grid size-7 place-content-center overflow-hidden rounded-[0.55rem] bg-[var(--list-image-color)] text-sm">
       <span className="text-white/85 mix-blend-plus-lighter">{children}</span>

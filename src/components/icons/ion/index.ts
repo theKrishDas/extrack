@@ -1,19 +1,7 @@
-import {IonAdd, IonPlusRound} from "./add"
-import {IonAddCircle, IonAddCircleOutline} from "./add-circle"
-import {IonArrowDown, IonArrowUp} from "./arrow"
-import {IonChevronBack, IonChevronForward} from "./chevron"
-import {IonClose} from "./close"
-import {IonPencil} from "./pencil"
-
-export {
-  IonArrowDown,
-  IonArrowUp,
-  IonPencil,
-  IonChevronForward,
-  IonChevronBack,
-  IonPlusRound,
-  IonAdd,
-  IonClose,
-  IonAddCircle,
-  IonAddCircleOutline,
-}
+// biome-ignore lint/performance/noBarrelFile: centralized icon exports
+export { IonAdd, IonPlusRound } from "./add"
+export { IonAddCircle, IonAddCircleOutline } from "./add-circle"
+export { IonArrowDown, IonArrowUp } from "./arrow"
+export { IonChevronBack, IonChevronForward } from "./chevron"
+export { IonClose } from "./close"
+export { IonPencil } from "./pencil"

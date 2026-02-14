@@ -1,6 +1,6 @@
 import z from "zod"
 
-import {TTransactionType} from "@/lib/schema/transactions"
+import type { TTransactionType } from "@/lib/schema/transactions"
 
 export const schema = z.object({
   id: z.string().min(1),
@@ -17,7 +17,7 @@ export function getLastUsedCategory(type: TTransactionType) {
 
   if (!value) return null
 
-  const result = schema.safeParse({id: value})
+  const result = schema.safeParse({ id: value })
 
   if (!result.success) {
     // TODO: Reneder a toast
@@ -40,7 +40,7 @@ export function getLastUsedAccount() {
 
   if (!value) return null
 
-  const result = schema.safeParse({id: value})
+  const result = schema.safeParse({ id: value })
 
   if (!result.success) {
     // TODO: Reneder a toast

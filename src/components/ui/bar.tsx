@@ -1,7 +1,7 @@
-import {ComponentProps} from "react"
-import {ark} from "@ark-ui/react/factory"
+import { ark } from "@ark-ui/react/factory"
+import type { ComponentProps } from "react"
 
-import {cn} from "@/lib/utils"
+import { cn } from "@/lib/utils"
 
 const Bar = ({
   className,
@@ -19,7 +19,7 @@ const Bar = ({
       className={cn(isVertical ? "w-full" : "h-full", className)}
       style={{
         height: isVertical ? `${size}%` : "full",
-        width: !isVertical ? `${size}%` : "full",
+        width: isVertical ? "full" : `${size}%`,
         ...style,
       }}
       {...rest}

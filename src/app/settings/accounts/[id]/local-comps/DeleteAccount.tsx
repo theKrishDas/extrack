@@ -1,21 +1,21 @@
-import {useState} from "react"
-import {useRouter} from "next/navigation"
-import {api} from "#/convex/_generated/api"
-import {Doc} from "#/convex/_generated/dataModel"
-import {useMutation} from "convex/react"
+import { useMutation } from "convex/react"
+import { useRouter } from "next/navigation"
+import { useState } from "react"
+import { api } from "#/convex/_generated/api"
+import type { Doc } from "#/convex/_generated/dataModel"
 
-import {Button} from "@/components/ui/button/animated-button"
-import {Drawer} from "@/components/ui/drawer/drawer-v2"
-import {List} from "@/components/ui/list-v2"
-import {Spacer} from "@/components/ui/spacer"
+import { Button } from "@/components/ui/button/animated-button"
+import { Drawer } from "@/components/ui/drawer/drawer-v2"
+import { List } from "@/components/ui/list-v2"
+import { Spacer } from "@/components/ui/spacer"
 
-export function DeleteAccount({account}: {account: Doc<"accounts">}) {
+export function DeleteAccount({ account }: { account: Doc<"accounts"> }) {
   const [open, setOpen] = useState(false)
   const deleteAccount = useMutation(api.accounts.remove)
   const router = useRouter()
 
   const onDelete = () => {
-    deleteAccount({id: account._id})
+    deleteAccount({ id: account._id })
 
     setOpen(false)
     router.push("/settings/accounts")
@@ -23,9 +23,9 @@ export function DeleteAccount({account}: {account: Doc<"accounts">}) {
 
   return (
     <Drawer.Root
-      shouldScaleBackground={false}
-      open={open}
       onOpenChange={setOpen}
+      open={open}
+      shouldScaleBackground={false}
     >
       <Drawer.Trigger asChild>
         <List.Item className="select-none">

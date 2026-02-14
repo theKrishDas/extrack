@@ -1,17 +1,16 @@
-import {Dispatch, SetStateAction, useState} from "react"
-import {Popover} from "@ark-ui/react/popover"
-
-import {TTransactionType} from "@/lib/schema/transactions"
-import {AnimatedContainer} from "@/components/ui/animated-container"
-import {Button} from "@/components/ui/button/animated-button"
-import {Drawer} from "@/components/ui/drawer/drawer-v2"
+import { Popover } from "@ark-ui/react/popover"
+import { type Dispatch, type SetStateAction, useState } from "react"
 import {
   Form,
   Provider as FormProvider,
 } from "@/components/form/transaction/new-v2"
-import {IonArrowDown, IonArrowUp} from "@/components/icons/ion/arrow"
+import { IonArrowDown, IonArrowUp } from "@/components/icons/ion/arrow"
+import { AnimatedContainer } from "@/components/ui/animated-container"
+import { Button } from "@/components/ui/button/animated-button"
+import { Drawer } from "@/components/ui/drawer/drawer-v2"
+import type { TTransactionType } from "@/lib/schema/transactions"
 
-import {physics} from "./helpers"
+import { physics } from "./helpers"
 import IdleNav from "./Idle"
 
 export default function Island({
@@ -37,30 +36,25 @@ export default function Island({
   return (
     <>
       <AnimatedContainer.Root
+        animate="width"
         className="rounded-full"
         transition={physics}
-        animate="width"
       >
         <AnimatedContainer.Content
+          animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
           animationKey={open ? "open" : "close"}
-          animate={{opacity: 1, y: 0, filter: "blur(0px)"}}
-          initial={{opacity: 0, y: offset * -1, filter: "blur(12px)"}}
-          exit={{opacity: 0, y: offset * 1, filter: "blur(12px)"}}
+          exit={{ opacity: 0, y: offset * 1, filter: "blur(12px)" }}
+          initial={{ opacity: 0, y: offset * -1, filter: "blur(12px)" }}
         >
-          {!open ? (
-            // *
-            // Dock content when idle.
-            // *
-            <IdleNav />
-          ) : (
+          {open ? (
             // *
             // Renders "Income" and "Expense" buttons for transaction type
             // selection when the menu is open.
             // *
             <Popover.Root
-              open={open}
-              onOpenChange={v => setOpen(v.open)}
               lazyMount
+              onOpenChange={(v) => setOpen(v.open)}
+              open={open}
               unmountOnExit
             >
               <Popover.Content className="inline-flex gap-1">
@@ -88,16 +82,21 @@ export default function Island({
                 </Button>
               </Popover.Content>
             </Popover.Root>
+          ) : (
+            // *
+            // Dock content when idle.
+            // *
+            <IdleNav />
           )}
         </AnimatedContainer.Content>
       </AnimatedContainer.Root>
 
       {transactionType && (
         <Drawer.Root
+          onOpenChange={setDrawerOpen}
+          open={drawerOpen}
           showHandle
           useBlur
-          open={drawerOpen}
-          onOpenChange={setDrawerOpen}
         >
           <Drawer.Content>
             <Drawer.Header className="h-8">
@@ -105,8 +104,8 @@ export default function Island({
             </Drawer.Header>
 
             <FormProvider
-              type={transactionType}
               afterSubmit={() => setDrawerOpen(false)}
+              type={transactionType}
             >
               <Form />
             </FormProvider>

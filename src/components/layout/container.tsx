@@ -1,7 +1,7 @@
-import {ComponentPropsWithoutRef, RefObject} from "react"
-import {Slot} from "@radix-ui/react-slot"
+import { Slot } from "@radix-ui/react-slot"
+import type { ComponentPropsWithoutRef, RefObject } from "react"
 
-import {cn} from "@/lib/utils"
+import { cn } from "@/lib/utils"
 
 export interface ContainerProps extends ComponentPropsWithoutRef<"div"> {
   asChild?: boolean
@@ -20,11 +20,11 @@ function Container({
 
   return (
     <Comp
-      ref={ref}
       className={cn("mx-auto w-full max-w-xl", className)}
+      ref={ref}
       {...rest}
     />
   )
 }
 
-export {Container}
+export { Container }

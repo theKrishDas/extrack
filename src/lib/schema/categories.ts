@@ -1,6 +1,6 @@
 import z from "zod"
 
-import {colors} from "../constants/colors"
+import { colors } from "../constants/colors"
 import {
   MAX_CATEGORY_NAME_LENGTH,
   MIN_CATEGORY_NAME_LENGTH,

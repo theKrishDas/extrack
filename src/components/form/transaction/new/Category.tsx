@@ -1,33 +1,32 @@
-import {useEffect} from "react"
-import {createListCollection, Listbox} from "@ark-ui/react/listbox"
-import {api} from "#/convex/_generated/api"
-import {Doc} from "#/convex/_generated/dataModel"
-import {useQuery} from "convex/react"
-import {Button as RacButton} from "react-aria-components"
-import {Controller} from "react-hook-form"
-
+import { createListCollection, Listbox } from "@ark-ui/react/listbox"
+import { useQuery } from "convex/react"
+import { useEffect } from "react"
+import { Button as RacButton } from "react-aria-components"
+import { Controller } from "react-hook-form"
+import { api } from "#/convex/_generated/api"
+import type { Doc } from "#/convex/_generated/dataModel"
+import { IonChevronForward } from "@/components/icons/ion"
+import { SquareRounded } from "@/components/icons/others"
 import {
   DrawerContent,
   DrawerNested,
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer"
-import {List} from "@/components/ui/list"
-import {Skeleton} from "@/components/ui/loading/skeleton"
-import {IonChevronForward} from "@/components/icons/ion"
-import {SquareRounded} from "@/components/icons/others"
+import { List } from "@/components/ui/list"
+import { Skeleton } from "@/components/ui/loading/skeleton"
 
-import {getLastUsedCategory, setLastUsedCategory} from "./helpers"
-import {useNewTransaction} from "./provider"
+import { getLastUsedCategory, setLastUsedCategory } from "./helpers"
+import { useNewTransaction } from "./provider"
 
 function createCollection(categories: Doc<"categories">[]) {
-  const mappedCategories = categories.map(cat => ({...cat, value: cat._id}))
-  return createListCollection({items: mappedCategories})
+  const mappedCategories = categories.map((cat) => ({ ...cat, value: cat._id }))
+  return createListCollection({ items: mappedCategories })
 }
 
 const CategorySelect = () => {
   const {
-    form: {control, setValue},
+    form: { control, setValue },
     transactionType,
   } = useNewTransaction()
 
@@ -43,7 +42,7 @@ const CategorySelect = () => {
 
     if (categoryFromLocalStorage) {
       const validCategory = availableCategories.find(
-        category => category._id === categoryFromLocalStorage.id
+        (category) => category._id === categoryFromLocalStorage.id
       )
       categoryId = validCategory
         ? validCategory._id
@@ -75,7 +74,7 @@ const CategorySelect = () => {
     <Controller
       control={control}
       name="category"
-      render={({field: {value, onChange, onBlur, ref}}) => {
+      render={({ field: { value, onChange, onBlur, ref } }) => {
         const selectedCategory = collection.find(value)
 
         return (
@@ -108,38 +107,38 @@ const CategorySelect = () => {
 
               <Listbox.Root
                 className="px-4"
-                onSelect={v => {
+                collection={collection}
+                loopFocus
+                onBlur={onBlur}
+                onSelect={(v) => {
                   onChange(v.value)
                 }}
-                onBlur={onBlur}
                 ref={ref}
-                collection={collection}
                 value={[value]}
-                loopFocus
               >
                 <Listbox.Label className="sr-only">
                   Select a category
                 </Listbox.Label>
                 <Listbox.Content asChild>
-                  <List.Root className="ring-ios-blue/[var(--separator-non-opaque-opacity)] ring-offset-background rounded-2xl ring-offset-1 outline-none focus-visible:ring-4">
-                    {collection.items.map(item => {
-                      const {_id: id, name, color} = item
+                  <List.Root className="rounded-2xl outline-none ring-ios-blue/[var(--separator-non-opaque-opacity)] ring-offset-1 ring-offset-background focus-visible:ring-4">
+                    {collection.items.map((item) => {
+                      const { _id: id, name, color } = item
                       return (
-                        <Listbox.Item item={item} key={id} asChild>
+                        <Listbox.Item asChild item={item} key={id}>
                           <List.Item className="data-highlighted:bg-fill-secondary [&:has(+_*[data-highlighted])_.ListContent]:border-transparent data-highlighted:[&>.ListContent]:border-transparent">
                             <List.Icon asChild>
                               <SquareRounded
-                                style={{color: `var(--ios-${color})`}}
                                 className="relative"
+                                style={{ color: `var(--ios-${color})` }}
                               />
                             </List.Icon>
                             <List.Content>
                               <Listbox.ItemText asChild>
-                                <List.Text level="1" className="relative">
+                                <List.Text className="relative" level="1">
                                   {name}
                                 </List.Text>
                               </Listbox.ItemText>
-                              <Listbox.ItemIndicator className="bg-ios-blue h-3 w-3 rounded-full" />
+                              <Listbox.ItemIndicator className="h-3 w-3 rounded-full bg-ios-blue" />
                             </List.Content>
                           </List.Item>
                         </Listbox.Item>

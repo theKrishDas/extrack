@@ -1,21 +1,21 @@
-import {ComponentProps, CSSProperties} from "react"
-import {ark} from "@ark-ui/react/factory"
+import { ark } from "@ark-ui/react/factory"
+import type { ComponentProps, CSSProperties } from "react"
 
-import {Colors} from "@/lib/constants/colors"
-import {cn} from "@/lib/utils"
+import type { Colors } from "@/lib/constants/colors"
+import { cn } from "@/lib/utils"
 
-import {Separator} from "./separator"
+import { Separator } from "./separator"
 
-function Root({className, ...rest}: ComponentProps<typeof ark.div>) {
+function Root({ className, ...rest }: ComponentProps<typeof ark.div>) {
   return <ark.div className={cn("ListRoot", className)} {...rest} />
 }
 
-function Wrapper({className, ...rest}: ComponentProps<typeof ark.div>) {
+function Wrapper({ className, ...rest }: ComponentProps<typeof ark.div>) {
   return (
     <ark.div
       className={cn(
         "ListWrapper",
-        "bg-fill-tertiary rounded-[1.625rem] leading-none",
+        "rounded-[1.625rem] bg-fill-tertiary leading-none",
         className
       )}
       {...rest}
@@ -23,12 +23,12 @@ function Wrapper({className, ...rest}: ComponentProps<typeof ark.div>) {
   )
 }
 
-function Item({className, ...rest}: ComponentProps<typeof ark.div>) {
+function Item({ className, ...rest }: ComponentProps<typeof ark.div>) {
   return (
     <ark.div
       className={cn(
         "ListItem",
-        "first:[&_[role='separator']]:bg-fill-opaque group/item bg-fill-opaque flex h-13 w-full gap-1 px-4 first:rounded-t-[1.625rem] last:rounded-b-[1.625rem]",
+        "group/item flex h-13 w-full gap-1 bg-fill-opaque px-4 first:rounded-t-[1.625rem] last:rounded-b-[1.625rem] first:[&_[role='separator']]:bg-fill-opaque",
         className
       )}
       {...rest}
@@ -41,7 +41,7 @@ function Image({
   color = "default",
   style,
   ...rest
-}: ComponentProps<typeof ark.div> & {color?: Colors | "default"}) {
+}: ComponentProps<typeof ark.div> & { color?: Colors | "default" }) {
   const colorVariable =
     color === "default" ? "var(--label-secondary)" : `var(--ios-${color})`
 
@@ -74,13 +74,13 @@ function Content({
       className={cn("ListContent", "flex h-full w-full flex-col", className)}
       {...rest}
     >
-      <Separator orientation="horizontal" noMargin useBlendig />
+      <Separator noMargin orientation="horizontal" useBlendig />
       {children}
     </ark.div>
   )
 }
 
-function Trailing({className, ...rest}: ComponentProps<typeof ark.div>) {
+function Trailing({ className, ...rest }: ComponentProps<typeof ark.div>) {
   return (
     <ark.div
       className={cn("ListTrailing", "flex h-full w-full", className)}
@@ -89,7 +89,7 @@ function Trailing({className, ...rest}: ComponentProps<typeof ark.div>) {
   )
 }
 
-function Title({className, ...rest}: ComponentProps<typeof ark.div>) {
+function Title({ className, ...rest }: ComponentProps<typeof ark.div>) {
   return (
     <ark.div
       className={cn(
@@ -116,12 +116,12 @@ function Text({
       className={cn(
         "ListText",
         level === "1" &&
-          "text-label-primary text-[1.15rem] font-semibold tracking-[0.01em]",
+          "font-semibold text-[1.15rem] text-label-primary tracking-[0.01em]",
         level === "2" &&
-          "text-label-primary text-base font-semibold tracking-[0.01em]",
-        level === "3" && "text-label-secondary font-medium tracking-[0.01em]",
+          "font-semibold text-base text-label-primary tracking-[0.01em]",
+        level === "3" && "font-medium text-label-secondary tracking-[0.01em]",
         level === "heading" &&
-          "text-label-secondary text-sm font-medium uppercase",
+          "font-medium text-label-secondary text-sm uppercase",
         level === "footer" &&
           "text-label-tertiary text-sm leading-snug tracking-[0.015em]",
         srOnly && "sr-only",
@@ -132,7 +132,7 @@ function Text({
   )
 }
 
-function Accessories({className, ...rest}: ComponentProps<typeof ark.div>) {
+function Accessories({ className, ...rest }: ComponentProps<typeof ark.div>) {
   return (
     <ark.div
       className={cn(
@@ -145,7 +145,7 @@ function Accessories({className, ...rest}: ComponentProps<typeof ark.div>) {
   )
 }
 
-function Header({className, ...rest}: ComponentProps<typeof ark.div>) {
+function Header({ className, ...rest }: ComponentProps<typeof ark.div>) {
   return (
     <ark.div
       className={cn("ListHeader", "w-full px-4 pt-6 pb-1.5", className)}
@@ -158,7 +158,7 @@ function Footer({
   className,
   srOnly = false,
   ...rest
-}: ComponentProps<typeof ark.h4> & {srOnly?: boolean}) {
+}: ComponentProps<typeof ark.h4> & { srOnly?: boolean }) {
   return (
     <ark.h4
       className={cn(
@@ -185,4 +185,4 @@ const List = {
   Header,
   Footer,
 }
-export {List}
+export { List }

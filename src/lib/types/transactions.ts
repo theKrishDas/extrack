@@ -1,6 +1,6 @@
-import {Doc} from "#/convex/_generated/dataModel"
+import type { Doc } from "#/convex/_generated/dataModel"
 
-import {ConvexReservedFields} from "./convex-queries"
+import type { ConvexReservedFields } from "./convex-queries"
 
 export type Transaction = Doc<"transactions">
 

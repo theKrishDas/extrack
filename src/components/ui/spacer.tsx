@@ -1,10 +1,10 @@
-import {ComponentProps} from "react"
-import {ark} from "@ark-ui/react/factory"
+import { ark } from "@ark-ui/react/factory"
+import type { ComponentProps } from "react"
 
-import {cn} from "@/lib/utils"
+import { cn } from "@/lib/utils"
 
-export function Spacer({className, ...rest}: ComponentProps<typeof ark.div>) {
+export function Spacer({ className, ...rest }: ComponentProps<typeof ark.div>) {
   return (
-    <ark.div className={cn("spacer h-3", className)} aria-hidden {...rest} />
+    <ark.div aria-hidden className={cn("spacer h-3", className)} {...rest} />
   )
 }

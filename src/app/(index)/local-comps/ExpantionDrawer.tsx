@@ -1,11 +1,8 @@
-import {Dispatch, SetStateAction} from "react"
-import {api} from "#/convex/_generated/api"
-import {useMutation, useQuery} from "convex/react"
-
-import {Transaction} from "@/lib/types/transactions"
-import {formatDate} from "@/lib/utils"
-import {Button} from "@/components/ui/button"
-import {ConfirmButton} from "@/components/ui/confirm-button"
+import { useMutation, useQuery } from "convex/react"
+import type { Dispatch, SetStateAction } from "react"
+import { api } from "#/convex/_generated/api"
+import { Button } from "@/components/ui/button"
+import { ConfirmButton } from "@/components/ui/confirm-button"
 import {
   Drawer,
   DrawerBody,
@@ -15,8 +12,10 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from "@/components/ui/drawer"
+import type { Transaction } from "@/lib/types/transactions"
+import { formatDate } from "@/lib/utils"
 
-import {DataTable, DataType} from "./DataTable"
+import { DataTable, type DataType } from "./DataTable"
 
 export default function ExpantionDrawer({
   open,
@@ -36,8 +35,8 @@ export default function ExpantionDrawer({
     category: categoryId,
     account: accountId,
   } = transaction
-  const category = useQuery(api.categories.getById, {id: categoryId})
-  const account = useQuery(api.accounts.getById, {id: accountId})
+  const category = useQuery(api.categories.getById, { id: categoryId })
+  const account = useQuery(api.accounts.getById, { id: accountId })
 
   const data: DataType = {
     header: ["Key", "value"],
@@ -51,16 +50,16 @@ export default function ExpantionDrawer({
   }
 
   return (
-    <Drawer open={open} onOpenChange={setOpen} shouldScaleBackground={false}>
+    <Drawer onOpenChange={setOpen} open={open} shouldScaleBackground={false}>
       <DrawerContent>
         <DrawerHandle className="mt-4" />
 
         <DrawerHeader className="pb-5 text-left">
-          <DrawerTitle className="text-2xl font-bold">Transaction</DrawerTitle>
+          <DrawerTitle className="font-bold text-2xl">Transaction</DrawerTitle>
         </DrawerHeader>
 
         <DrawerBody className="py-0">
-          <DataTable data={data} ariaLabel="Transaction details" />
+          <DataTable ariaLabel="Transaction details" data={data} />
         </DrawerBody>
 
         <DrawerFooter>
@@ -69,11 +68,11 @@ export default function ExpantionDrawer({
           </Button>
           <ConfirmButton
             className="flex-1"
-            restVariants={{color: "gray"}}
             onConfirm={() => {
               setOpen(false)
-              removeTransaction({id})
+              removeTransaction({ id })
             }}
+            restVariants={{ color: "gray" }}
           />
         </DrawerFooter>
       </DrawerContent>

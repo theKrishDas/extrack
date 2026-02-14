@@ -2,7 +2,7 @@ const generateColorVariants = (
   baseColor: string,
   mixColor?: string
 ): string[] => {
-  const variants = []
+  const variants: string[] = []
   for (let i = 1; i <= 10; i++) {
     const percentage = i * 10
     variants.push(
@@ -12,4 +12,4 @@ const generateColorVariants = (
   return variants
 }
 
-export {generateColorVariants}
+export { generateColorVariants }

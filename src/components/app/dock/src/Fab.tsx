@@ -1,10 +1,9 @@
-import {Dispatch, SetStateAction} from "react"
-import {motion} from "motion/react"
+import { motion } from "motion/react"
+import type { Dispatch, SetStateAction } from "react"
+import { IonPlusRound } from "@/components/icons/ion/add"
+import { Button } from "@/components/ui/button/animated-button"
 
-import {Button} from "@/components/ui/button/animated-button"
-import {IonPlusRound} from "@/components/icons/ion/add"
-
-import {physics} from "./helpers"
+import { physics } from "./helpers"
 
 export default function Fab({
   open,
@@ -15,14 +14,14 @@ export default function Fab({
 }) {
   return (
     <Button
-      color="gray"
-      variant="gray"
-      isIconOnly
-      onPress={() => setOpen(v => !v)}
       className="backdrop-blur-3xl"
+      color="gray"
+      isIconOnly
+      onPress={() => setOpen((v) => !v)}
+      variant="gray"
     >
       <motion.span
-        animate={open ? {rotate: 45} : {rotate: 0}}
+        animate={open ? { rotate: 45 } : { rotate: 0 }}
         transition={physics}
       >
         <IonPlusRound />

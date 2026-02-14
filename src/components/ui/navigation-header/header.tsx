@@ -1,11 +1,11 @@
 "use client"
 
-import {useRouter} from "next/navigation"
+import { useRouter } from "next/navigation"
 
-import {cn} from "@/lib/utils"
+import { cn } from "@/lib/utils"
 
-import {Button} from "../button/animated-button"
-import {Spacer} from "../spacer"
+import { Button } from "../button/animated-button"
+import { Spacer } from "../spacer"
 
 export interface HeaderProps {
   title: string
@@ -13,7 +13,7 @@ export interface HeaderProps {
   href?: string
 }
 
-export function Header({title, srOnly = false, href = ""}: HeaderProps) {
+export function Header({ title, srOnly = false, href = "" }: HeaderProps) {
   const router = useRouter()
 
   return (
@@ -22,7 +22,7 @@ export function Header({title, srOnly = false, href = ""}: HeaderProps) {
       <div className="absolute flex h-full w-full flex-1 items-center justify-center">
         <h1
           className={cn(
-            "text-label-primary max-w-[65%] truncate text-xl font-semibold tracking-[0.015rem]",
+            "max-w-[65%] truncate font-semibold text-label-primary text-xl tracking-[0.015rem]",
             srOnly && "sr-only"
           )}
         >
@@ -31,14 +31,14 @@ export function Header({title, srOnly = false, href = ""}: HeaderProps) {
       </div>
 
       <Button
-        color="gray"
         className={cn(
-          "text-lg font-normal shadow-[0_0_12px] shadow-black/10 sm:text-base",
+          "font-normal text-lg shadow-[0_0_12px] shadow-black/10 sm:text-base",
           "[--button-bg:var(--background)] [--button-highlight:var(--fill-primary)]",
           "dark:[--button-bg:var(--fill-quaternary)]"
         )}
-        onPress={() => router.push(href, {scroll: false})}
+        color="gray"
         isIconOnly
+        onPress={() => router.push(href, { scroll: false })}
       >
         􀆉
       </Button>

@@ -1,21 +1,21 @@
-import {cva} from "class-variance-authority"
+import { cva } from "class-variance-authority"
 
 export const buttonVariants = cva(
   [
-    "inline-flex w-fit shrink-0 items-center justify-center gap-1 px-5 leading-0 font-medium tracking-[0.01em] whitespace-nowrap relative",
-    "disabled:text-label-tertiary disabled:bg-fill-secondary disabled:pointer-events-none disabled:opacity-50", // Disabled
+    "relative inline-flex w-fit shrink-0 items-center justify-center gap-1 whitespace-nowrap px-5 font-medium leading-0 tracking-[0.01em]",
+    "disabled:pointer-events-none disabled:bg-fill-secondary disabled:text-label-tertiary disabled:opacity-50", // Disabled
     "cursor-default touch-none select-none", // cursor and select
   ],
   {
     variants: {
       variant: {
-        gray: "dasabled:[--button-bg:var(--fill-secondary)] bg-[var(--button-bg)] text-[var(--button-color)] [--button-bg:var(--fill-tertiary)] [--button-highlight:var(--fill-primary)]",
+        gray: "bg-[var(--button-bg)] text-[var(--button-color)] [--button-bg:var(--fill-tertiary)] [--button-highlight:var(--fill-primary)] dasabled:[--button-bg:var(--fill-secondary)]",
         filled:
-          "dasabled:[--button-bg:var(--fill-secondary)] bg-[var(--button-bg)] text-[var(--button-fg,_white)] [--button-bg:var(--button-color)] [--button-highlight:color-mix(in_oklch,var(--button-color),var(--button-fg,white)_30%)]",
+          "bg-[var(--button-bg)] text-[var(--button-fg,_white)] [--button-bg:var(--button-color)] [--button-highlight:color-mix(in_oklch,var(--button-color),var(--button-fg,white)_30%)] dasabled:[--button-bg:var(--fill-secondary)]",
         tinted:
-          "dasabled:[--button-bg:var(--fill-secondary)] bg-[var(--button-bg)] text-[var(--button-color)] [--button-bg:color-mix(in_oklch,var(--button-color)_var(--fill-tertiary-opacity),transparent)] [--button-highlight:color-mix(in_oklch,var(--button-color)_var(--label-tertiary-opacity),transparent)]",
+          "bg-[var(--button-bg)] text-[var(--button-color)] [--button-bg:color-mix(in_oklch,var(--button-color)_var(--fill-tertiary-opacity),transparent)] [--button-highlight:color-mix(in_oklch,var(--button-color)_var(--label-tertiary-opacity),transparent)] dasabled:[--button-bg:var(--fill-secondary)]",
         ghost:
-          "text-[var(--button-color)] bg-[var(--button-bg)] [--button-highlight:var(--fill-primary)] [--button-bg:var(--fill-opaque)]",
+          "bg-[var(--button-bg)] text-[var(--button-color)] [--button-bg:var(--fill-opaque)] [--button-highlight:var(--fill-primary)]",
         // "hover:bg-[var(--button-color)]/[var(--fill-quaternary-opacity)]",
       },
       color: {
@@ -48,7 +48,7 @@ export const buttonVariants = cva(
         false: "",
       },
       focusTreatment: {
-        true: "ring-[var(--button-color)]/50 ring-offset-background focus:outline-none focus-visible:ring-4 focus-visible:ring-offset-2 focus-visible:outline-none", // focus
+        true: "ring-[var(--button-color)]/50 ring-offset-background focus:outline-none focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-offset-2", // focus
         false: "",
       },
     },

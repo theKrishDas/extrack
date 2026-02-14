@@ -1,7 +1,7 @@
-import {ReactNode} from "react"
-import {usePathname, useRouter} from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
+import type { ReactNode } from "react"
 
-import {Button} from "@/components/ui/button/animated-button"
+import { Button } from "@/components/ui/button/animated-button"
 
 const IdleNav = () => {
   return (
@@ -12,7 +12,7 @@ const IdleNav = () => {
   )
 }
 
-function NavButton({children, url}: {children: ReactNode; url: string}) {
+function NavButton({ children, url }: { children: ReactNode; url: string }) {
   const router = useRouter()
   const pathname = usePathname().trim()
 
@@ -23,8 +23,8 @@ function NavButton({children, url}: {children: ReactNode; url: string}) {
   return (
     <Button
       color={pathname === url ? "blue" : "gray"}
-      variant={pathname === url ? "gray" : "ghost"}
       onPress={() => navigate(url)}
+      variant={pathname === url ? "gray" : "ghost"}
     >
       {children}
     </Button>

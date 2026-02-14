@@ -1,36 +1,36 @@
-import {stream} from "convex-helpers/server/stream"
-import {paginationOptsValidator} from "convex/server"
-import {v} from "convex/values"
+import { paginationOptsValidator } from "convex/server"
+import { v } from "convex/values"
+import { stream } from "convex-helpers/server/stream"
 
-import {FAKE_USER_NAME_DO_NOT_PUSH_TO_PRODUCTION} from "../src/lib/constants/fake-username"
-import {transactionTypes} from "../src/lib/constants/transaction-types"
-import {internal} from "./_generated/api"
-import {mutation, query} from "./_generated/server"
+import { FAKE_USER_NAME_DO_NOT_PUSH_TO_PRODUCTION } from "../src/lib/constants/fake-username"
+import { transactionTypes } from "../src/lib/constants/transaction-types"
+import { internal } from "./_generated/api"
+import { mutation, query } from "./_generated/server"
 import schema from "./schema"
 
 export const getAll = query({
   args: {},
-  handler: async ctx => {
+  handler: async (ctx) => {
     const ownerId = FAKE_USER_NAME_DO_NOT_PUSH_TO_PRODUCTION
 
     return await ctx.db
       .query("transactions")
-      .withIndex("by_owner", q => q.eq("ownerId", ownerId))
+      .withIndex("by_owner", (q) => q.eq("ownerId", ownerId))
       .order("asc")
       .collect()
   },
 })
 
 export const getById = query({
-  args: {id: v.id("transactions")},
-  handler: async (ctx, {id}) => await ctx.db.get(id),
+  args: { id: v.id("transactions") },
+  handler: async (ctx, { id }) => await ctx.db.get(id),
 })
 
 export const add = mutation({
   args: {
     amount: v.number(),
     note: v.optional(v.string()),
-    type: v.union(...transactionTypes.map(t => v.literal(t))),
+    type: v.union(...transactionTypes.map((t) => v.literal(t))),
     category: v.id("categories"),
     account: v.id("accounts"),
     date: v.number(),
@@ -75,8 +75,8 @@ export const add = mutation({
 })
 
 export const remove = mutation({
-  args: {id: v.id("transactions")},
-  handler: async (ctx, {id}) => {
+  args: { id: v.id("transactions") },
+  handler: async (ctx, { id }) => {
     const transaction = await ctx.db.get(id)
     if (!transaction) {
       throw new Error("Transaction not found for the given ID")
@@ -87,7 +87,7 @@ export const remove = mutation({
       throw new Error("Account not found for the given ID")
     }
 
-    const {amount, type} = transaction
+    const { amount, type } = transaction
 
     await Promise.all([
       ctx.db.delete(id),
@@ -103,11 +103,11 @@ export const remove = mutation({
 })
 
 export const getBetweenTimeframe = query({
-  args: {start: v.number(), end: v.number()},
-  handler: async (ctx, {start, end}) => {
+  args: { start: v.number(), end: v.number() },
+  handler: async (ctx, { start, end }) => {
     return await ctx.db
       .query("transactions")
-      .withIndex("by_date", q =>
+      .withIndex("by_date", (q) =>
         q
           .eq("ownerId", FAKE_USER_NAME_DO_NOT_PUSH_TO_PRODUCTION)
           .gte("date", start)
@@ -119,18 +119,18 @@ export const getBetweenTimeframe = query({
 })
 
 export const getJoinedPaginated = query({
-  args: {paginationOpts: paginationOptsValidator},
-  handler: async (ctx, {paginationOpts}) => {
+  args: { paginationOpts: paginationOptsValidator },
+  handler: (ctx, { paginationOpts }) => {
     const ownerId = FAKE_USER_NAME_DO_NOT_PUSH_TO_PRODUCTION
 
     const transactionStream = stream(ctx.db, schema)
       .query("transactions")
-      .withIndex("by_date", q => q.eq("ownerId", ownerId))
+      .withIndex("by_date", (q) => q.eq("ownerId", ownerId))
       .order("desc")
-      .map(async transaction => {
+      .map(async (transaction) => {
         const [category, account] = await Promise.all([
-          await ctx.db.get(transaction.category)!,
-          await ctx.db.get(transaction.account)!,
+          await ctx.db.get(transaction.category),
+          await ctx.db.get(transaction.account),
         ])
 
         // This check ensures that the return types for `category` and `account`
@@ -138,13 +138,16 @@ export const getJoinedPaginated = query({
         // This condition should never be met, as any attempt to retrieve an
         // invalid account or category using `ctx.db.get(id)` would have already
         // resulted in an error from Convex by now.
-        if (!category || !account) {
+        if (!(category && account)) {
           throw new Error("Invariant violated: missing related record")
         }
 
-        return {...transaction, category, account}
+        return { ...transaction, category, account }
       })
 
-    return transactionStream.paginate({...paginationOpts, maximumRowsRead: 50})
+    return transactionStream.paginate({
+      ...paginationOpts,
+      maximumRowsRead: 50,
+    })
   },
 })

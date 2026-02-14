@@ -15,31 +15,26 @@ body {
   color: var(--foreground);
   background: var(--background);
   font-family:
-    var(--font-rnx-rounded),
-    system-ui,
-    -apple-system,
-    "Segoe UI",
-    Roboto,
-    Helvetica,
-    Arial,
-    sans-serif,
-    "Apple Color Emoji",
-    "Segoe UI Emoji";
+    var(--font-rnx-rounded), system-ui, -apple-system, "Segoe UI", Roboto,
+    Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 @theme {
-  --font-inter: var(--font-inter), system-ui, -apple-system, Segoe UI, Roboto,
+  --font-inter:
+    var(--font-inter), system-ui, -apple-system, Segoe UI, Roboto, Helvetica,
+    Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+  --font-geist-sans:
+    var(--font-geist-sans), system-ui, -apple-system, Segoe UI, Roboto,
     Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
-  --font-geist-sans: var(--font-geist-sans), system-ui, -apple-system, Segoe UI,
-    Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
-  --font-geist-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular,
-    Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  --font-geist-mono:
+    var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, Monaco,
+    Consolas, "Liberation Mono", "Courier New", monospace;
 
-  --font-rnx-rounded: var(--font-rnx-rounded), system-ui, -apple-system,
-    Segoe UI, Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji",
-    "Segoe UI Emoji";
+  --font-rnx-rounded:
+    var(--font-rnx-rounded), system-ui, -apple-system, Segoe UI, Roboto,
+    Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
 }
 
 /* Custom scrollbar styling. Thanks @pranathiperii. */

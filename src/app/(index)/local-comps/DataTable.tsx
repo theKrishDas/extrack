@@ -1,17 +1,17 @@
 "use client"
 
 import {
-  CellProps,
+  type CellProps,
   Column,
   Cell as RacCell,
   Row as RacRow,
-  RowProps,
+  type RowProps,
   Table,
   TableBody,
   TableHeader,
 } from "react-aria-components"
 
-import {cn} from "@/lib/utils"
+import { cn } from "@/lib/utils"
 
 export type DataType = {
   header: string[]
@@ -35,7 +35,7 @@ function DataTable({
     >
       <TableHeader className="sr-only">
         {data.header.map((header, idx) => (
-          <Column key={header} isRowHeader={idx === 0}>
+          <Column isRowHeader={idx === 0} key={header}>
             {header}
           </Column>
         ))}
@@ -43,13 +43,16 @@ function DataTable({
       <TableBody className="grid-col-1 grid gap-1">
         {data.body.map((row, j) => (
           <Row
-            key={j}
+            key={`row-${j}-${row.filter(Boolean).join("-")}`}
             style={{
               gridTemplateColumns: `repeat(${row.length}, minmax(0, 1fr))`,
             }}
           >
             {row.map((cell, k) => (
-              <Cell key={k} className={cn(!cell && "text-label-quaternary")}>
+              <Cell
+                className={cn(!cell && "text-label-quaternary")}
+                key={`cell-${j}-${k}-${data.header[k]}`}
+              >
                 {cell || "Empty"}
               </Cell>
             ))}
@@ -60,11 +63,15 @@ function DataTable({
   )
 }
 
-const Row = <T extends object>({children, className, ...rest}: RowProps<T>) => {
+const Row = <T extends object>({
+  children,
+  className,
+  ...rest
+}: RowProps<T>) => {
   return (
     <RacRow
       className={cn(
-        "border-separator-non-opaque grid gap-2 border-t-1",
+        "grid gap-2 border-separator-non-opaque border-t",
         className
       )}
       {...rest}
@@ -74,11 +81,11 @@ const Row = <T extends object>({children, className, ...rest}: RowProps<T>) => {
   )
 }
 
-const Cell = ({children, className, ...rest}: CellProps) => {
+const Cell = ({ children, className, ...rest }: CellProps) => {
   return (
     <RacCell
       className={cn(
-        "text-label-primary [&:has(+td)]:text-label-secondary py-3 font-bold",
+        "py-3 font-bold text-label-primary [&:has(+td)]:text-label-secondary",
         className
       )}
       {...rest}
@@ -88,4 +95,4 @@ const Cell = ({children, className, ...rest}: CellProps) => {
   )
 }
 
-export {DataTable}
+export { DataTable }

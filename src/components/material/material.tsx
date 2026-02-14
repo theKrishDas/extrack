@@ -1,8 +1,8 @@
-import {ComponentPropsWithoutRef, RefObject} from "react"
-import {Slot} from "@radix-ui/react-slot"
-import {cva, VariantProps} from "class-variance-authority"
+import { Slot } from "@radix-ui/react-slot"
+import { cva, type VariantProps } from "class-variance-authority"
+import type { ComponentPropsWithoutRef, RefObject } from "react"
 
-import {cn} from "@/lib/utils"
+import { cn } from "@/lib/utils"
 
 export const materialVariants = cva(["material-surface h-auto w-auto"], {
   variants: {
@@ -11,7 +11,7 @@ export const materialVariants = cva(["material-surface h-auto w-auto"], {
       regular: "bg-fill-quaternary backdrop-blur-[8px]",
       thick: "bg-fill-quaternary backdrop-blur-2xl",
       chrome:
-        "bg-fill-quaternary before:bg-background/50 relative isolate backdrop-blur-2xl before:absolute before:inset-0 before:-z-1 before:rounded-[inherit] before:content-['']",
+        "relative isolate bg-fill-quaternary backdrop-blur-2xl before:absolute before:inset-0 before:-z-1 before:rounded-[inherit] before:bg-background/50 before:content-['']",
     },
     withBorder: {
       true: "shadow-[inset_0_1px,inset_0_0_0_1px] shadow-white/[0.025]",
@@ -45,12 +45,12 @@ const Material = ({
 
   return (
     <Comp
+      className={cn(materialVariants({ thickness, withBorder, className }))}
       ref={ref}
-      className={cn(materialVariants({thickness, withBorder, className}))}
       {...rest}
     />
   )
 }
 Material.displayName = "Material"
 
-export {Material}
+export { Material }

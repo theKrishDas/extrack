@@ -1,9 +1,7 @@
-import {CSSProperties, Fragment, useState} from "react"
-import {zodResolver} from "@hookform/resolvers/zod"
-import {api} from "#/convex/_generated/api"
-import {Doc} from "#/convex/_generated/dataModel"
-import {useMutation, useQuery} from "convex/react"
-import {EmojiPicker} from "frimousse"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useMutation, useQuery } from "convex/react"
+import { EmojiPicker } from "frimousse"
+import { type CSSProperties, useState } from "react"
 import {
   Input,
   Label,
@@ -12,74 +10,76 @@ import {
   Form as RacForm,
   TextField,
 } from "react-aria-components"
-import {Controller, useForm, UseFormReturn} from "react-hook-form"
-
-import {colors} from "@/lib/constants/colors"
+import { Controller, type UseFormReturn, useForm } from "react-hook-form"
+import { api } from "#/convex/_generated/api"
+import type { Doc } from "#/convex/_generated/dataModel"
+import { Spinner } from "@/components/loading/spinner"
+import { Button } from "@/components/ui/button/animated-button"
+import { ActionDrawer, DrawerV2 as Drawer } from "@/components/ui/drawer"
+import { Emoji } from "@/components/ui/emoji"
+import { List } from "@/components/ui/list-v2"
+import { Spacer } from "@/components/ui/spacer"
+import { colors } from "@/lib/constants/colors"
 import {
   MAX_CATEGORY_NAME_LENGTH,
   MIN_CATEGORY_NAME_LENGTH,
 } from "@/lib/constants/defaults"
-import {newCategorySchema, NewCategorySchemaType} from "@/lib/schema/categories"
-import {cn, sanitizeName} from "@/lib/utils"
-import {Button} from "@/components/ui/button/animated-button"
-import {ActionDrawer, DrawerV2 as Drawer} from "@/components/ui/drawer"
-import {Emoji} from "@/components/ui/emoji"
-import {List} from "@/components/ui/list-v2"
-import {Spacer} from "@/components/ui/spacer"
-import {Spinner} from "@/components/loading/spinner"
+import {
+  type NewCategorySchemaType,
+  newCategorySchema,
+} from "@/lib/schema/categories"
+import { cn, sanitizeName } from "@/lib/utils"
 
 export function Categories() {
   const categories = useQuery(api.categories.getAll)
 
   if (!categories) return <Spinner />
 
-  const incomeCategories = categories.filter(_ => _.type === "income")
-  const expenseCategories = categories.filter(_ => _.type === "expense")
+  const incomeCategories = categories.filter((_) => _.type === "income")
+  const expenseCategories = categories.filter((_) => _.type === "expense")
 
   return (
-    <>
-      <List.Root>
-        <List.Header className="relative flex items-center">
-          <List.Text level="heading">Expense</List.Text>
-          <Button
-            size="xs"
-            variant="ghost"
-            isIconOnly
-            className="absolute right-4.5"
-            isDisabled
-          >
-            􀅼
-          </Button>
-        </List.Header>
-        <List.Wrapper>
-          {expenseCategories.map(cat => (
-            <Item category={cat} key={cat._id} />
-          ))}
-        </List.Wrapper>
+    <List.Root>
+      <List.Header className="relative flex items-center">
+        <List.Text level="heading">Expense</List.Text>
+        <Button
+          className="absolute right-4.5"
+          isDisabled
+          isIconOnly
+          size="xs"
+          variant="ghost"
+        >
+          􀅼
+        </Button>
+      </List.Header>
+      <List.Wrapper>
+        {expenseCategories.map((cat) => (
+          <Item category={cat} key={cat._id} />
+        ))}
+      </List.Wrapper>
 
-        <List.Header className="relative flex items-center">
-          <List.Text level="heading">Income</List.Text>
-          <Button
-            size="xs"
-            variant="ghost"
-            isIconOnly
-            className="absolute right-4.5"
-            isDisabled
-          >
-            􀅼
-          </Button>
-        </List.Header>
-        <List.Wrapper>
-          {incomeCategories.map(cat => (
-            <Item category={cat} key={cat._id} />
-          ))}
-        </List.Wrapper>
-      </List.Root>
-    </>
+      <List.Header className="relative flex items-center">
+        <List.Text level="heading">Income</List.Text>
+        <Button
+          className="absolute right-4.5"
+          isDisabled
+          isIconOnly
+          size="xs"
+          variant="ghost"
+        >
+          􀅼
+        </Button>
+      </List.Header>
+      <List.Wrapper>
+        {incomeCategories.map((cat) => (
+          <Item category={cat} key={cat._id} />
+        ))}
+      </List.Wrapper>
+    </List.Root>
   )
 }
 
-function Item({category}: {category: Doc<"categories">}) {
+function Item({ category }: { category: Doc<"categories"> }) {
   return (
     <List.Item key={category._id}>
       <List.Image>
@@ -99,23 +99,23 @@ function Item({category}: {category: Doc<"categories">}) {
   )
 }
 
-function CategoryActions({category}: {category: Doc<"categories">}) {
+function CategoryActions({ category }: { category: Doc<"categories"> }) {
   const [open, setOpen] = useState(false)
   const deleteCategory = useMutation(api.categories.remove)
   const handleDelete = () => {
-    deleteCategory({id: category._id})
+    deleteCategory({ id: category._id })
     setOpen(false)
   }
 
   return (
-    <ActionDrawer.Root open={open} onOpenChange={setOpen}>
+    <ActionDrawer.Root onOpenChange={setOpen} open={open}>
       <Button
-        variant="ghost"
-        color="gray"
-        size="sm"
-        isIconOnly
         className="touch-auto"
+        color="gray"
+        isIconOnly
         onPress={() => setOpen(true)}
+        size="sm"
+        variant="ghost"
       >
         􀍠
       </Button>
@@ -125,7 +125,7 @@ function CategoryActions({category}: {category: Doc<"categories">}) {
         </ActionDrawer.Header>
 
         <ActionDrawer.Footer>
-          <EditCategory category={category} afterEdit={() => setOpen(false)} />
+          <EditCategory afterEdit={() => setOpen(false)} category={category} />
           <DeleteCategory category={category} onDelete={handleDelete} />
         </ActionDrawer.Footer>
       </ActionDrawer.Content>
@@ -151,7 +151,7 @@ function EditCategory({
     resolver: zodResolver(newCategorySchema),
   })
   const {
-    formState: {isDirty, defaultValues},
+    formState: { isDirty, defaultValues },
     getValues,
   } = form
 
@@ -160,8 +160,8 @@ function EditCategory({
   const onSubmit = (data: NewCategorySchemaType) => {
     if (!editable) return
 
-    const {name, icon, color} = data
-    update({id: category._id, name, icon, color})
+    const { name, icon, color } = data
+    update({ id: category._id, name, icon, color })
 
     afterEdit?.()
   }
@@ -190,10 +190,10 @@ function EditCategory({
 
           <Drawer.ClosePrimitive asChild>
             <Button
-              type="submit"
-              variant="filled"
               fullWidth
               isDisabled={!editable}
+              type="submit"
+              variant="filled"
             >
               Done
             </Button>
@@ -238,8 +238,8 @@ function DeleteCategory({
             <ActionDrawer.ClosePrimitive asChild>
               <ActionDrawer.Action
                 color="red"
-                variant="filled"
                 onPress={onDelete}
+                variant="filled"
               >
                 Confirm Delete
               </ActionDrawer.Action>
@@ -256,79 +256,80 @@ function DeleteCategory({
     </>
   )
 
-  return (
-    <Drawer.NestedRoot shouldScaleBackground={false}>
-      <Drawer.Trigger asChild>
-        <ActionDrawer.Action
-          color="red"
-          variant="tinted"
-          isDisabled={category.is_vendor}
-        >
-          Delete
-        </ActionDrawer.Action>
-      </Drawer.Trigger>
-
-      {category.is_vendor && (
-        <List.Text className="text-center" level="footer">
-          This is a pre-shipped category and can’t be deleted.
-        </List.Text>
-      )}
-
-      <Drawer.Content>
-        <Drawer.Header>
-          <Drawer.Title>Delete {category.name}?</Drawer.Title>
-        </Drawer.Header>
-        <div className="flex flex-col gap-2 px-4">
-          <p>
-            You are about to delete this category. All your transactions with
-            this category will be deleted aswell!
-          </p>
-
-          <Drawer.ClosePrimitive asChild>
-            <Button color="gray" fullWidth>
-              Cancel
-            </Button>
-          </Drawer.ClosePrimitive>
-
-          <Drawer.ClosePrimitive asChild>
-            <Button color="red" fullWidth onPress={onDelete}>
-              Delete
-            </Button>
-          </Drawer.ClosePrimitive>
-        </div>
-        <Spacer className="h-4" />
-      </Drawer.Content>
-    </Drawer.NestedRoot>
-  )
+  // TODO: remove this unused code
+  // return (
+  //   <Drawer.NestedRoot shouldScaleBackground={false}>
+  //     <Drawer.Trigger asChild>
+  //       <ActionDrawer.Action
+  //         color="red"
+  //         isDisabled={category.is_vendor}
+  //         variant="tinted"
+  //       >
+  //         Delete
+  //       </ActionDrawer.Action>
+  //     </Drawer.Trigger>
+  //
+  //     {category.is_vendor && (
+  //       <List.Text className="text-center" level="footer">
+  //         This is a pre-shipped category and can’t be deleted.
+  //       </List.Text>
+  //     )}
+  //
+  //     <Drawer.Content>
+  //       <Drawer.Header>
+  //         <Drawer.Title>Delete {category.name}?</Drawer.Title>
+  //       </Drawer.Header>
+  //       <div className="flex flex-col gap-2 px-4">
+  //         <p>
+  //           You are about to delete this category. All your transactions with
+  //           this category will be deleted aswell!
+  //         </p>
+  //
+  //         <Drawer.ClosePrimitive asChild>
+  //           <Button color="gray" fullWidth>
+  //             Cancel
+  //           </Button>
+  //         </Drawer.ClosePrimitive>
+  //
+  //         <Drawer.ClosePrimitive asChild>
+  //           <Button color="red" fullWidth onPress={onDelete}>
+  //             Delete
+  //           </Button>
+  //         </Drawer.ClosePrimitive>
+  //       </div>
+  //       <Spacer className="h-4" />
+  //     </Drawer.Content>
+  //   </Drawer.NestedRoot>
+  // )
 }
 
-function SelectColor({form}: {form: UseFormReturn<NewCategorySchemaType>}) {
+function SelectColor({ form }: { form: UseFormReturn<NewCategorySchemaType> }) {
   return (
     <Controller
       control={form.control}
       name="color"
-      render={({field: {value, onChange, onBlur, ref}}) => (
+      render={({ field: { value, onChange, onBlur, ref } }) => (
         <ListBox
-          ref={ref}
-          items={colors.map(color => ({color}))}
           aria-label="colors"
+          className="flex w-full items-center justify-center gap-0.5 px-0.5 sm:gap-2"
+          disallowEmptySelection
+          items={colors.map((color) => ({ color }))}
+          onBlur={onBlur}
+          onSelectionChange={([key]) => onChange(key)}
+          orientation="horizontal"
+          ref={ref}
+          selectedKeys={[value]}
           selectionMode="single"
           shouldFocusWrap
-          disallowEmptySelection
-          orientation="horizontal"
-          className="flex w-full items-center justify-center gap-0.5 px-0.5 sm:gap-2"
-          onBlur={onBlur}
-          selectedKeys={[value]}
-          onSelectionChange={([key]) => onChange(key)}
         >
-          {({color}) => (
+          {({ color }) => (
             <ListBoxItem
-              key={color}
-              id={color}
               className={cn(
-                "ring-ios-blue ring-offset-background relative h-10 w-full rounded-full border-none bg-[var(--swatch-color)] ring-offset-2 outline-none data-focus-visible:ring-2",
-                "after:pointer-events-none after:absolute after:top-1/2 after:left-1/2 after:-translate-x-1/2 after:-translate-y-1/2 after:text-sm after:text-white/90 after:opacity-0 after:mix-blend-plus-lighter after:transition-opacity after:content-['􀀁'] after:select-none data-selected:after:opacity-100"
+                "relative h-10 w-full rounded-full border-none bg-(--swatch-color) outline-none ring-ios-blue ring-offset-2 ring-offset-background data-focus-visible:ring-2",
+                "after:pointer-events-none after:absolute after:top-1/2 after:left-1/2 after:-translate-x-1/2 after:-translate-y-1/2 after:select-none after:text-sm after:text-white/90 after:opacity-0 after:mix-blend-plus-lighter after:transition-opacity after:content-['􀀁'] data-selected:after:opacity-100"
               )}
+              id={color}
+              key={color}
               style={
                 {
                   "--swatch-color":
@@ -345,47 +346,49 @@ function SelectColor({form}: {form: UseFormReturn<NewCategorySchemaType>}) {
   )
 }
 
-function NameInput({form}: {form: UseFormReturn<NewCategorySchemaType>}) {
+function NameInput({ form }: { form: UseFormReturn<NewCategorySchemaType> }) {
   return (
     <Controller
       control={form.control}
       name="name"
       render={({
-        field: {name, value, onChange, onBlur, ref},
-        fieldState: {invalid},
+        field: { name, value, onChange, onBlur, ref },
+        fieldState: { invalid },
       }) => (
-        <Fragment>
+        <>
           <TextField
-            name={name}
-            value={value}
-            onChange={v => onChange(sanitizeName(v, MAX_CATEGORY_NAME_LENGTH))}
-            minLength={MIN_CATEGORY_NAME_LENGTH}
-            maxLength={MAX_CATEGORY_NAME_LENGTH}
-            onBlur={onBlur}
-            isRequired
-            validationBehavior="aria"
-            isInvalid={invalid}
             className="w-full"
+            isInvalid={invalid}
+            isRequired
+            maxLength={MAX_CATEGORY_NAME_LENGTH}
+            minLength={MIN_CATEGORY_NAME_LENGTH}
+            name={name}
+            onBlur={onBlur}
+            onChange={(v) =>
+              onChange(sanitizeName(v, MAX_CATEGORY_NAME_LENGTH))
+            }
+            validationBehavior="aria"
+            value={value}
           >
-            <Label className="text-label-secondary w-full px-4 pt-6 pb-1.5 text-sm font-medium uppercase">
+            <Label className="w-full px-4 pt-6 pb-1.5 font-medium text-label-secondary text-sm uppercase">
               Name
             </Label>
             <Input
-              ref={ref}
-              placeholder="Enter name"
               className={cn(
-                "placeholder-label-secondary bg-fill-quaternary h-12 w-full rounded-xl pr-8.5 pl-4 text-lg leading-none tracking-[0.01em]",
-                "data-[focus-visible]:ring-ios-blue/[var(--separator-non-opaque-opacity)] outline-none data-[focus-visible]:rounded data-[focus-visible]:ring-4"
+                "h-12 w-full rounded-xl bg-fill-quaternary pr-8.5 pl-4 text-lg leading-none tracking-[0.01em] placeholder-label-secondary",
+                "outline-none data-focus-visible:rounded data-focus-visible:ring-4 data-focus-visible:ring-ios-blue/(--separator-non-opaque-opacity)"
               )}
+              placeholder="Enter name"
+              ref={ref}
             />
           </TextField>
-        </Fragment>
+        </>
       )}
     />
   )
 }
 
-function EmojiSelect({form}: {form: UseFormReturn<NewCategorySchemaType>}) {
+function EmojiSelect({ form }: { form: UseFormReturn<NewCategorySchemaType> }) {
   const [open, setOpen] = useState(false)
   const selectedIcon = form.getValues("icon")
   const selectedColor = form.watch("color")
@@ -394,13 +397,13 @@ function EmojiSelect({form}: {form: UseFormReturn<NewCategorySchemaType>}) {
     <>
       <Spacer className="h-4" />
 
-      <Drawer.NestedRoot open={open} onOpenChange={setOpen} showHandle>
+      <Drawer.NestedRoot onOpenChange={setOpen} open={open} showHandle>
         <div className="inline-grid w-full place-content-center">
           <Drawer.Trigger asChild>
             <Button
-              className="font-rnx-rounded size-32 overflow-hidden rounded-full text-6xl text-white sm:size-38 sm:text-6xl"
-              size="lg"
+              className="size-32 overflow-hidden rounded-full font-rnx-rounded text-6xl text-white sm:size-38 sm:text-6xl"
               color={selectedColor}
+              size="lg"
               variant="tinted"
             >
               {selectedIcon}
@@ -416,46 +419,46 @@ function EmojiSelect({form}: {form: UseFormReturn<NewCategorySchemaType>}) {
           <Controller
             control={form.control}
             name="icon"
-            render={({field: {onChange, ref}}) => {
+            render={({ field: { onChange, ref } }) => {
               return (
                 <EmojiPicker.Root
-                  ref={ref}
                   className="flex h-full w-full flex-col px-4"
                   columns={9}
-                  onEmojiSelect={({emoji}) => {
+                  onEmojiSelect={({ emoji }) => {
                     onChange(emoji)
                     setOpen(false)
                   }}
+                  ref={ref}
                 >
                   <Spacer className="h-1" />
                   <EmojiPicker.Search
                     className={cn(
-                      "placeholder-label-secondary bg-fill-quaternary z-10 h-12 w-full appearance-none rounded-[0.6rem] pr-8.5 pl-3.5 text-lg leading-none tracking-[0.01em] sm:h-10 sm:pr-7.5",
-                      "data-[focus-visible]:ring-ios-blue/[var(--separator-non-opaque-opacity)] outline-none data-[focus-visible]:ring-4",
+                      "z-10 h-12 w-full appearance-none rounded-[0.6rem] bg-fill-quaternary pr-8.5 pl-3.5 text-lg leading-none tracking-[0.01em] placeholder-label-secondary sm:h-10 sm:pr-7.5",
+                      "outline-none data-focus-visible:ring-4 data-focus-visible:ring-ios-blue/(--separator-non-opaque-opacity)",
                       "[&::-webkit-search-cancel-button]:appearance-none [&::-webkit-search-decoration]:appearance-none"
                     )}
                   />
                   <Spacer className="h-4" />
                   <EmojiPicker.Viewport className="flex-1 outline-hidden">
-                    <EmojiPicker.Loading className="text-label-secondary absolute inset-0 flex items-center justify-center text-sm">
+                    <EmojiPicker.Loading className="absolute inset-0 flex items-center justify-center text-label-secondary text-sm">
                       <Spinner />
                     </EmojiPicker.Loading>
-                    <EmojiPicker.Empty className="text-label-tertiary pointer-events-none absolute inset-0 inline-grid place-content-center text-base font-medium tracking-[0.0125em] select-none">
+                    <EmojiPicker.Empty className="pointer-events-none absolute inset-0 inline-grid select-none place-content-center font-medium text-base text-label-tertiary tracking-[0.0125em]">
                       No emoji found.
                     </EmojiPicker.Empty>
 
                     <EmojiPicker.List
-                      className="pb-1.5 select-none"
+                      className="select-none pb-1.5"
                       components={{
-                        CategoryHeader: ({category, ...props}) => (
+                        CategoryHeader: ({ category, ...props }) => (
                           <div
-                            className="text-label-secondary px-3 pt-3 pb-1.5 text-xs font-medium"
+                            className="px-3 pt-3 pb-1.5 font-medium text-label-secondary text-xs"
                             {...props}
                           >
                             {category.label}
                           </div>
                         ),
-                        Row: ({children, ...props}) => (
+                        Row: ({ children, ...props }) => (
                           <div
                             className="grid! scroll-my-1.5 grid-cols-9 gap-0.5 px-1.5"
                             {...props}
@@ -463,9 +466,9 @@ function EmojiSelect({form}: {form: UseFormReturn<NewCategorySchemaType>}) {
                             {children}
                           </div>
                         ),
-                        Emoji: ({emoji, ...props}) => (
+                        Emoji: ({ emoji, ...props }) => (
                           <button
-                            className="hover:bg-fill-secondary data-[active]:bg-fill-secondary flex aspect-square w-full items-center justify-center rounded-md text-2xl"
+                            className="flex aspect-square w-full items-center justify-center rounded-md text-2xl hover:bg-fill-secondary data-active:bg-fill-secondary"
                             {...props}
                           >
                             {emoji.emoji}

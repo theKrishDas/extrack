@@ -1,11 +1,11 @@
 "use client"
 
 import {
-  useSeparator,
   type SeparatorProps as SeparatorPrimitiveProps,
+  useSeparator,
 } from "react-aria"
 
-import {cn} from "@/lib/utils"
+import { cn } from "@/lib/utils"
 
 export interface SeparatorProps extends SeparatorPrimitiveProps {
   className?: string
@@ -22,7 +22,7 @@ function Separator({
   useBlendig = false,
   ...rest
 }: SeparatorProps) {
-  const {separatorProps} = useSeparator(rest)
+  const { separatorProps } = useSeparator(rest)
 
   return (
     <div
@@ -46,4 +46,4 @@ function Separator({
   )
 }
 
-export {Separator}
+export { Separator }

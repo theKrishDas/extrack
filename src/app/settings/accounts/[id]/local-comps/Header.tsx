@@ -1,12 +1,11 @@
-import {Dispatch, SetStateAction} from "react"
-import {useRouter} from "next/navigation"
-import {AnimatePresence, motion, Variants} from "motion/react"
-import {UseFormReturn} from "react-hook-form"
-
-import {NewAccountSchemaType} from "@/lib/schema/accounts"
-import {cn} from "@/lib/utils"
-import {AnimatedContainer} from "@/components/ui/animated-container"
-import {Button} from "@/components/ui/button/animated-button"
+import { AnimatePresence, motion, type Variants } from "motion/react"
+import { useRouter } from "next/navigation"
+import type { Dispatch, SetStateAction } from "react"
+import type { UseFormReturn } from "react-hook-form"
+import { AnimatedContainer } from "@/components/ui/animated-container"
+import { Button } from "@/components/ui/button/animated-button"
+import type { NewAccountSchemaType } from "@/lib/schema/accounts"
+import { cn } from "@/lib/utils"
 
 export function Header({
   editable,
@@ -24,9 +23,9 @@ export function Header({
   const router = useRouter()
   const href = "/settings/accounts" as const
   const variants: Variants = {
-    initial: {filter: "blur(3px)", scale: 0, opacity: 0},
-    animate: {filter: "blur(0px)", scale: 1, opacity: 1},
-    exit: {filter: "blur(3px)", scale: 0, opacity: 0},
+    initial: { filter: "blur(3px)", scale: 0, opacity: 0 },
+    animate: { filter: "blur(0px)", scale: 1, opacity: 1 },
+    exit: { filter: "blur(3px)", scale: 0, opacity: 0 },
   }
 
   return (
@@ -36,11 +35,11 @@ export function Header({
       </div>
 
       <Button
-        color="gray"
         className={cn(
-          "absolute top-0 left-0 text-lg font-normal shadow-[0_0_12px] shadow-black/10 sm:text-base",
+          "absolute top-0 left-0 font-normal text-lg shadow-[0_0_12px] shadow-black/10 sm:text-base",
           "[--button-bg:var(--background)] [--button-highlight:var(--fill-primary)] dark:[--button-bg:var(--fill-quaternary)]"
         )}
+        color="gray"
         isIconOnly
         onPress={() => {
           if (isEditing) {
@@ -48,52 +47,52 @@ export function Header({
             form.reset()
             return
           }
-          router.push(href, {scroll: false})
+          router.push(href, { scroll: false })
         }}
       >
         <AnimatePresence key={isEditing ? "T" : "F"} mode="sync">
-          {!isEditing ? (
+          {isEditing ? (
             <motion.span
-              variants={variants}
-              initial="initial"
               animate="animate"
               exit="exit"
+              initial="initial"
+              variants={variants}
             >
-              􀆉
+              􀆄
             </motion.span>
           ) : (
             <motion.span
-              variants={variants}
-              initial="initial"
               animate="animate"
               exit="exit"
+              initial="initial"
+              variants={variants}
             >
-              􀆄
+              􀆉
             </motion.span>
           )}
         </AnimatePresence>
       </Button>
 
       <Button
-        size="sm"
         className="absolute top-0 right-0"
-        variant={!isEditing ? "gray" : "filled"}
+        isDisabled={!editable}
         onPress={() => {
           form.handleSubmit(onSubmit)()
-          setEditing(v => !v)
+          setEditing((v) => !v)
         }}
-        isDisabled={!editable}
+        size="sm"
+        variant={isEditing ? "filled" : "gray"}
         // TODO: Add this prop later
         // isPending={}
       >
         <AnimatedContainer.Root animate="width">
           <AnimatedContainer.Content
+            animate={{ filter: "blur(0px)", opacity: 1 }}
             animationKey={isEditing ? "T" : "F"}
-            initial={{filter: "blur(3px)", opacity: 0}}
-            animate={{filter: "blur(0px)", opacity: 1}}
-            exit={{filter: "blur(3px)", opacity: 0}}
+            exit={{ filter: "blur(3px)", opacity: 0 }}
+            initial={{ filter: "blur(3px)", opacity: 0 }}
           >
-            {!isEditing ? "Edit" : "Done"}
+            {isEditing ? "Done" : "Edit"}
           </AnimatedContainer.Content>
         </AnimatedContainer.Root>
       </Button>

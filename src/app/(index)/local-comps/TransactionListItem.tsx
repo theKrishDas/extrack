@@ -1,9 +1,8 @@
-import {useState} from "react"
-
-import {Transaction} from "@/lib/types/transactions"
-import {cn} from "@/lib/utils"
-import {buttonVariants} from "@/components/ui/button"
-import {IonArrowDown, IonArrowUp} from "@/components/icons/ion"
+import { useState } from "react"
+import { IonArrowDown, IonArrowUp } from "@/components/icons/ion"
+import { buttonVariants } from "@/components/ui/button"
+import type { Transaction } from "@/lib/types/transactions"
+import { cn } from "@/lib/utils"
 
 import ExpantionDrawer from "./ExpantionDrawer"
 
@@ -13,14 +12,17 @@ export default function TransactionListItem({
   transaction: Transaction
 }) {
   const [open, setOpen] = useState<boolean>(false)
-  const {_id: id, amount, note, type} = transaction
+  const { _id: id, amount, note, type } = transaction
   const isExpense = type === "expense"
 
   return (
     <>
+      {/* TODO: Use listbox instead of list */}
+      {/** biome-ignore lint/a11y/noNoninteractiveElementInteractions: Will fix later */}
+      {/** biome-ignore lint/a11y/useKeyWithClickEvents: Will fix later */}
       <li
-        id={id}
         className="flex items-center gap-3 pl-3"
+        id={id}
         onClick={() => setOpen(true)}
       >
         <span
@@ -36,11 +38,11 @@ export default function TransactionListItem({
         </span>
 
         {/* "border-b-separator-opaque flex w-full items-center justify-between border-b pr-6 py-2 transaction-info" */}
-        <div className="border-b-separator-opaque flex w-full items-center justify-between gap-4 truncate py-2 pr-4">
+        <div className="flex w-full items-center justify-between gap-4 truncate border-b-separator-opaque py-2 pr-4">
           <span
             className={cn(
               "flex-1 overflow-hidden whitespace-nowrap",
-              note ? "text-label-primary/80 font-bold" : "text-label-tertiary"
+              note ? "font-bold text-label-primary/80" : "text-label-tertiary"
             )}
             style={{
               WebkitMaskImage:

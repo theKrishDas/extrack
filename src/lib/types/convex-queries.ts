@@ -1,5 +1,5 @@
-import {api} from "#/convex/_generated/api"
-import {FunctionReturnType} from "convex/server"
+import type { FunctionReturnType } from "convex/server"
+import type { api } from "#/convex/_generated/api"
 
 export type TransactionJoined = FunctionReturnType<
   typeof api.transactions.getJoinedPaginated

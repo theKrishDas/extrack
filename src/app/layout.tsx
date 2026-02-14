@@ -1,8 +1,8 @@
-import type {Metadata} from "next"
-import {Geist, Geist_Mono, Inter} from "next/font/google"
-import {Toaster} from "sonner"
+import type { Metadata } from "next"
+import { Geist, Geist_Mono, Inter } from "next/font/google"
+import { Toaster } from "sonner"
 
-import {rnxRounded} from "../fonts"
+import { rnxRounded } from "../fonts"
 
 import "./globals.css"
 

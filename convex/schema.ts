@@ -1,15 +1,15 @@
-import {defineSchema, defineTable} from "convex/server"
-import {v} from "convex/values"
+import { defineSchema, defineTable } from "convex/server"
+import { v } from "convex/values"
 
-import {colors} from "../src/lib/constants/colors"
-import {transactionTypes} from "../src/lib/constants/transaction-types"
+import { colors } from "../src/lib/constants/colors"
+import { transactionTypes } from "../src/lib/constants/transaction-types"
 
 export default defineSchema({
   transactions: defineTable({
     ownerId: v.string(),
     amount: v.number(),
     note: v.optional(v.string()),
-    type: v.union(...transactionTypes.map(t => v.literal(t))),
+    type: v.union(...transactionTypes.map((t) => v.literal(t))),
     category: v.id("categories"),
     account: v.id("accounts"),
     date: v.number(),
@@ -23,8 +23,8 @@ export default defineSchema({
   categories: defineTable({
     ownerId: v.string(),
     name: v.string(),
-    color: v.union(...colors.map(c => v.literal(c))),
-    type: v.union(...transactionTypes.map(t => v.literal(t))),
+    color: v.union(...colors.map((c) => v.literal(c))),
+    type: v.union(...transactionTypes.map((t) => v.literal(t))),
     is_vendor: v.boolean(),
     icon: v.string(),
   })

@@ -1,12 +1,11 @@
 "use client"
 
-import * as React from "react"
-import {RefObject} from "react"
-import {VariantProps} from "class-variance-authority"
-import {Drawer as DrawerPrimitive} from "vaul"
-
-import {cn} from "@/lib/utils"
-import {Material, materialVariants} from "@/components/material/material"
+import type { VariantProps } from "class-variance-authority"
+import type * as React from "react"
+import type { RefObject } from "react"
+import { Drawer as DrawerPrimitive } from "vaul"
+import { Material, type materialVariants } from "@/components/material/material"
+import { cn } from "@/lib/utils"
 
 interface RefType<T> {
   ref?: RefObject<T | null>
@@ -18,8 +17,8 @@ const Drawer = ({
   ...props
 }: React.ComponentProps<typeof DrawerPrimitive.Root>) => (
   <DrawerPrimitive.Root
-    shouldScaleBackground={shouldScaleBackground}
     setBackgroundColorOnScale={setBackgroundColorOnScale}
+    shouldScaleBackground={shouldScaleBackground}
     {...props}
   />
 )
@@ -31,8 +30,8 @@ const DrawerNested = ({
   ...props
 }: React.ComponentProps<typeof DrawerPrimitive.NestedRoot>) => (
   <DrawerPrimitive.NestedRoot
-    shouldScaleBackground={shouldScaleBackground}
     setBackgroundColorOnScale={setBackgroundColorOnScale}
+    shouldScaleBackground={shouldScaleBackground}
     {...props}
   />
 )
@@ -55,8 +54,8 @@ const DrawerOverlay = ({
 }: React.ComponentPropsWithoutRef<typeof DrawerPrimitive.Overlay> &
   RefType<React.ComponentRef<typeof DrawerPrimitive.Overlay>>) => (
   <DrawerPrimitive.Overlay
+    className={cn("fixed inset-0 z-50 bg-background/60", className)}
     ref={ref}
-    className={cn("bg-background/60 fixed inset-0 z-50", className)}
     {...rest}
   />
 )
@@ -75,18 +74,18 @@ const DrawerContent = ({
   <DrawerPortal>
     <DrawerOverlay />
     <DrawerPrimitive.Content
-      ref={ref}
       className={cn(
         "fixed inset-x-0 bottom-0 z-50 mx-auto mt-24 flex h-auto max-w-xl flex-col p-2 pt-0 outline-none",
         // "[--initial-transform:calc(100%+0.375rem)]", // tailwind's 1.5 = 0.375rem
         className
       )}
+      ref={ref}
       {...rest}
     >
       <DrawerMaterial
-        withBorder={withBorder}
-        thickness={thickness}
         className="rounded-3xl"
+        thickness={thickness}
+        withBorder={withBorder}
       >
         {children}
       </DrawerMaterial>
@@ -144,11 +143,11 @@ const DrawerTitle = ({
 }: React.ComponentPropsWithoutRef<typeof DrawerPrimitive.Title> &
   RefType<React.ComponentRef<typeof DrawerPrimitive.Title>>) => (
   <DrawerPrimitive.Title
-    ref={ref}
     className={cn(
-      "text-lg leading-none font-semibold tracking-tight",
+      "font-semibold text-lg leading-none tracking-tight",
       className
     )}
+    ref={ref}
     {...rest}
   />
 )
@@ -161,8 +160,8 @@ const DrawerDescription = ({
 }: React.ComponentPropsWithoutRef<typeof DrawerPrimitive.Description> &
   RefType<React.ComponentRef<typeof DrawerPrimitive.Description>>) => (
   <DrawerPrimitive.Description
-    ref={ref}
     className={cn("text-label-tertiary text-sm", className)}
+    ref={ref}
     {...rest}
   />
 )

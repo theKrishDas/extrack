@@ -1,16 +1,16 @@
-import {v} from "convex/values"
+import { v } from "convex/values"
 
-import {colors} from "../src/lib/constants/colors"
-import {FAKE_USER_NAME_DO_NOT_PUSH_TO_PRODUCTION} from "../src/lib/constants/fake-username"
-import {transactionTypes} from "../src/lib/constants/transaction-types"
-import {mutation, query} from "./_generated/server"
+import { colors } from "../src/lib/constants/colors"
+import { FAKE_USER_NAME_DO_NOT_PUSH_TO_PRODUCTION } from "../src/lib/constants/fake-username"
+import { transactionTypes } from "../src/lib/constants/transaction-types"
+import { mutation, query } from "./_generated/server"
 
 export const getAll = query({
   args: {},
-  handler: async ctx => {
+  handler: async (ctx) => {
     return await ctx.db
       .query("categories")
-      .withIndex("by_owner", q =>
+      .withIndex("by_owner", (q) =>
         q.eq("ownerId", FAKE_USER_NAME_DO_NOT_PUSH_TO_PRODUCTION)
       )
       .collect()
@@ -18,21 +18,21 @@ export const getAll = query({
 })
 
 export const getById = query({
-  args: {id: v.id("categories")},
-  handler: async (ctx, {id}) => {
+  args: { id: v.id("categories") },
+  handler: async (ctx, { id }) => {
     return await ctx.db
       .query("categories")
-      .withIndex("by_id", q => q.eq("_id", id))
+      .withIndex("by_id", (q) => q.eq("_id", id))
       .unique()
   },
 })
 
 export const getByType = query({
-  args: {type: v.union(...transactionTypes.map(t => v.literal(t)))},
-  handler: async (ctx, {type}) => {
+  args: { type: v.union(...transactionTypes.map((t) => v.literal(t))) },
+  handler: async (ctx, { type }) => {
     return await ctx.db
       .query("categories")
-      .withIndex("by_type", q =>
+      .withIndex("by_type", (q) =>
         q
           .eq("ownerId", FAKE_USER_NAME_DO_NOT_PUSH_TO_PRODUCTION)
           .eq("type", type)
@@ -44,14 +44,14 @@ export const getByType = query({
 export const add = mutation({
   args: {
     name: v.string(),
-    color: v.union(...colors.map(c => v.literal(c))),
-    type: v.union(...transactionTypes.map(t => v.literal(t))),
+    color: v.union(...colors.map((c) => v.literal(c))),
+    type: v.union(...transactionTypes.map((t) => v.literal(t))),
     icon: v.optional(v.string()),
   },
-  handler: async (ctx, {name, type, color, icon: argIcon}) => {
+  handler: async (ctx, { name, type, color, icon: argIcon }) => {
     const existing = await ctx.db
       .query("categories")
-      .withIndex("by_type_name", q =>
+      .withIndex("by_type_name", (q) =>
         q
           .eq("ownerId", FAKE_USER_NAME_DO_NOT_PUSH_TO_PRODUCTION)
           .eq("type", type)
@@ -83,23 +83,23 @@ export const update = mutation({
   args: {
     id: v.id("categories"),
     name: v.string(),
-    color: v.union(...colors.map(c => v.literal(c))),
+    color: v.union(...colors.map((c) => v.literal(c))),
     icon: v.optional(v.string()),
   },
-  handler: async (ctx, {id, ...rest}) => {
-    await ctx.db.patch(id, {...rest})
+  handler: async (ctx, { id, ...rest }) => {
+    await ctx.db.patch(id, { ...rest })
   },
 })
 
 export const remove = mutation({
-  args: {id: v.id("categories")},
-  handler: async (ctx, {id: categoryId}) => {
+  args: { id: v.id("categories") },
+  handler: async (ctx, { id: categoryId }) => {
     const category = await ctx.db.get(categoryId)
     if (category?.is_vendor === true) return
 
     const transactions = await ctx.db
       .query("transactions")
-      .withIndex("by_category", q =>
+      .withIndex("by_category", (q) =>
         q
           .eq("ownerId", FAKE_USER_NAME_DO_NOT_PUSH_TO_PRODUCTION)
           .eq("category", categoryId)
@@ -107,9 +107,7 @@ export const remove = mutation({
       .collect()
 
     await Promise.all([
-      transactions.forEach(txn => {
-        ctx.db.delete(txn._id)
-      }),
+      ...transactions.map((txn) => ctx.db.delete(txn._id)),
       ctx.db.delete(categoryId),
     ])
   },

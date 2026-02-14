@@ -1,22 +1,12 @@
-import {MatArrowDownwardAltRounded, MatArrowUpwardAltRounded} from "./arrow-sm"
-import {MatCloseRounded} from "./close"
-import {MatUnfoldLessRounded, MatUnfoldMoreRounded} from "./fold"
-import {MatHistoryRounded} from "./history"
-import {MatPlannerReviewRounded} from "./planner"
-import {MatRefreshRounded} from "./refresh"
-import {MatSettingsOutlineRounded, MatSettingsRounded} from "./settings"
-import {MatWallet} from "./wallet"
-
+// biome-ignore lint/performance/noBarrelFile: centralized icon exports
 export {
-  MatRefreshRounded,
-  MatCloseRounded,
-  MatUnfoldMoreRounded,
-  MatUnfoldLessRounded,
-  MatArrowUpwardAltRounded,
   MatArrowDownwardAltRounded,
-  MatPlannerReviewRounded,
-  MatHistoryRounded,
-  MatSettingsRounded,
-  MatSettingsOutlineRounded,
-  MatWallet,
-}
+  MatArrowUpwardAltRounded,
+} from "./arrow-sm"
+export { MatCloseRounded } from "./close"
+export { MatUnfoldLessRounded, MatUnfoldMoreRounded } from "./fold"
+export { MatHistoryRounded } from "./history"
+export { MatPlannerReviewRounded } from "./planner"
+export { MatRefreshRounded } from "./refresh"
+export { MatSettingsOutlineRounded, MatSettingsRounded } from "./settings"
+export { MatWallet } from "./wallet"

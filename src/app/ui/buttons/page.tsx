@@ -1,8 +1,8 @@
 "use client"
 
-import {useRef} from "react"
+import { useRef } from "react"
 
-import {Button} from "@/components/ui/button"
+import { Button } from "@/components/ui/button"
 
 export default function Page() {
   const thatRef = useRef(null)
@@ -13,7 +13,7 @@ export default function Page() {
       </section>
 
       <section className="mt-2 flex flex-wrap gap-1">
-        {["gray", "filled", "tinted", "ghost"].map(variant => (
+        {["gray", "filled", "tinted", "ghost"].map((variant) => (
           <section className="mt-2 flex flex-wrap gap-1" key={variant}>
             {[
               "gray",
@@ -29,11 +29,11 @@ export default function Page() {
               "purple",
               "pink",
               "brown",
-            ].map(color => (
+            ].map((color) => (
               <Button
-                variant={variant as never}
                 color={color as never}
                 key={color}
+                variant={variant as never}
               >
                 {color}
               </Button>

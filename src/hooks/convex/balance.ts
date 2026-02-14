@@ -1,7 +1,7 @@
-import {api} from "#/convex/_generated/api"
-import {Id} from "#/convex/_generated/dataModel"
-import {useQuery} from "convex/react"
-import {endOfToday} from "date-fns"
+import { useQuery } from "convex/react"
+import { endOfToday } from "date-fns"
+import { api } from "#/convex/_generated/api"
+import type { Id } from "#/convex/_generated/dataModel"
 
 /**
  * Calculates a date range from a given start date up to an optional end date,
@@ -14,7 +14,7 @@ export const getDateRange = (date: number, end?: number) => {
   // Determine the effective end of the range, defaulting to the end of the current day.
   const today = end ?? endOfToday().getTime()
 
-  return {start: date, end: today}
+  return { start: date, end: today }
 }
 
 /**
@@ -31,9 +31,9 @@ export const useBalanceOn = ({
 }: {
   date: number
   account: "all" | Id<"accounts">
-}): {balance: number; currentBalance: number} | undefined => {
+}): { balance: number; currentBalance: number } | undefined => {
   // Define the date range from the given historical date up to today.
-  const {start, end} = getDateRange(date)
+  const { start, end } = getDateRange(date)
 
   // Fetch all transactions that occurred within the calculated date range from Convex.
   const transactionsBetween = useQuery(api.transactions.getBetweenTimeframe, {
@@ -42,7 +42,7 @@ export const useBalanceOn = ({
   })
 
   // Fetch the current total balance across all accounts from Convex.
-  const balance = useQuery(api.accounts.getBalance, {account: account})
+  const balance = useQuery(api.accounts.getBalance, { account })
 
   // If either transactions or the current balance are still loading, return undefined.
   if (transactionsBetween === undefined || balance === undefined) {
@@ -52,7 +52,7 @@ export const useBalanceOn = ({
   const relevantTransactions =
     account === "all"
       ? transactionsBetween
-      : transactionsBetween.filter(t => t.account === account)
+      : transactionsBetween.filter((t) => t.account === account)
 
   // Calculate the net flow (sum of all incomes minus all expenses) within the period
   // from the historical date up to today.
@@ -66,5 +66,5 @@ export const useBalanceOn = ({
   // This is done by subtracting the net flow that occurred *after* the historical date
   // from the current balance.
   const balanceAtDate = balance - totalSpent
-  return {balance: balanceAtDate, currentBalance: balance}
+  return { balance: balanceAtDate, currentBalance: balance }
 }

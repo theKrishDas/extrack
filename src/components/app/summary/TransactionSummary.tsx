@@ -1,11 +1,8 @@
 "use client"
 
-import {ReactNode, useState} from "react"
-import {useNumberFormatter} from "@react-aria/i18n"
-import {api} from "#/convex/_generated/api"
-import {formatTransactionSummary} from "#/convex/utils"
-import {useQuery} from "convex/react"
-import {FunctionReturnType} from "convex/server"
+import { useNumberFormatter } from "@react-aria/i18n"
+import { useQuery } from "convex/react"
+import type { FunctionReturnType } from "convex/server"
 import {
   eachDayOfInterval,
   endOfDay,
@@ -16,22 +13,24 @@ import {
   startOfToday,
   startOfWeek,
 } from "date-fns"
-import {Button} from "react-aria-components"
-
-import {CURRENCY} from "@/lib/date-utils"
-import {cn} from "@/lib/utils"
+import { type ReactNode, useState } from "react"
+import { Button } from "react-aria-components"
+import { api } from "#/convex/_generated/api"
+import { formatTransactionSummary } from "#/convex/utils"
 import Bar from "@/components/ui/bar"
+import { CURRENCY } from "@/lib/date-utils"
+import { cn } from "@/lib/utils"
 
 const TransactionSummary = () => {
   /*
    * Getting the right dates for the timeframes
    */
   // TODO: Remove the override controle when testing is done
-  const today = true ? startOfToday() : startOfDay(new Date(2025, 5, 9))
+  const today = startOfToday()
   const frameStart = startOfWeek(today)
   const frameEnd = endOfWeek(today)
-  const timeframes = eachDayOfInterval({start: frameStart, end: frameEnd})
-  const timeframesInNumber = timeframes.map(f => ({
+  const timeframes = eachDayOfInterval({ start: frameStart, end: frameEnd })
+  const timeframesInNumber = timeframes.map((f) => ({
     start: startOfDay(f).getTime(),
     end: endOfDay(f).getTime(),
   }))
@@ -40,7 +39,7 @@ const TransactionSummary = () => {
    * Using those dates get the summary
    */
   const todaysIndex = timeframesInNumber.findIndex(
-    v => v.start === startOfDay(today).getTime()
+    (v) => v.start === startOfDay(today).getTime()
   )
   const [showingSubBreakdown, setShowingSubBreakdown] = useState(false)
   const [activeIndex, setActiveIndex] = useState(todaysIndex)
@@ -62,21 +61,19 @@ const TransactionSummary = () => {
   ])
 
   return (
-    <>
-      <div className="bg-fill-quaternary rounded-[0.95rem] pl-4">
-        <Overview summary={showingSubBreakdown ? subSummary : summary} />
-        <Bars
-          summary={summary}
-          onBarClick={idx => {
-            setActiveIndex(idx === activeIndex ? todaysIndex : idx)
-            setShowingSubBreakdown(v => (idx === activeIndex ? !v : true))
-          }}
-          setActive={idx => idx === activeIndex}
-          showingSubBreakdown={showingSubBreakdown}
-        />
-        {/* <Details /> */}
-      </div>
-    </>
+    <div className="rounded-[0.95rem] bg-fill-quaternary pl-4">
+      <Overview summary={showingSubBreakdown ? subSummary : summary} />
+      <Bars
+        onBarClick={(idx) => {
+          setActiveIndex(idx === activeIndex ? todaysIndex : idx)
+          setShowingSubBreakdown((v) => (idx === activeIndex ? !v : true))
+        }}
+        setActive={(idx) => idx === activeIndex}
+        showingSubBreakdown={showingSubBreakdown}
+        summary={summary}
+      />
+      {/* <Details /> */}
+    </div>
   )
 }
 
@@ -87,7 +84,7 @@ const Overview = ({
     typeof api.summary.getTransactionSummaryByTimeframe
   >
 }) => {
-  const {netFlow, expenseAmount, incomeAmount} = summary.breakdown
+  const { netFlow, expenseAmount, incomeAmount } = summary.breakdown
   const formatter = useNumberFormatter({
     style: "currency",
     currency: CURRENCY,
@@ -113,11 +110,11 @@ const Overview = ({
         }}
       >
         <div className="inline-flex w-full flex-col">
-          <span className="text-label-secondary text-sm font-medium">
+          <span className="font-medium text-label-secondary text-sm">
             {label}
           </span>
           <div className="flex items-center gap-1">
-            <span className="text-label-primary font-bold">{value}</span>
+            <span className="font-bold text-label-primary">{value}</span>
             {icon}
           </div>
         </div>
@@ -129,7 +126,7 @@ const Overview = ({
     <div className="grid grid-cols-8 gap-2 pr-4">
       <Stats label={"Spent"} value={formatter.format(expenseAmount)} />
       <Stats label={"Earned"} value={formatter.format(incomeAmount)} />
-      <Stats label={"Net Flow"} value={formatter.format(netFlow)} span={3} />
+      <Stats label={"Net Flow"} span={3} value={formatter.format(netFlow)} />
     </div>
   )
 }
@@ -147,8 +144,8 @@ const Bars = ({
   setActive: (idx: number) => boolean
   showingSubBreakdown: boolean
 }) => {
-  const {breakdown, byFrames} = summary
-  const {highestFlow} = breakdown
+  const { breakdown, byFrames } = summary
+  const { highestFlow } = breakdown
 
   function formatPercentage(arg: number): number {
     const num = Math.floor(arg)
@@ -159,11 +156,11 @@ const Bars = ({
 
     if (remainder === 0) {
       return num
-    } else if (remainder <= 2) {
-      return num - remainder
-    } else {
-      return num + (5 - remainder)
     }
+    if (remainder <= 2) {
+      return num - remainder
+    }
+    return num + (5 - remainder)
   }
 
   return (
@@ -174,43 +171,44 @@ const Bars = ({
       }}
     >
       {byFrames.map((frame, idx) => {
-        const {timeframe, breakdown} = frame
-        const {totalFlow, expenseAmount} = breakdown
+        const { timeframe, breakdown } = frame
+        const { totalFlow, expenseAmount } = breakdown
         const flowPercentage = (totalFlow / highestFlow) * 100
         const expensePercentage = (expenseAmount / totalFlow) * 100
         const today = isToday(timeframe.start)
         const isActive = setActive(idx)
 
         return (
-          <div key={idx} className="flex flex-col items-center justify-end">
+          // biome-ignore lint/suspicious/noArrayIndexKey: it is fine to use it here
+          <div className="flex flex-col items-center justify-end" key={idx}>
             <Button
               className={cn(
-                "relative flex h-30 w-full flex-col justify-end overflow-hidden rounded-md outline-none select-none",
+                "relative flex h-30 w-full select-none flex-col justify-end overflow-hidden rounded-md outline-none",
                 showingSubBreakdown && isActive && "bg-fill-quaternary"
               )}
               onPress={() => onBarClick?.(idx)}
             >
               <Bar
-                size={formatPercentage(flowPercentage)}
                 className={cn(
-                  "bg-fill-secondary flex flex-col justify-end overflow-hidden rounded-[0.3em]",
+                  "flex flex-col justify-end overflow-hidden rounded-[0.3em] bg-fill-secondary",
                   showingSubBreakdown && isActive && "bg-fill-primary",
                   showingSubBreakdown && !isActive && "opacity-18"
                 )}
+                size={formatPercentage(flowPercentage)}
               >
                 <Bar
                   // size={isActive ? formatPercentage(expensePercentage) : 0}
-                  size={formatPercentage(expensePercentage)}
                   className="bg-ios-red transition-normal duration-250"
+                  size={formatPercentage(expensePercentage)}
                 />
               </Bar>
             </Button>
 
             <time
               className={cn(
-                "text-label-secondary pointer-events-none inline-grid h-6 w-6 place-content-center rounded-full text-xs leading-0 font-medium uppercase select-none",
+                "pointer-events-none inline-grid h-6 w-6 select-none place-content-center rounded-full font-medium text-label-secondary text-xs uppercase leading-0",
                 today &&
-                  "text-ios-red font-extrabold mix-blend-plus-darker dark:mix-blend-plus-lighter"
+                  "font-extrabold text-ios-red mix-blend-plus-darker dark:mix-blend-plus-lighter"
               )}
             >
               {format(timeframe.start, "EEEEE")}

@@ -1,8 +1,8 @@
-import {ReactNode} from "react"
+import type { ReactNode } from "react"
 
-import {Spacer} from "@/components/ui/spacer"
+import { Spacer } from "@/components/ui/spacer"
 
-export default function Layout({children}: {children: ReactNode}) {
+export default function Layout({ children }: { children: ReactNode }) {
   return (
     <>
       {children}

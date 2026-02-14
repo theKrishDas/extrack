@@ -1,13 +1,14 @@
-import {createListCollection} from "@ark-ui/react/collection"
-import {clsx, type ClassValue} from "clsx"
-import {twMerge} from "tailwind-merge"
+import { createListCollection } from "@ark-ui/react/collection"
+import { type ClassValue, clsx } from "clsx"
+import { twMerge } from "tailwind-merge"
+import { LEADING_SPACES_REGEX } from "./regex"
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
 export function wait(milliseconds: number) {
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     setTimeout(resolve, milliseconds)
   })
 }
@@ -34,7 +35,7 @@ export function createCollection<T>(
   value: keyof T,
   groupBy?: (item: T, index: number) => string
 ) {
-  const mapped = data.map(t => ({...t, value: t[value]}))
+  const mapped = data.map((t) => ({ ...t, value: t[value] }))
 
   const collection = createListCollection({
     items: mapped,
@@ -46,7 +47,7 @@ export function createCollection<T>(
 export function sanitizeName(raw: string, max?: number): string {
   let s = raw
   // Remove leading spaces
-  s = s.replace(/^ +/, "")
+  s = s.replace(LEADING_SPACES_REGEX, "")
 
   // Strip any char that is not [A-Za-z0-9_@\-\ ]
   // Disabled as it only supports english

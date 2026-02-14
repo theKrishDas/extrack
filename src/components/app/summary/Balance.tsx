@@ -1,12 +1,11 @@
 "use client"
 
-import {CSSProperties} from "react"
 import NumberFlow from "@number-flow/react"
-import {startOfMonth, subMonths} from "date-fns"
-import {IoArrowDown, IoArrowUp} from "react-icons/io5"
-
-import {CURRENCY} from "@/lib/date-utils"
-import {useBalanceOn} from "@/hooks/convex/balance"
+import { startOfMonth, subMonths } from "date-fns"
+import type { CSSProperties } from "react"
+import { IoArrowDown, IoArrowUp } from "react-icons/io5"
+import { useBalanceOn } from "@/hooks/convex/balance"
+import { CURRENCY } from "@/lib/date-utils"
 
 const Balance = () => {
   const date = startOfMonth(subMonths(new Date(), 0))
@@ -16,23 +15,23 @@ const Balance = () => {
   })
   if (!balances) return <p>Loading balance...</p>
 
-  const {balance: prevBalance, currentBalance: balance} = balances
+  const { balance: prevBalance, currentBalance: balance } = balances
   const balanceDiff = balance - prevBalance
 
   return (
     <div className="flex h-110 flex-col items-center justify-center pb-18 text-center">
       <NumberFlow
-        className="text-6xl font-bold"
-        style={{"--number-flow-char-height": "1.2ch"} as CSSProperties}
+        className="font-bold text-6xl"
         format={{
           style: "currency",
           currency: CURRENCY,
           trailingZeroDisplay: "stripIfInteger",
         }}
+        style={{ "--number-flow-char-height": "1.2ch" } as CSSProperties}
         value={balance}
       />
 
-      <p className="text-label-secondary flex items-center [&_svg]:mr-1 [&_svg]:text-lg">
+      <p className="flex items-center text-label-secondary [&_svg]:mr-1 [&_svg]:text-lg">
         {balanceDiff < 0 ? (
           <IoArrowDown color="var(--ios-red)" />
         ) : (

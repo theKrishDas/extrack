@@ -1,10 +1,8 @@
 "use client"
 
-import {useState} from "react"
 import NumberFlow from "@number-flow/react"
-import {api} from "#/convex/_generated/api"
-import {useQuery} from "convex/react"
-import {FunctionReturnType} from "convex/server"
+import { useQuery } from "convex/react"
+import type { FunctionReturnType } from "convex/server"
 import {
   eachDayOfInterval,
   endOfDay,
@@ -14,17 +12,18 @@ import {
   startOfToday,
   subDays,
 } from "date-fns"
-import {Bar, BarChart, CartesianGrid, Cell, XAxis} from "recharts"
+import { useState } from "react"
+import { Bar, BarChart, CartesianGrid, Cell, XAxis } from "recharts"
 import z from "zod"
-
-import {CURRENCY} from "@/lib/date-utils"
-import {cn} from "@/lib/utils"
+import { api } from "#/convex/_generated/api"
 import {
-  ChartConfig,
+  type ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart"
+import { CURRENCY } from "@/lib/date-utils"
+import { cn } from "@/lib/utils"
 
 const FlowSummary = () => {
   /**
@@ -32,8 +31,8 @@ const FlowSummary = () => {
    */
   const today = startOfToday()
   const twoWeeksAgo = subDays(today, 7)
-  const timeframes = eachDayOfInterval({start: twoWeeksAgo, end: today})
-  const timeframesInNumber = timeframes.map(f => ({
+  const timeframes = eachDayOfInterval({ start: twoWeeksAgo, end: today })
+  const timeframesInNumber = timeframes.map((f) => ({
     start: startOfDay(f).getTime(),
     end: endOfDay(f).getTime(),
   }))
@@ -65,7 +64,7 @@ const Summary = ({
   /**
    * Create chart data from the data
    */
-  const chartData = data.byFrames.map(d => ({
+  const chartData = data.byFrames.map((d) => ({
     date: d.timeframe.start,
     total: d.breakdown.totalFlow,
     net: d.breakdown.netFlow,
@@ -100,15 +99,24 @@ const Summary = ({
     },
   ]
 
-  const timeDescription = isDaySelected
-    ? isToday(activeChartData!.date)
-      ? "Today"
-      : `on ${format(activeChartData!.date, "EEEE")}`
-    : `in past ${chartData.length} days`
+  const timeDescription = (() => {
+    const dateToCheck =
+      isDaySelected && activeChartData?.date
+        ? new Date(activeChartData.date)
+        : undefined
+
+    if (!dateToCheck) {
+      return `in past ${chartData.length} days`
+    }
+    if (isToday(dateToCheck)) {
+      return "Today"
+    }
+    return `on ${format(dateToCheck, "EEEE")}`
+  })()
 
   return (
     // TODO: Use Box component here
-    <div className="bg-fill-quaternary rounded-2xl px-4.5 py-4">
+    <div className="rounded-2xl bg-fill-quaternary px-4.5 py-4">
       <div className="">
         <p className="text-label-tertiary text-sm">
           Cash flow {timeDescription}
@@ -116,25 +124,25 @@ const Summary = ({
       </div>
 
       {/* TODO: Use Separator component here */}
-      <div className="border-b-separator-opaque mt-3 mb-4 w-full border-b-1 mix-blend-color-dodge" />
+      <div className="mt-3 mb-4 w-full border-b border-b-separator-opaque mix-blend-color-dodge" />
 
       <div className="grid grid-cols-3 md:grid-cols-5">
-        {metrics.map((item, idx) => {
+        {metrics.map((item) => {
           const [[key, value]] = Object.entries(item)
           return (
-            <div className="" key={idx}>
+            <div className="" key={key}>
               <p className="flex w-full flex-col truncate">
                 <span className="text-label-secondary text-sm leading-5.5">
                   {key}
                 </span>
 
                 <NumberFlow
+                  className="overflow-hidden whitespace-nowrap font-semibold text-lg"
                   format={{
                     style: "currency",
                     currency: CURRENCY,
                     trailingZeroDisplay: "stripIfInteger",
                   }}
-                  className="overflow-hidden text-lg font-semibold whitespace-nowrap"
                   style={{
                     WebkitMaskImage:
                       "linear-gradient(to right, black 80%, transparent 96%)",
@@ -155,18 +163,18 @@ const Summary = ({
         <ChartContainer config={chartConfig}>
           <BarChart
             accessibilityLayer
-            data={chartData}
             barCategoryGap="35%"
-            onClick={state => {
+            data={chartData}
+            onClick={(state) => {
               if (state?.activeTooltipIndex === undefined) return
 
               const index = z
                 .string()
-                .transform(v => parseInt(v))
+                .transform((v) => Number.parseInt(v, 10))
                 .parse(state.activeIndex)
 
               // Toggle selection
-              setActiveIndex(prev => (prev === index ? undefined : index))
+              setActiveIndex((prev) => (prev === index ? undefined : index))
             }}
           >
             <ChartTooltip
@@ -175,17 +183,17 @@ const Summary = ({
               }
             />
             <CartesianGrid
-              vertical={false}
-              strokeWidth={0.5}
               strokeDasharray="1 3"
+              strokeWidth={0.5}
+              vertical={false}
             />
             <XAxis
-              dataKey="date"
-              tickLine={false}
-              tickMargin={8}
               axisLine={false}
               className="select-none"
-              tickFormatter={value => format(value, "EEEEE")}
+              dataKey="date"
+              tickFormatter={(value) => format(value, "EEEEE")}
+              tickLine={false}
+              tickMargin={8}
             />
             <Bar dataKey="total" radius={5}>
               {chartData.map((_, idx) => {
@@ -193,13 +201,13 @@ const Summary = ({
 
                 return (
                   <Cell
-                    key={`cell-${idx}`}
                     className={cn(isHighlighted ? "opacity-100" : "opacity-60")}
                     fill={
                       isHighlighted
                         ? "var(--color-total)"
                         : "var(--fill-secondary)"
                     }
+                    key={`cell-${_.date}`}
                   />
                 )
               })}

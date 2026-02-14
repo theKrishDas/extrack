@@ -1,12 +1,11 @@
 "use client"
 
-import {ComponentProps} from "react"
-import {Drawer as DrawerPrimitive} from "vaul"
+import type { ComponentProps } from "react"
+import { Drawer as DrawerPrimitive } from "vaul"
+import { Container } from "@/components/layout/container"
+import { cn } from "@/lib/utils"
 
-import {cn} from "@/lib/utils"
-import {Container} from "@/components/layout/container"
-
-import {Button, ButtonProps} from "../button/animated-button"
+import { Button, type ButtonProps } from "../button/animated-button"
 
 const Root = ({
   shouldScaleBackground = false,
@@ -15,8 +14,8 @@ const Root = ({
 }: ComponentProps<typeof DrawerPrimitive.Root>) => (
   <DrawerPrimitive.Root
     data-slot="drawer"
-    shouldScaleBackground={shouldScaleBackground}
     setBackgroundColorOnScale={setBackgroundColorOnScale}
+    shouldScaleBackground={shouldScaleBackground}
     {...props}
   />
 )
@@ -28,8 +27,8 @@ const NestedRoot = ({
 }: ComponentProps<typeof DrawerPrimitive.NestedRoot>) => (
   <DrawerPrimitive.NestedRoot
     data-slot="nested-drawer"
-    shouldScaleBackground={shouldScaleBackground}
     setBackgroundColorOnScale={setBackgroundColorOnScale}
+    shouldScaleBackground={shouldScaleBackground}
     {...props}
   />
 )
@@ -63,9 +62,9 @@ const Action = ({
   return (
     <Button
       className={cn("rounded-full", className)}
-      size={size}
-      fullWidth={fullWidth}
       color={color}
+      fullWidth={fullWidth}
+      size={size}
       variant={variant}
       {...rest}
     />
@@ -78,8 +77,8 @@ const Overlay = ({
 }: ComponentProps<typeof DrawerPrimitive.Overlay>) => {
   return (
     <DrawerPrimitive.Overlay
-      data-slot="drawer-overlay"
       className={cn("fixed inset-0 z-50 bg-black/50", className)}
+      data-slot="drawer-overlay"
       {...rest}
     />
   )
@@ -95,14 +94,14 @@ const Content = ({
       <Overlay />
       <Container asChild>
         <DrawerPrimitive.Content
-          data-slot="drawer-content"
           className={cn(
             "group/drawer-content fixed inset-x-0 bottom-0 z-50 h-fit p-2 outline-none",
             className
           )}
+          data-slot="drawer-content"
           {...rest}
         >
-          <div className="bg-gray-6 flex flex-col gap-2.5 rounded-[2.35rem] p-4">
+          <div className="flex flex-col gap-2.5 rounded-[2.35rem] bg-gray-6 p-4">
             {children}
           </div>
         </DrawerPrimitive.Content>
@@ -111,15 +110,13 @@ const Content = ({
   )
 }
 
-const Header = ({className, ...rest}: ComponentProps<"div">) => {
+const Header = ({ className, ...rest }: ComponentProps<"div">) => {
   return (
-    <>
-      <div
-        data-slot="drawer-header"
-        className={cn("flex flex-col gap-2.5 p-2 pb-6", className)}
-        {...rest}
-      />
-    </>
+    <div
+      className={cn("flex flex-col gap-2.5 p-2 pb-6", className)}
+      data-slot="drawer-header"
+      {...rest}
+    />
   )
 }
 
@@ -127,15 +124,17 @@ const Title = ({
   className,
   srOnly = false,
   ...rest
-}: React.ComponentProps<typeof DrawerPrimitive.Title> & {srOnly?: boolean}) => {
+}: React.ComponentProps<typeof DrawerPrimitive.Title> & {
+  srOnly?: boolean
+}) => {
   return (
     <DrawerPrimitive.Title
-      data-slot="drawer-title"
       className={cn(
-        "text-label-primary text-xl font-semibold tracking-[0.015rem]",
+        "font-semibold text-label-primary text-xl tracking-[0.015rem]",
         srOnly && "sr-only",
         className
       )}
+      data-slot="drawer-title"
       {...rest}
     />
   )
@@ -150,22 +149,22 @@ const Description = ({
 }) => {
   return (
     <DrawerPrimitive.Description
-      data-slot="drawer-description"
       className={cn(
         "text-label-primary text-lg leading-snug tracking-[0.015rem]",
         srOnly && "sr-only",
         className
       )}
+      data-slot="drawer-description"
       {...rest}
     />
   )
 }
 
-const Footer = ({className, ...props}: React.ComponentProps<"div">) => {
+const Footer = ({ className, ...props }: React.ComponentProps<"div">) => {
   return (
     <div
-      data-slot="drawer-footer"
       className={cn("flex flex-col gap-2.5", className)}
+      data-slot="drawer-footer"
       {...props}
     />
   )
@@ -185,4 +184,4 @@ const Drawer = {
   Footer,
   Title,
 }
-export {Drawer}
+export { Drawer }

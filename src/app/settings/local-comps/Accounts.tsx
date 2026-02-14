@@ -1,17 +1,16 @@
-import {CSSProperties, useState} from "react"
 import NumberFlow from "@number-flow/react"
-import {api} from "#/convex/_generated/api"
-import {Doc} from "#/convex/_generated/dataModel"
-import {useQuery} from "convex/react"
-import {Link, Button as RacButton} from "react-aria-components"
-
-import {CURRENCY} from "@/lib/date-utils"
-import {Drawer} from "@/components/ui/drawer/drawer-v2"
-import {Emoji} from "@/components/ui/emoji"
-import {List} from "@/components/ui/list-v2"
-import {Spacer} from "@/components/ui/spacer"
-import {Form} from "@/components/form/account/new"
-import {Spinner} from "@/components/loading/spinner"
+import { useQuery } from "convex/react"
+import { type CSSProperties, useState } from "react"
+import { Link, Button as RacButton } from "react-aria-components"
+import { api } from "#/convex/_generated/api"
+import type { Doc } from "#/convex/_generated/dataModel"
+import { Form } from "@/components/form/account/new"
+import { Spinner } from "@/components/loading/spinner"
+import { Drawer } from "@/components/ui/drawer/drawer-v2"
+import { Emoji } from "@/components/ui/emoji"
+import { List } from "@/components/ui/list-v2"
+import { Spacer } from "@/components/ui/spacer"
+import { CURRENCY } from "@/lib/date-utils"
 
 export function Accounts() {
   const accounts = useQuery(api.accounts.getAll)
@@ -24,20 +23,20 @@ export function Accounts() {
     <>
       <div className="flex h-44 flex-col items-center justify-center pb-5 text-center">
         <NumberFlow
-          className="text-5xl font-bold"
-          style={{"--number-flow-char-height": "1.2ch"} as CSSProperties}
+          className="font-bold text-5xl"
           format={{
             style: "currency",
             currency: CURRENCY,
             trailingZeroDisplay: "stripIfInteger",
           }}
+          style={{ "--number-flow-char-height": "1.2ch" } as CSSProperties}
           value={totalBalance}
         />
       </div>
 
       <List.Root>
         <List.Wrapper>
-          {accounts.map(account => (
+          {accounts.map((account) => (
             <AccountItems account={account} key={account._id} />
           ))}
 
@@ -48,46 +47,44 @@ export function Accounts() {
   )
 }
 
-function AccountItems({account}: {account: Doc<"accounts">}) {
+function AccountItems({ account }: { account: Doc<"accounts"> }) {
   const slug = account._id
 
   return (
-    <>
-      <List.Item asChild>
-        <Link
-          href={`/settings/accounts/${slug}`}
-          className="data-pressed:bg-fill-tertiary cursor-auto"
-          style={
-            {
-              WebkitUserDrag: "none",
-              userDrag: "none",
-              WebkitTouchCallout: "none",
-            } as CSSProperties
-          }
-        >
-          <List.Image>
-            <Emoji className="text-xl">{account.icon}</Emoji>
-          </List.Image>
-          <List.Content>
-            <List.Trailing>
-              <List.Title>
-                <List.Text>{account.name}</List.Text>
+    <List.Item asChild>
+      <Link
+        className="cursor-auto data-pressed:bg-fill-tertiary"
+        href={`/settings/accounts/${slug}`}
+        style={
+          {
+            WebkitUserDrag: "none",
+            userDrag: "none",
+            WebkitTouchCallout: "none",
+          } as CSSProperties
+        }
+      >
+        <List.Image>
+          <Emoji className="text-xl">{account.icon}</Emoji>
+        </List.Image>
+        <List.Content>
+          <List.Trailing>
+            <List.Title>
+              <List.Text>{account.name}</List.Text>
 
-                {/* TODO: Use chips component here */}
-                {account.is_default && (
-                  <div className="bg-fill-tertiary text-label-secondary rounded-lg px-1.5 leading-6 font-medium">
-                    Default
-                  </div>
-                )}
-              </List.Title>
-              <List.Accessories>
-                <List.Text level="3"> 􀆊</List.Text>
-              </List.Accessories>
-            </List.Trailing>
-          </List.Content>
-        </Link>
-      </List.Item>
-    </>
+              {/* TODO: Use chips component here */}
+              {account.is_default && (
+                <div className="rounded-lg bg-fill-tertiary px-1.5 font-medium text-label-secondary leading-6">
+                  Default
+                </div>
+              )}
+            </List.Title>
+            <List.Accessories>
+              <List.Text level="3"> 􀆊</List.Text>
+            </List.Accessories>
+          </List.Trailing>
+        </List.Content>
+      </Link>
+    </List.Item>
   )
 }
 
@@ -95,7 +92,7 @@ function NewAccountDrawer() {
   const [open, setOpen] = useState(false)
 
   return (
-    <Drawer.Root showHandle open={open} onOpenChange={setOpen}>
+    <Drawer.Root onOpenChange={setOpen} open={open} showHandle>
       <List.Item asChild>
         <Drawer.Trigger asChild>
           <RacButton className="data-pressed:bg-fill-tertiary data-pressed:[&_[role='separator']]:bg-fill-opaque">

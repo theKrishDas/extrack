@@ -1,4 +1,3 @@
-import {Form} from "./Form"
-import {Provider} from "./provider"
-
-export {Form, Provider}
+/** biome-ignore-all lint/performance/noBarrelFile: Better DX */
+export { Form } from "./Form"
+export { Provider } from "./provider"

@@ -1,4 +1,9 @@
-import {DateArg, differenceInCalendarDays, format, isToday} from "date-fns"
+import {
+  type DateArg,
+  differenceInCalendarDays,
+  format,
+  isToday,
+} from "date-fns"
 
 export function getRelativeDate(date: DateArg<Date>): string {
   if (isToday(date)) {

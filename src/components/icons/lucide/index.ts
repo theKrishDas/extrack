@@ -1,4 +1,3 @@
-import {LucideCheck} from "./check"
-import {LucideTrashOutline} from "./trash"
-
-export {LucideTrashOutline, LucideCheck}
+// biome-ignore lint/performance/noBarrelFile: centralized icon exports
+export { LucideCheck } from "./check"
+export { LucideTrashOutline } from "./trash"

@@ -1,19 +1,19 @@
-import {Doc} from "./_generated/dataModel"
+import type { Doc } from "./_generated/dataModel"
 
 type FormatTransactionSummaryType = {
   transactions: Doc<"transactions">[]
-  timeframe: {start: number; end: number}
+  timeframe: { start: number; end: number }
 }
 
 function formatTransactionSummary(args: FormatTransactionSummaryType[]) {
   /*
    * Calculate breakdowns for each timeframe
    */
-  const breakdownsForEachFrame = args.map(data => {
-    const {transactions: txn} = data
+  const breakdownsForEachFrame = args.map((data) => {
+    const { transactions: txn } = data
 
-    const incomes = txn.filter(t => t.type == "income")
-    const expenses = txn.filter(t => t.type == "expense")
+    const incomes = txn.filter((t) => t.type === "income")
+    const expenses = txn.filter((t) => t.type === "expense")
 
     const totalFlow = txn.reduce((acc, v) => acc + v.amount, 0)
     const expenseAmount = expenses.reduce((acc, v) => acc + v.amount, 0)
@@ -32,32 +32,32 @@ function formatTransactionSummary(args: FormatTransactionSummaryType[]) {
       count,
     }
 
-    return {...data, incomes, expenses, breakdown}
+    return { ...data, incomes, expenses, breakdown }
   })
 
   /*
    * Get only the breakdown info for each timeframe
    */
-  const breakdownsByFrame = breakdownsForEachFrame.map(t => t.breakdown)
+  const breakdownsByFrame = breakdownsForEachFrame.map((t) => t.breakdown)
 
   /*
    * Breakdown accross all the timeframes
    */
   const totalFlow = breakdownsByFrame
-    .map(b => b.totalFlow)
+    .map((b) => b.totalFlow)
     .reduce((acc, v) => acc + v, 0)
   const expenseAmount = breakdownsByFrame
-    .map(b => b.expenseAmount)
+    .map((b) => b.expenseAmount)
     .reduce((acc, v) => acc + v, 0)
   const incomeAmount = totalFlow - expenseAmount
   const netFlow = incomeAmount - expenseAmount
   const eiRatio = expenseAmount / incomeAmount // this Could be infinity
 
-  const highestFlow = Math.max(...breakdownsByFrame.map(b => b.totalFlow))
-  const lowestFlow = Math.min(...breakdownsByFrame.map(b => b.totalFlow))
+  const highestFlow = Math.max(...breakdownsByFrame.map((b) => b.totalFlow))
+  const lowestFlow = Math.min(...breakdownsByFrame.map((b) => b.totalFlow))
 
   const count = breakdownsByFrame
-    .map(b => b.count)
+    .map((b) => b.count)
     .reduce((acc, v) => acc + v, 0)
 
   const breakdown = {
@@ -71,7 +71,7 @@ function formatTransactionSummary(args: FormatTransactionSummaryType[]) {
     count,
   }
 
-  return {breakdown, byFrames: breakdownsForEachFrame}
+  return { breakdown, byFrames: breakdownsForEachFrame }
 }
 
-export {formatTransactionSummary, type FormatTransactionSummaryType}
+export { formatTransactionSummary, type FormatTransactionSummaryType }

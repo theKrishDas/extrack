@@ -1,4 +1,4 @@
-import {z} from "zod"
+import { z } from "zod"
 
 import {
   MAX_NOTE_LENGTH,
@@ -22,7 +22,7 @@ export const newTransactionSchema = z.object({
     .max(MAX_NOTE_LENGTH, {
       message: `Note must be within ${MAX_NOTE_LENGTH} characters`,
     })
-    .transform(val => val?.trim() || undefined)
+    .transform((val) => val?.trim() || undefined)
     .optional(),
   category: z.string(),
   account: z.string(),

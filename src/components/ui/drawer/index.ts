@@ -1,4 +1,6 @@
-import {Drawer as ActionDrawer} from "./action"
+// TODO: Settle on a single drawer component
+/** biome-ignore-all lint/style/noExportedImports: Will fix it later */
+import { Drawer as ActionDrawer } from "./action"
 import {
   Drawer,
   DrawerBody,
@@ -15,8 +17,8 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "./drawer"
-import {Drawer as DrawerV2} from "./drawer-v2"
-import {Drawer as DrawerV3} from "./drawer-v3"
+import { Drawer as DrawerV2 } from "./drawer-v2"
+import { Drawer as DrawerV3 } from "./drawer-v3"
 
 export {
   Drawer,
@@ -34,4 +36,4 @@ export {
   DrawerDescription,
   DrawerHandle,
 }
-export {DrawerV2, DrawerV3, ActionDrawer}
+export { DrawerV2, DrawerV3, ActionDrawer }

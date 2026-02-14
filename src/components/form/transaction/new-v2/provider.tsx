@@ -1,16 +1,16 @@
 "use client"
 
-import {createContext, ReactNode, use} from "react"
-import {zodResolver} from "@hookform/resolvers/zod"
-import {api} from "#/convex/_generated/api"
-import {Id} from "#/convex/_generated/dataModel"
-import {useMutation} from "convex/react"
-import {useForm, UseFormReturn} from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useMutation } from "convex/react"
+import { createContext, type ReactNode, use } from "react"
+import { type UseFormReturn, useForm } from "react-hook-form"
+import { api } from "#/convex/_generated/api"
+import type { Id } from "#/convex/_generated/dataModel"
 
 import {
+  type NewTransactionSchemaType,
   newTransactionSchema,
-  NewTransactionSchemaType,
-  TTransactionType,
+  type TTransactionType,
 } from "@/lib/schema/transactions"
 
 export type FormContextType = {
@@ -38,7 +38,7 @@ export function Provider({
       category: undefined,
       amount: undefined,
       note: undefined,
-      date: new Date().getTime(),
+      date: Date.now(),
     },
     resolver: zodResolver(newTransactionSchema),
   })
@@ -46,7 +46,7 @@ export function Provider({
   const addTransaction = useMutation(api.transactions.add)
 
   const onSubmit = (data: NewTransactionSchemaType) => {
-    const {amount, category, note, account} = data
+    const { amount, category, note, account } = data
 
     addTransaction({
       amount,
@@ -54,7 +54,7 @@ export function Provider({
       note,
       account: account as Id<"accounts">,
       category: category as Id<"categories">,
-      date: new Date().getTime(),
+      date: Date.now(),
     })
 
     form.reset()

@@ -1,14 +1,14 @@
 "use client"
 
-import {ComponentProps} from "react"
-import {mergeRefs} from "@react-aria/utils"
-import {VariantProps} from "class-variance-authority"
-import {useAnimate} from "motion/react-mini"
-import {Button as RacButton} from "react-aria-components"
+import { mergeRefs } from "@react-aria/utils"
+import type { VariantProps } from "class-variance-authority"
+import { useAnimate } from "motion/react-mini"
+import type { ComponentProps } from "react"
+import { Button as RacButton } from "react-aria-components"
 
-import {cn} from "@/lib/utils"
+import { cn } from "@/lib/utils"
 
-import {buttonVariants} from "./button-variants"
+import { buttonVariants } from "./button-variants"
 
 interface ButtonProps
   extends ComponentProps<typeof RacButton>,
@@ -30,19 +30,17 @@ const Button = ({
   const animatePressStart = (): void => {
     animate(
       scope.current,
-      {backgroundColor: "var(--button-highlight)"},
-      {duration: 0}
+      { backgroundColor: "var(--button-highlight)" },
+      { duration: 0 }
     )
   }
   const animatePressEnd = (): void => {
-    animate(scope.current, {backgroundColor: "var(--button-bg)"})
+    animate(scope.current, { backgroundColor: "var(--button-bg)" })
   }
 
   return (
     <RacButton
       {...rest}
-      onPressStart={animatePressStart}
-      onPressEnd={animatePressEnd}
       className={cn(
         "focus:outline-none focus-visible:outline-none",
         buttonVariants({
@@ -55,13 +53,15 @@ const Button = ({
           className,
         })
       )}
+      onPressEnd={animatePressEnd}
+      onPressStart={animatePressStart}
+      ref={mergeRefs(ref, scope)}
       style={{
         WebkitTapHighlightColor: "transparent",
         ...style,
       }}
-      ref={mergeRefs(ref, scope)}
     />
   )
 }
 
-export {Button, type ButtonProps}
+export { Button, type ButtonProps }

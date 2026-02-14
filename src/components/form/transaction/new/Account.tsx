@@ -1,35 +1,32 @@
-import {useEffect} from "react"
-import {createListCollection, Listbox} from "@ark-ui/react/listbox"
-import {api} from "#/convex/_generated/api"
-import {Doc} from "#/convex/_generated/dataModel"
-import {useQuery} from "convex/react"
-import {Button as RacButton} from "react-aria-components"
-import {Controller} from "react-hook-form"
-
+import { createListCollection, Listbox } from "@ark-ui/react/listbox"
+import { useQuery } from "convex/react"
+import { useEffect } from "react"
+import { Button as RacButton } from "react-aria-components"
+import { Controller } from "react-hook-form"
+import { api } from "#/convex/_generated/api"
+import type { Doc } from "#/convex/_generated/dataModel"
+import { IonChevronForward } from "@/components/icons/ion"
 import {
   DrawerContent,
   DrawerNested,
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer"
-import {List} from "@/components/ui/list"
-import {Skeleton} from "@/components/ui/loading/skeleton"
-import {IonChevronForward} from "@/components/icons/ion"
+import { List } from "@/components/ui/list"
+import { Skeleton } from "@/components/ui/loading/skeleton"
 
-import {getLastUsedAccount, setLastUsedAccount} from "./helpers"
-import {useNewTransaction} from "./provider"
+import { getLastUsedAccount, setLastUsedAccount } from "./helpers"
+import { useNewTransaction } from "./provider"
 
 function createCollection(accounts: Doc<"accounts">[]) {
-  const mappedAccounts = accounts.map(acc => ({...acc, value: acc._id}))
-  return createListCollection({items: mappedAccounts})
+  const mappedAccounts = accounts.map((acc) => ({ ...acc, value: acc._id }))
+  return createListCollection({ items: mappedAccounts })
 }
 
 const AccountSelect = () => {
   const {
-    form: {control, setValue},
-    transactionType,
+    form: { control, setValue },
   } = useNewTransaction()
-
   const accounts = useQuery(api.accounts.getAll)
   const accountFromLocalStorage = getLastUsedAccount()
 
@@ -40,7 +37,7 @@ const AccountSelect = () => {
 
     if (accountFromLocalStorage) {
       const validAccount = accounts.find(
-        acc => acc._id === accountFromLocalStorage.id
+        (acc) => acc._id === accountFromLocalStorage.id
       )
       accountId = validAccount ? validAccount._id : accounts[0]._id
     } else {
@@ -49,7 +46,7 @@ const AccountSelect = () => {
 
     setLastUsedAccount(accountId)
     setValue("account", accountId)
-  }, [accounts, accountFromLocalStorage, transactionType, setValue])
+  }, [accounts, accountFromLocalStorage, setValue])
 
   if (!accounts)
     return (
@@ -70,7 +67,7 @@ const AccountSelect = () => {
     <Controller
       control={control}
       name="account"
-      render={({field: {value, onChange, onBlur, ref}}) => {
+      render={({ field: { value, onChange, onBlur, ref } }) => {
         const selectedAccount = collection.find(value)
 
         return (
@@ -98,32 +95,32 @@ const AccountSelect = () => {
 
               <Listbox.Root
                 className="px-4"
-                onSelect={v => {
+                collection={collection}
+                loopFocus
+                onBlur={onBlur}
+                onSelect={(v) => {
                   onChange(v.value)
                 }}
-                onBlur={onBlur}
                 ref={ref}
-                collection={collection}
                 value={[value]}
-                loopFocus
               >
                 <Listbox.Label className="sr-only">
                   Select your Account
                 </Listbox.Label>
                 <Listbox.Content asChild>
-                  <List.Root className="ring-ios-blue/[var(--separator-non-opaque-opacity)] ring-offset-background rounded-2xl ring-offset-1 outline-none focus-visible:ring-4">
-                    {collection.items.map(item => {
-                      const {_id: id, name} = item
+                  <List.Root className="rounded-2xl outline-none ring-ios-blue/(--separator-non-opaque-opacity) ring-offset-1 ring-offset-background focus-visible:ring-4">
+                    {collection.items.map((item) => {
+                      const { _id: id, name } = item
                       return (
-                        <Listbox.Item item={item} key={id} asChild>
+                        <Listbox.Item asChild item={item} key={id}>
                           <List.Item className="data-highlighted:bg-fill-secondary [&:has(+_*[data-highlighted])_.ListContent]:border-transparent data-highlighted:[&>.ListContent]:border-transparent">
                             <List.Content>
                               <Listbox.ItemText asChild>
-                                <List.Text level="1" className="relative">
+                                <List.Text className="relative" level="1">
                                   {name}
                                 </List.Text>
                               </Listbox.ItemText>
-                              <Listbox.ItemIndicator className="bg-ios-blue h-3 w-3 rounded-full" />
+                              <Listbox.ItemIndicator className="h-3 w-3 rounded-full bg-ios-blue" />
                             </List.Content>
                           </List.Item>
                         </Listbox.Item>

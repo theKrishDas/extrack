@@ -1,13 +1,13 @@
-import {ComponentProps, CSSProperties} from "react"
-import {ark} from "@ark-ui/react/factory"
+import { ark } from "@ark-ui/react/factory"
+import type { ComponentProps, CSSProperties } from "react"
 
-import {cn} from "@/lib/utils"
+import { cn } from "@/lib/utils"
 
 const Root = ({
   className,
   noSpacing = false,
   ...rest
-}: ComponentProps<typeof ark.ul> & {noSpacing?: boolean}) => {
+}: ComponentProps<typeof ark.ul> & { noSpacing?: boolean }) => {
   return (
     <ark.ul
       className={cn(
@@ -27,12 +27,12 @@ const Root = ({
   )
 }
 
-function Item({className, ...rest}: ComponentProps<typeof ark.li>) {
+function Item({ className, ...rest }: ComponentProps<typeof ark.li>) {
   return (
     <ark.li
       className={cn(
         "ListItem",
-        "bg-fill-quaternary flex items-center gap-2 pl-4 first-of-type:rounded-t-[0.95rem] last-of-type:rounded-b-[0.95rem] sm:first-of-type:rounded-t-[0.8rem] sm:last-of-type:rounded-b-[0.8rem]",
+        "flex items-center gap-2 bg-fill-quaternary pl-4 first-of-type:rounded-t-[0.95rem] last-of-type:rounded-b-[0.95rem] sm:last-of-type:rounded-b-[0.8rem] sm:first-of-type:rounded-t-[0.8rem]",
         "last-of-type:[&_.ListContent]:border-none",
         className
       )}
@@ -41,11 +41,11 @@ function Item({className, ...rest}: ComponentProps<typeof ark.li>) {
   )
 }
 
-function Content({className, ...rest}: ComponentProps<typeof ark.div>) {
+function Content({ className, ...rest }: ComponentProps<typeof ark.div>) {
   return (
     <ark.div
       className={cn(
-        "ListContent border-separator-non-opaque inline-flex min-h-12 w-full flex-1 items-center justify-between gap-2 truncate border-b-1 pr-4 sm:min-h-10",
+        "ListContent inline-flex min-h-12 w-full flex-1 items-center justify-between gap-2 truncate border-separator-non-opaque border-b-1 pr-4 sm:min-h-10",
         className
       )}
       {...rest}
@@ -53,7 +53,7 @@ function Content({className, ...rest}: ComponentProps<typeof ark.div>) {
   )
 }
 
-function Icon({className, ...rest}: ComponentProps<typeof ark.div>) {
+function Icon({ className, ...rest }: ComponentProps<typeof ark.div>) {
   return (
     <ark.div
       className={cn("ListIcon", "-ml-0.5 text-[1.32rem]", className)}
@@ -90,8 +90,8 @@ function Text({
       className={cn(
         "ListText",
         "-tracking-[0.01em]",
-        level === "1" && "text-label font-medium tracking-[0.0125em]",
-        level === "2" && "text-label-secondary font-medium tracking-[0.01em]",
+        level === "1" && "font-medium text-label tracking-[0.0125em]",
+        level === "2" && "font-medium text-label-secondary tracking-[0.01em]",
         level === "3" && "text-label-tertiary tracking-[0.01em]",
         align === "left" && "text-left",
         align === "center" && "text-center",
@@ -113,12 +113,12 @@ function Heading({
   className,
   srOnly = false,
   ...rest
-}: ComponentProps<typeof ark.h4> & {srOnly?: boolean}) {
+}: ComponentProps<typeof ark.h4> & { srOnly?: boolean }) {
   return (
     <ark.h4
       className={cn(
         "ListHeading",
-        "text-label-secondary px-4 pb-1.5 text-sm font-medium uppercase",
+        "px-4 pb-1.5 font-medium text-label-secondary text-sm uppercase",
         srOnly && "sr-only",
         className
       )}
@@ -131,12 +131,12 @@ function Footer({
   className,
   srOnly = false,
   ...rest
-}: ComponentProps<typeof ark.p> & {srOnly?: boolean}) {
+}: ComponentProps<typeof ark.p> & { srOnly?: boolean }) {
   return (
     <ark.p
       className={cn(
         "ListFooter",
-        "text-label-tertiary px-4 pt-1.5 text-sm leading-snug tracking-[0.013em]",
+        "px-4 pt-1.5 text-label-tertiary text-sm leading-snug tracking-[0.013em]",
         srOnly && "sr-only",
         className
       )}
@@ -145,5 +145,5 @@ function Footer({
   )
 }
 
-const List = {Root, Item, Content, Icon, Text, Heading, Footer}
-export {List}
+const List = { Root, Item, Content, Icon, Text, Heading, Footer }
+export { List }

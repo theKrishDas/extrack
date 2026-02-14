@@ -20,7 +20,6 @@
   "files": {
     "ignoreUnknown": true,
     "includes": [
-      "**",
       "!node_modules",
       "!.next",
       "!dist",
@@ -67,4 +66,3 @@
   },
   "extends": ["ultracite/biome/core", "ultracite/biome/next"]
 }
-

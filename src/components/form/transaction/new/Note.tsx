@@ -1,15 +1,14 @@
-import {Fragment} from "react"
-import {Label, TextArea, TextField} from "react-aria-components"
-import {Controller} from "react-hook-form"
+import { Label, TextArea, TextField } from "react-aria-components"
+import { Controller } from "react-hook-form"
 
-import {MAX_NOTE_LENGTH} from "@/lib/constants/defaults"
-import {cn} from "@/lib/utils"
+import { MAX_NOTE_LENGTH } from "@/lib/constants/defaults"
+import { cn } from "@/lib/utils"
 
-import {useNewTransaction} from "./provider"
+import { useNewTransaction } from "./provider"
 
 export default function Note() {
   const {
-    form: {control},
+    form: { control },
   } = useNewTransaction()
 
   return (
@@ -17,34 +16,34 @@ export default function Note() {
       control={control}
       name="note"
       render={({
-        field: {name, value, onChange, onBlur, ref},
-        fieldState: {invalid},
+        field: { name, value, onChange, onBlur, ref },
+        fieldState: { invalid },
       }) => (
-        <Fragment>
+        <>
           <TextField
-            name={name}
-            value={value}
-            onChange={onChange}
-            onBlur={onBlur}
-            validationBehavior="aria"
-            isInvalid={invalid}
             className="mb-4 flex flex-col gap-4"
+            isInvalid={invalid}
+            name={name}
+            onBlur={onBlur}
+            onChange={onChange}
+            validationBehavior="aria"
+            value={value}
           >
             <Label className="sr-only ml-1.5 font-bold">
               Add a note to yourself
             </Label>
 
             <TextArea
-              ref={ref}
+              className={cn(
+                "h-20 resize-none rounded-2xl bg-fill-quaternary p-4",
+                "outline-none data-[focus-visible]:rounded-xl data-[focus-visible]:ring-4 data-[focus-visible]:ring-ios-blue/[var(--separator-non-opaque-opacity)]"
+              )}
               maxLength={MAX_NOTE_LENGTH}
               placeholder="Add a note (optional)"
-              className={cn(
-                "bg-fill-quaternary h-20 resize-none rounded-2xl p-4",
-                "data-[focus-visible]:ring-ios-blue/[var(--separator-non-opaque-opacity)] outline-none data-[focus-visible]:rounded-xl data-[focus-visible]:ring-4"
-              )}
+              ref={ref}
             />
           </TextField>
-        </Fragment>
+        </>
       )}
     />
   )
