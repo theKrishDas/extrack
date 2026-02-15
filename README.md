@@ -57,3 +57,11 @@ starting point.
 
 - @ianvs/prettier-plugin-sort-imports
 - prettier-plugin-tailwindcss
+
+## Webhooks
+
+- Clerk webhooks target your Convex URL, not your Next.js app.
+- Guide: see `convex/HTTP_README.md`.
+- Endpoint format: `https://<deployment>.convex.site/clerk-users-webhook`.
+- Set secret in Convex (not Next.js):
+  - `bun convex env set CLERK_WEBHOOK_SIGNING_SECRET whsec_XXXX`
