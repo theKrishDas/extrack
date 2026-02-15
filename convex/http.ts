@@ -2,9 +2,10 @@
 import type { WebhookEvent } from "@clerk/backend"
 import { httpRouter } from "convex/server"
 import { Webhook } from "svix"
+import { internal } from "./_generated/api"
 import { httpAction } from "./_generated/server"
 
-const handleClerkWebhook = httpAction(async (_ctx, request) => {
+const handleClerkWebhook = httpAction(async (ctx, request) => {
   const event = await validateRequest(request)
 
   if (!event) {
@@ -12,10 +13,15 @@ const handleClerkWebhook = httpAction(async (_ctx, request) => {
     return new Response("Error occurred", { status: 400 })
   }
 
-  console.log("Clerk webhook received:", {
-    type: event.type,
-    userId: event.data.id,
-  })
+  // Handle user.created event - onboard new users
+  if (event.type === "user.created") {
+    const userId = event.data.id
+    console.log(`Onboarding new user: ${userId}`)
+
+    await ctx.runMutation(internal.users.onboard, { userId })
+
+    console.log(`User ${userId} onboarded successfully`)
+  }
 
   return new Response("OK", { status: 200 })
 })

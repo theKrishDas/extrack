@@ -13,6 +13,7 @@ import type * as categories from "../categories.js";
 import type * as http from "../http.js";
 import type * as summary from "../summary.js";
 import type * as transactions from "../transactions.js";
+import type * as users from "../users.js";
 import type * as utils from "../utils.js";
 
 import type {
@@ -27,6 +28,7 @@ declare const fullApi: ApiFromModules<{
   http: typeof http;
   summary: typeof summary;
   transactions: typeof transactions;
+  users: typeof users;
   utils: typeof utils;
 }>;
 
