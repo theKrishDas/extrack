@@ -1,8 +1,24 @@
 import type { Doc } from "./_generated/dataModel"
+import type { MutationCtx, QueryCtx } from "./_generated/server"
 
 type FormatTransactionSummaryType = {
   transactions: Doc<"transactions">[]
   timeframe: { start: number; end: number }
+}
+
+/**
+ * Gets the authenticated user ID from the Clerk session.
+ * @throws Error if the user is not authenticated
+ * @returns The Clerk user ID (subject)
+ */
+export async function getAuthenticatedUserId(
+  ctx: QueryCtx | MutationCtx
+): Promise<string> {
+  const identity = await ctx.auth.getUserIdentity()
+  if (!identity) {
+    throw new Error("User not authenticated")
+  }
+  return identity.subject
 }
 
 function formatTransactionSummary(args: FormatTransactionSummaryType[]) {

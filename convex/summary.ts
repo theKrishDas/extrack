@@ -1,8 +1,7 @@
 import { v } from "convex/values"
 
-import { FAKE_USER_NAME_DO_NOT_PUSH_TO_PRODUCTION } from "../src/lib/constants/fake-username"
 import { query } from "./_generated/server"
-import { formatTransactionSummary } from "./utils"
+import { formatTransactionSummary, getAuthenticatedUserId } from "./utils"
 
 export const getTransactionSummaryByTimeframe = query({
   args: {
@@ -12,6 +11,7 @@ export const getTransactionSummaryByTimeframe = query({
     ),
   },
   handler: async (ctx, { accounts, timeframes }) => {
+    const ownerId = await getAuthenticatedUserId(ctx)
     /*
      * DB Query to get the transactions by each timeframe
      */
@@ -22,10 +22,7 @@ export const getTransactionSummaryByTimeframe = query({
         const txns = await ctx.db
           .query("transactions")
           .withIndex("by_date", (q) =>
-            q
-              .eq("ownerId", FAKE_USER_NAME_DO_NOT_PUSH_TO_PRODUCTION)
-              .gte("date", start)
-              .lte("date", end)
+            q.eq("ownerId", ownerId).gte("date", start).lte("date", end)
           )
           .collect()
 

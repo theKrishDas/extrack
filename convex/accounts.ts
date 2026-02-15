@@ -1,18 +1,17 @@
 import { v } from "convex/values"
 
-import { FAKE_USER_NAME_DO_NOT_PUSH_TO_PRODUCTION } from "../src/lib/constants/fake-username"
 import { transactionTypes } from "../src/lib/constants/transaction-types"
 import { internal } from "./_generated/api"
 import { internalMutation, mutation, query } from "./_generated/server"
+import { getAuthenticatedUserId } from "./utils"
 
 export const getAll = query({
   args: {},
   handler: async (ctx) => {
+    const ownerId = await getAuthenticatedUserId(ctx)
     return await ctx.db
       .query("accounts")
-      .withIndex("by_owner", (q) =>
-        q.eq("ownerId", FAKE_USER_NAME_DO_NOT_PUSH_TO_PRODUCTION)
-      )
+      .withIndex("by_owner", (q) => q.eq("ownerId", ownerId))
       .collect()
   },
 })
@@ -40,6 +39,8 @@ export const add = mutation({
     icon: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
+    const ownerId = await getAuthenticatedUserId(ctx)
+
     /**
      * Changed through user settings
      */
@@ -51,11 +52,7 @@ export const add = mutation({
 
     const existing = await ctx.db
       .query("accounts")
-      .withIndex("by_name", (q) =>
-        q
-          .eq("ownerId", FAKE_USER_NAME_DO_NOT_PUSH_TO_PRODUCTION)
-          .eq("name", name)
-      )
+      .withIndex("by_name", (q) => q.eq("ownerId", ownerId).eq("name", name))
       .unique()
 
     if (existing) {
@@ -63,7 +60,7 @@ export const add = mutation({
     }
 
     return await ctx.db.insert("accounts", {
-      ownerId: FAKE_USER_NAME_DO_NOT_PUSH_TO_PRODUCTION,
+      ownerId,
       name,
       startingBalance: balance,
       currentBalance: balance,
@@ -97,6 +94,7 @@ export const toggleActive = mutation({
 export const setDefault = mutation({
   args: { id: v.id("accounts"), default: v.boolean() },
   handler: async (ctx, { id, default: defaultValue }) => {
+    const ownerId = await getAuthenticatedUserId(ctx)
     const existing = await ctx.db.get(id)
     if (!existing) {
       throw new Error("Account doesn't exists")
@@ -108,9 +106,7 @@ export const setDefault = mutation({
       const previouslyDefault = await ctx.db
         .query("accounts")
         .withIndex("by_default", (q) =>
-          q
-            .eq("ownerId", FAKE_USER_NAME_DO_NOT_PUSH_TO_PRODUCTION)
-            .eq("is_default", true)
+          q.eq("ownerId", ownerId).eq("is_default", true)
         )
         .unique()
 
@@ -147,12 +143,11 @@ export const applyTransaction = internalMutation({
 export const remove = mutation({
   args: { id: v.id("accounts") },
   handler: async (ctx, { id: accountId }) => {
+    const ownerId = await getAuthenticatedUserId(ctx)
     const transactions = await ctx.db
       .query("transactions")
       .withIndex("by_account", (q) =>
-        q
-          .eq("ownerId", FAKE_USER_NAME_DO_NOT_PUSH_TO_PRODUCTION)
-          .eq("account", accountId)
+        q.eq("ownerId", ownerId).eq("account", accountId)
       )
       .collect()
 
@@ -166,10 +161,11 @@ export const remove = mutation({
 export const updateCurrentBalance = mutation({
   args: { id: v.id("accounts"), balance: v.number() },
   handler: async (ctx, { id, balance: newBalance }) => {
+    const ownerId = await getAuthenticatedUserId(ctx)
     await ctx.db.patch(id, { startingBalance: newBalance })
     ctx.runMutation(internal.accounts.syncBalance, {
       account: id,
-      ownerId: FAKE_USER_NAME_DO_NOT_PUSH_TO_PRODUCTION,
+      ownerId,
     })
     return id
   },

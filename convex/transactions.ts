@@ -2,16 +2,16 @@ import { paginationOptsValidator } from "convex/server"
 import { v } from "convex/values"
 import { stream } from "convex-helpers/server/stream"
 
-import { FAKE_USER_NAME_DO_NOT_PUSH_TO_PRODUCTION } from "../src/lib/constants/fake-username"
 import { transactionTypes } from "../src/lib/constants/transaction-types"
 import { internal } from "./_generated/api"
 import { mutation, query } from "./_generated/server"
 import schema from "./schema"
+import { getAuthenticatedUserId } from "./utils"
 
 export const getAll = query({
   args: {},
   handler: async (ctx) => {
-    const ownerId = FAKE_USER_NAME_DO_NOT_PUSH_TO_PRODUCTION
+    const ownerId = await getAuthenticatedUserId(ctx)
 
     return await ctx.db
       .query("transactions")
@@ -36,6 +36,7 @@ export const add = mutation({
     date: v.number(),
   },
   handler: async (ctx, args) => {
+    const ownerId = await getAuthenticatedUserId(ctx)
     const [account, category] = await Promise.all([
       ctx.db.get(args.account),
       ctx.db.get(args.category),
@@ -52,8 +53,6 @@ export const add = mutation({
     if (args.type !== category.type) {
       throw new Error("Type of the transaction and category doesn't match!")
     }
-
-    const ownerId = FAKE_USER_NAME_DO_NOT_PUSH_TO_PRODUCTION
 
     await Promise.all([
       ctx.db.insert("transactions", {
@@ -105,13 +104,11 @@ export const remove = mutation({
 export const getBetweenTimeframe = query({
   args: { start: v.number(), end: v.number() },
   handler: async (ctx, { start, end }) => {
+    const ownerId = await getAuthenticatedUserId(ctx)
     return await ctx.db
       .query("transactions")
       .withIndex("by_date", (q) =>
-        q
-          .eq("ownerId", FAKE_USER_NAME_DO_NOT_PUSH_TO_PRODUCTION)
-          .gte("date", start)
-          .lte("date", end)
+        q.eq("ownerId", ownerId).gte("date", start).lte("date", end)
       )
       .order("desc")
       .collect()
@@ -120,8 +117,8 @@ export const getBetweenTimeframe = query({
 
 export const getJoinedPaginated = query({
   args: { paginationOpts: paginationOptsValidator },
-  handler: (ctx, { paginationOpts }) => {
-    const ownerId = FAKE_USER_NAME_DO_NOT_PUSH_TO_PRODUCTION
+  handler: async (ctx, { paginationOpts }) => {
+    const ownerId = await getAuthenticatedUserId(ctx)
 
     const transactionStream = stream(ctx.db, schema)
       .query("transactions")

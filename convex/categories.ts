@@ -1,18 +1,17 @@
 import { v } from "convex/values"
 
 import { colors } from "../src/lib/constants/colors"
-import { FAKE_USER_NAME_DO_NOT_PUSH_TO_PRODUCTION } from "../src/lib/constants/fake-username"
 import { transactionTypes } from "../src/lib/constants/transaction-types"
 import { mutation, query } from "./_generated/server"
+import { getAuthenticatedUserId } from "./utils"
 
 export const getAll = query({
   args: {},
   handler: async (ctx) => {
+    const ownerId = await getAuthenticatedUserId(ctx)
     return await ctx.db
       .query("categories")
-      .withIndex("by_owner", (q) =>
-        q.eq("ownerId", FAKE_USER_NAME_DO_NOT_PUSH_TO_PRODUCTION)
-      )
+      .withIndex("by_owner", (q) => q.eq("ownerId", ownerId))
       .collect()
   },
 })
@@ -30,13 +29,10 @@ export const getById = query({
 export const getByType = query({
   args: { type: v.union(...transactionTypes.map((t) => v.literal(t))) },
   handler: async (ctx, { type }) => {
+    const ownerId = await getAuthenticatedUserId(ctx)
     return await ctx.db
       .query("categories")
-      .withIndex("by_type", (q) =>
-        q
-          .eq("ownerId", FAKE_USER_NAME_DO_NOT_PUSH_TO_PRODUCTION)
-          .eq("type", type)
-      )
+      .withIndex("by_type", (q) => q.eq("ownerId", ownerId).eq("type", type))
       .collect()
   },
 })
@@ -49,13 +45,11 @@ export const add = mutation({
     icon: v.optional(v.string()),
   },
   handler: async (ctx, { name, type, color, icon: argIcon }) => {
+    const ownerId = await getAuthenticatedUserId(ctx)
     const existing = await ctx.db
       .query("categories")
       .withIndex("by_type_name", (q) =>
-        q
-          .eq("ownerId", FAKE_USER_NAME_DO_NOT_PUSH_TO_PRODUCTION)
-          .eq("type", type)
-          .eq("name", name)
+        q.eq("ownerId", ownerId).eq("type", type).eq("name", name)
       )
       .unique()
 
@@ -63,7 +57,6 @@ export const add = mutation({
       throw new Error(`Category with name "${name}" already exists`)
     }
 
-    const ownerId = FAKE_USER_NAME_DO_NOT_PUSH_TO_PRODUCTION
     const is_vendor = false
     const icon =
       argIcon || type === "expense" ? "ion:arrow-down" : "ion:arrow-up"
@@ -94,15 +87,14 @@ export const update = mutation({
 export const remove = mutation({
   args: { id: v.id("categories") },
   handler: async (ctx, { id: categoryId }) => {
+    const ownerId = await getAuthenticatedUserId(ctx)
     const category = await ctx.db.get(categoryId)
     if (category?.is_vendor === true) return
 
     const transactions = await ctx.db
       .query("transactions")
       .withIndex("by_category", (q) =>
-        q
-          .eq("ownerId", FAKE_USER_NAME_DO_NOT_PUSH_TO_PRODUCTION)
-          .eq("category", categoryId)
+        q.eq("ownerId", ownerId).eq("category", categoryId)
       )
       .collect()
 
