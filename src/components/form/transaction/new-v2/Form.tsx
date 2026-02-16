@@ -194,7 +194,7 @@ function DetailsDrawer() {
             ),
           },
         ].map((item) => (
-          <Drawer.NestedRoot key={String(item.content)} showHandle>
+          <Drawer.NestedRoot key={item.symbol} showHandle>
             {availableCategories !== undefined ? (
               <Drawer.Trigger
                 className={cn(
