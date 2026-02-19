@@ -1,5 +1,5 @@
 import { Dock } from "@/components/app/dock"
-import Header from "@/components/app/Header"
+import Header from "@/components/app/header"
 import { Summary } from "@/components/app/summary"
 import Balance from "@/components/app/summary/Balance"
 import { Container } from "@/components/layout/container"
