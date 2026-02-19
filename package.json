@@ -18,6 +18,7 @@
   },
   "dependencies": {
     "@ark-ui/react": "^5.31.0",
+    "@base-ui/react": "^1.2.0",
     "@clerk/nextjs": "^6.37.4",
     "@hookform/resolvers": "^5.2.2",
     "@number-flow/react": "^0.5.11",

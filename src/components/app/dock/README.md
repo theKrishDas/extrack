@@ -20,3 +20,9 @@ bun add motion react-use-measure @ark-ui/react react-aria-components
 ## Component hierarchy:
 
 ![Image of the Component hierarchy](./hierarchy.png)
+
+## FAB (WIP)
+
+- `src/components/app/dock/src/Fab.tsx` (old) will be replaced by `src/components/app/dock/src/FAB-v2.tsx` later.
+- `FAB-v2.tsx` does not touch `Dock`/`Island`; it shows a popover to pick transaction type.
+- Old `Fab.tsx` portals buttons into the island; the popover approach increased complexity and worsened DX.
