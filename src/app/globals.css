@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "../css/colors";
+@import "../css/utils";
 
 html {
   scroll-behavior: smooth;
