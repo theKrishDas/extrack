@@ -36,10 +36,11 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} ${rnxRounded.variable}`}
-      >
+    <html
+      className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} ${rnxRounded.variable}`}
+      lang="en"
+    >
+      <body className="flex min-h-dvh flex-col">
         <Provider>{children}</Provider>
         <Toaster />
       </body>

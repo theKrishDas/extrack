@@ -8,7 +8,7 @@ import { Categories } from "../local-comps/Categories"
 
 export default function Page() {
   return (
-    <main className="min-h-dvh px-4" data-vaul-drawer-wrapper="">
+    <main className="flex-1 px-4" data-vaul-drawer-wrapper="">
       <Spacer className="h-4" />
       <Container as="section" className="flex flex-col gap-0.5">
         <Header href="/settings" title="Categories" />

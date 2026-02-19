@@ -12,7 +12,7 @@ export default function Page() {
       <Dock />
 
       {/* // WARN: this main container has a height */}
-      <main className="min-h-dvh px-4 pt-6" data-vaul-drawer-wrapper="">
+      <main className="flex-1 px-4 pt-6" data-vaul-drawer-wrapper="">
         <Container as="section" className="flex flex-col gap-0.5">
           <h3 className="mt-4 mb-4.5 pl-4 font-semibold text-3xl tracking-tight">
             Settings
