@@ -144,6 +144,19 @@ export const remove = mutation({
   args: { id: v.id("accounts") },
   handler: async (ctx, { id: accountId }) => {
     const ownerId = await getAuthenticatedUserId(ctx)
+
+    // Check if this account is set as the default in user settings
+    const userSettings = await ctx.db
+      .query("user")
+      .withIndex("by_owner", (q) => q.eq("ownerId", ownerId))
+      .unique()
+
+    if (userSettings && userSettings.defaultAccount === accountId) {
+      throw new Error(
+        "Cannot delete account that is set as default. Please set another account as default first."
+      )
+    }
+
     const transactions = await ctx.db
       .query("transactions")
       .withIndex("by_account", (q) =>

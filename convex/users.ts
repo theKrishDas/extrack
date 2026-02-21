@@ -57,7 +57,24 @@ export const onboard = internalMutation({
     )
 
     // Execute all insertions in parallel for better performance
-    const results = await Promise.all([...accountPromises, ...categoryPromises])
+    const [accountIds, categoryIds] = await Promise.all([
+      Promise.all(accountPromises),
+      Promise.all(categoryPromises),
+    ])
+
+    // Find the default account (the "Main" account with is_default: true)
+    const defaultAccountIndex = vendorAccounts.findIndex((a) => a.is_default)
+    const defaultAccountId = accountIds[defaultAccountIndex]
+
+    // Create user settings with the default account
+    if (defaultAccountId) {
+      await ctx.db.insert("user", {
+        ownerId: userId,
+        defaultAccount: defaultAccountId,
+      })
+    }
+
+    const results = [...accountIds, ...categoryIds]
 
     console.log(
       `User ${userId} onboarded successfully: ${vendorAccounts.length} accounts, ${vendorCategories.length} categories created`

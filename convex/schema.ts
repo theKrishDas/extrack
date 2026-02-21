@@ -44,4 +44,9 @@ export default defineSchema({
     .index("by_owner", ["ownerId"])
     .index("by_name", ["ownerId", "name"])
     .index("by_default", ["ownerId", "is_default"]),
+
+  user: defineTable({
+    ownerId: v.string(),
+    defaultAccount: v.id("accounts"),
+  }).index("by_owner", ["ownerId"]),
 })
