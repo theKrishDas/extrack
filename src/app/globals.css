@@ -71,3 +71,19 @@ body {
     transparent
   );
 }
+
+/* Tailwind v4 — iOS elevation tokens */
+@theme {
+  /* Low — cards, inputs */
+  --shadow-ios-sm: 0 1px 3px rgba(0, 0, 0, 0.06), 0 2px 8px rgba(0, 0, 0, 0.06);
+
+  /* Medium — modals, sheets */
+  --shadow-ios-md:
+    0 2px 4px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0, 0, 0, 0.08),
+    0 8px 24px rgba(0, 0, 0, 0.06);
+
+  /* High — popovers, menus */
+  --shadow-ios-lg:
+    0 4px 8px rgba(0, 0, 0, 0.06), 0 8px 24px rgba(0, 0, 0, 0.1),
+    0 16px 48px rgba(0, 0, 0, 0.08);
+}
