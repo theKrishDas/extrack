@@ -1,11 +1,11 @@
 import type { ReactNode } from "react"
-import { Dock } from "@/components/app/dock"
+import { FloatingNav } from "@/components/app/floating-nav"
 import { Spacer } from "@/components/ui/spacer"
 
 export default function Layout({ children }: { children: ReactNode }) {
   return (
     <>
-      <Dock />
+      <FloatingNav />
 
       {children}
 
