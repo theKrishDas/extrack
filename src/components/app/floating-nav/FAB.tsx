@@ -111,7 +111,7 @@ export function FAB() {
                 >
                   <div
                     className={cn(
-                      "flex h-fit w-55 flex-col gap-1.5 p-4",
+                      "flex h-fit w-55 flex-col-reverse gap-1.5 p-4",
                       "[&>button]:w-full [&>button]:rounded-full [&>button]:text-label-primary"
                     )}
                   >
