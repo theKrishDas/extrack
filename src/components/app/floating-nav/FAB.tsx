@@ -5,8 +5,14 @@ import { AnimatePresence, motion, type Variants } from "motion/react"
 import { useState } from "react"
 import { RxPlus } from "react-icons/rx"
 import { physics } from "@/components/app/dock"
+import {
+  Form,
+  Provider as FormProvider,
+} from "@/components/form/transaction/new-v2"
 import { Button } from "@/components/ui/button"
-import { cn } from "@/lib/utils"
+import { Drawer } from "@/components/ui/drawer/drawer-v2"
+import type { TTransactionType } from "@/lib/schema/transactions"
+import { cn, wait } from "@/lib/utils"
 
 /**
  * Uses per-property transitions instead of one shared transition.
@@ -39,77 +45,121 @@ const popupVariants: Variants = {
 
 export function FAB() {
   const [open, setOpen] = useState(false)
+  const [drawerOpen, setDrawerOpen] = useState(false)
+  const [transactionType, setTransactionType] =
+    useState<TTransactionType>("expense")
+
+  const handleButtonClick = async (type: TTransactionType) => {
+    setTransactionType(type)
+    setOpen(false)
+    await wait(50) // wait for povover-close animation to finish
+    setDrawerOpen(true)
+  }
 
   return (
-    <Popover.Root modal={true} onOpenChange={setOpen} open={open}>
-      <Popover.Trigger
-        render={
-          <Button
-            className="text-label-primary shadow-[inset_0_1px,inset_0_0_0_1px] shadow-white/2.5 backdrop-blur-2xl"
-            color="gray"
-            isIconOnly
-            size="lg"
-          />
-        }
-      >
-        <RxPlus />
-      </Popover.Trigger>
-      <AnimatePresence>
-        {open && (
-          <Popover.Portal keepMounted>
-            <Popover.Backdrop
-              className="fixed inset-0 z-50 bg-black/30 backdrop-blur-xs"
-              render={
-                <motion.div
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  initial={{ opacity: 0 }}
-                  transition={{ duration: 0.2 }}
-                />
-              }
+    <>
+      {/* Popover menu for transaction type selection */}
+      <Popover.Root modal={true} onOpenChange={setOpen} open={open}>
+        <Popover.Trigger
+          render={
+            <Button
+              className="text-label-primary shadow-[inset_0_1px,inset_0_0_0_1px] shadow-white/2.5 backdrop-blur-2xl"
+              color="gray"
+              isIconOnly
+              size="lg"
             />
-            <Popover.Positioner
-              align="end"
-              alignOffset={-18}
-              className="z-50 *:outline-none"
-              side="top"
-              sideOffset={-64}
-            >
-              <Popover.Popup
-                className={cn(
-                  "h-fit w-fit bg-background-tertiary/80 backdrop-blur-md",
-                  "shadow-lg dark:shadow-[inset_0_1px,inset_0_0_0_1px] dark:shadow-white/2.5",
-                  "rounded-4xl supports-[corner-shape:squircle]:rounded-[3rem] supports-[corner-shape:superellipse(1.5)]:[corner-shape:superellipse(1.5)]"
-                )}
+          }
+        >
+          <RxPlus size="0.9em" strokeWidth={0.5} />
+        </Popover.Trigger>
+        <AnimatePresence>
+          {open && (
+            <Popover.Portal keepMounted>
+              <Popover.Backdrop
+                className="fixed inset-0 z-50 bg-black/30 backdrop-blur-xs"
                 render={
                   <motion.div
-                    animate="animate"
-                    exit="exit"
-                    initial="initial"
-                    style={{ transformOrigin: "bottom right" }}
-                    variants={popupVariants}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    initial={{ opacity: 0 }}
+                    transition={{ duration: 0.2 }}
                   />
                 }
+              />
+              <Popover.Positioner
+                align="end"
+                alignOffset={-18}
+                className="z-50 *:outline-none"
+                side="top"
+                sideOffset={-64}
               >
-                <div
+                <Popover.Popup
                   className={cn(
-                    "flex h-fit w-55 flex-col gap-1.5 p-4",
-                    "[&>button]:w-full [&>button]:rounded-full [&>button]:text-label-primary"
+                    "h-fit w-fit bg-background-tertiary/80 backdrop-blur-md",
+                    "shadow-lg dark:shadow-[inset_0_1px,inset_0_0_0_1px] dark:shadow-white/2.5",
+                    "rounded-4xl supports-[corner-shape:squircle]:rounded-[3rem] supports-[corner-shape:superellipse(1.5)]:[corner-shape:superellipse(1.5)]"
                   )}
+                  render={
+                    <motion.div
+                      animate="animate"
+                      exit="exit"
+                      initial="initial"
+                      style={{ transformOrigin: "bottom right" }}
+                      variants={popupVariants}
+                    />
+                  }
                 >
-                  {/* visually align the labels to the left */}
-                  <Button aria-label="Add income" color="gray" size="lg">
-                    <span className="-ml-2.25 inline-block">􀄨 Income</span>
-                  </Button>
-                  <Button aria-label="Add expence" color="gray" size="lg">
-                    􀄩 Expence
-                  </Button>
-                </div>
-              </Popover.Popup>
-            </Popover.Positioner>
-          </Popover.Portal>
-        )}
-      </AnimatePresence>
-    </Popover.Root>
+                  <div
+                    className={cn(
+                      "flex h-fit w-55 flex-col gap-1.5 p-4",
+                      "[&>button]:w-full [&>button]:rounded-full [&>button]:text-label-primary"
+                    )}
+                  >
+                    {/* visually align the labels to the left */}
+                    <Button
+                      aria-label="Add income"
+                      color="gray"
+                      onPress={() => handleButtonClick("income")}
+                      size="lg"
+                    >
+                      <span className="-ml-2.25 inline-block">􀄨 Income</span>
+                    </Button>
+                    <Button
+                      aria-label="Add expense"
+                      color="gray"
+                      onPress={() => handleButtonClick("expense")}
+                      size="lg"
+                    >
+                      􀄩 Expense
+                    </Button>
+                  </div>
+                </Popover.Popup>
+              </Popover.Positioner>
+            </Popover.Portal>
+          )}
+        </AnimatePresence>
+      </Popover.Root>
+
+      {/* Drawer for new transaction form */}
+      <Drawer.Root
+        onOpenChange={setDrawerOpen}
+        open={drawerOpen}
+        showHandle
+        useBlur
+      >
+        <Drawer.Content>
+          <Drawer.Header className="h-8">
+            <Drawer.Title srOnly>New {transactionType}</Drawer.Title>
+          </Drawer.Header>
+
+          <FormProvider
+            afterSubmit={() => setDrawerOpen(false)}
+            type={transactionType}
+          >
+            <Form />
+          </FormProvider>
+        </Drawer.Content>
+      </Drawer.Root>
+    </>
   )
 }
