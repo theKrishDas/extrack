@@ -1,3 +1,4 @@
+import { ConvexError } from "convex/values"
 import type { Doc } from "./_generated/dataModel"
 import type { MutationCtx, QueryCtx } from "./_generated/server"
 
@@ -6,19 +7,18 @@ type FormatTransactionSummaryType = {
   timeframe: { start: number; end: number }
 }
 
-/**
- * Gets the authenticated user ID from the Clerk session.
- * @throws Error if the user is not authenticated
- * @returns The Clerk user ID (subject)
- */
-export async function getAuthenticatedUserId(
-  ctx: QueryCtx | MutationCtx
-): Promise<string> {
+export async function getCurrentUserOrThrow(ctx: QueryCtx | MutationCtx) {
   const identity = await ctx.auth.getUserIdentity()
-  if (!identity) {
-    throw new Error("User not authenticated")
-  }
-  return identity.subject
+  if (!identity) throw new ConvexError({ code: "UNAUTHENTICATED" })
+
+  const user = await ctx.db
+    .query("user")
+    .withIndex("by_owner", (q) => q.eq("ownerId", identity.subject))
+    .unique()
+
+  if (!user) throw new ConvexError({ code: "USER_NOT_STORED" })
+
+  return user
 }
 
 function formatTransactionSummary(args: FormatTransactionSummaryType[]) {

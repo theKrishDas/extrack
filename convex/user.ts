@@ -1,7 +1,7 @@
 import { v } from "convex/values"
 
 import { mutation, query } from "./_generated/server"
-import { getAuthenticatedUserId } from "./utils"
+import { getCurrentUserOrThrow } from "./utils"
 
 /**
  * Get user settings for the authenticated user.
@@ -9,11 +9,8 @@ import { getAuthenticatedUserId } from "./utils"
  */
 export const get = query({
   handler: async (ctx) => {
-    const ownerId = await getAuthenticatedUserId(ctx)
-    return await ctx.db
-      .query("user")
-      .withIndex("by_owner", (q) => q.eq("ownerId", ownerId))
-      .unique()
+    const user = await getCurrentUserOrThrow(ctx)
+    return user
   },
 })
 
@@ -23,15 +20,9 @@ export const get = query({
  */
 export const getDefaultAccount = query({
   handler: async (ctx) => {
-    const ownerId = await getAuthenticatedUserId(ctx)
-    const userSettings = await ctx.db
-      .query("user")
-      .withIndex("by_owner", (q) => q.eq("ownerId", ownerId))
-      .unique()
+    const user = await getCurrentUserOrThrow(ctx)
 
-    if (!userSettings) return null
-
-    return await ctx.db.get(userSettings.defaultAccount)
+    return await ctx.db.get(user.defaultAccount)
   },
 })
 
@@ -42,31 +33,19 @@ export const getDefaultAccount = query({
 export const initialize = mutation({
   args: { accountId: v.id("accounts") },
   handler: async (ctx, { accountId }) => {
-    const ownerId = await getAuthenticatedUserId(ctx)
+    const user = await getCurrentUserOrThrow(ctx)
 
     // Validate that the account exists and belongs to the user
     const account = await ctx.db.get(accountId)
     if (!account) {
       throw new Error("Account does not exist")
     }
-    if (account.ownerId !== ownerId) {
+    if (account.ownerId !== user.ownerId) {
       throw new Error("Account does not belong to this user")
     }
 
-    // Check if user settings already exist
-    const existing = await ctx.db
-      .query("user")
-      .withIndex("by_owner", (q) => q.eq("ownerId", ownerId))
-      .unique()
-
-    if (existing) {
-      throw new Error("User settings already exist")
-    }
-
-    return await ctx.db.insert("user", {
-      ownerId,
-      defaultAccount: accountId,
-    })
+    // User settings already exist (getCurrentUserOrThrow ensures this)
+    throw new Error("User settings already exist")
   },
 })
 
@@ -76,28 +55,18 @@ export const initialize = mutation({
 export const setDefaultAccount = mutation({
   args: { accountId: v.id("accounts") },
   handler: async (ctx, { accountId }) => {
-    const ownerId = await getAuthenticatedUserId(ctx)
+    const user = await getCurrentUserOrThrow(ctx)
 
     // Validate that the account exists and belongs to the user
     const account = await ctx.db.get(accountId)
     if (!account) {
       throw new Error("Account does not exist")
     }
-    if (account.ownerId !== ownerId) {
+    if (account.ownerId !== user.ownerId) {
       throw new Error("Account does not belong to this user")
     }
 
-    // Get user settings
-    const userSettings = await ctx.db
-      .query("user")
-      .withIndex("by_owner", (q) => q.eq("ownerId", ownerId))
-      .unique()
-
-    if (!userSettings) {
-      throw new Error("User settings not found. Please contact support.")
-    }
-
-    await ctx.db.patch(userSettings._id, { defaultAccount: accountId })
-    return userSettings._id
+    await ctx.db.patch(user._id, { defaultAccount: accountId })
+    return user._id
   },
 })

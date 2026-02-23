@@ -6,16 +6,16 @@ import { transactionTypes } from "../src/lib/constants/transaction-types"
 import { internal } from "./_generated/api"
 import { mutation, query } from "./_generated/server"
 import schema from "./schema"
-import { getAuthenticatedUserId } from "./utils"
+import { getCurrentUserOrThrow } from "./utils"
 
 export const getAll = query({
   args: {},
   handler: async (ctx) => {
-    const ownerId = await getAuthenticatedUserId(ctx)
+    const user = await getCurrentUserOrThrow(ctx)
 
     return await ctx.db
       .query("transactions")
-      .withIndex("by_owner", (q) => q.eq("ownerId", ownerId))
+      .withIndex("by_owner", (q) => q.eq("ownerId", user.ownerId))
       .order("asc")
       .collect()
   },
@@ -36,7 +36,7 @@ export const add = mutation({
     date: v.number(),
   },
   handler: async (ctx, args) => {
-    const ownerId = await getAuthenticatedUserId(ctx)
+    const user = await getCurrentUserOrThrow(ctx)
     const [account, category] = await Promise.all([
       ctx.db.get(args.account),
       ctx.db.get(args.category),
@@ -56,7 +56,7 @@ export const add = mutation({
 
     await Promise.all([
       ctx.db.insert("transactions", {
-        ownerId,
+        ownerId: user.ownerId,
         account: account._id,
         category: category._id,
         amount: args.amount,
@@ -104,11 +104,11 @@ export const remove = mutation({
 export const getBetweenTimeframe = query({
   args: { start: v.number(), end: v.number() },
   handler: async (ctx, { start, end }) => {
-    const ownerId = await getAuthenticatedUserId(ctx)
+    const user = await getCurrentUserOrThrow(ctx)
     return await ctx.db
       .query("transactions")
       .withIndex("by_date", (q) =>
-        q.eq("ownerId", ownerId).gte("date", start).lte("date", end)
+        q.eq("ownerId", user.ownerId).gte("date", start).lte("date", end)
       )
       .order("desc")
       .collect()
@@ -118,11 +118,11 @@ export const getBetweenTimeframe = query({
 export const getJoinedPaginated = query({
   args: { paginationOpts: paginationOptsValidator },
   handler: async (ctx, { paginationOpts }) => {
-    const ownerId = await getAuthenticatedUserId(ctx)
+    const user = await getCurrentUserOrThrow(ctx)
 
     const transactionStream = stream(ctx.db, schema)
       .query("transactions")
-      .withIndex("by_date", (q) => q.eq("ownerId", ownerId))
+      .withIndex("by_date", (q) => q.eq("ownerId", user.ownerId))
       .order("desc")
       .map(async (transaction) => {
         const [category, account] = await Promise.all([
