@@ -30,6 +30,21 @@ export type Prettify<T> = {
   [K in keyof T]: T[K]
 } & {}
 
+/**
+ * Creates a type-safe, groupable collection from an array of items.
+ *
+ * @param data - Items to collect
+ * @param value - Property key used as the value identifier
+ * @param groupBy - Optional grouping function
+ *
+ * @example
+ * const collection = createCollection(items, "id", ({ id }) =>
+ *   id % 2 === 0 ? "even" : "odd"
+ * )
+ *
+ * collection.group()
+ * // => [["even", [{ id: 0, ... }]], ["odd", [{ id: 1, ... }]]]
+ */
 export function createCollection<T>(
   data: T[],
   value: keyof T,
