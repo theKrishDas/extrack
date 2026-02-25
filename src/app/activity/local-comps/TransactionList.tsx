@@ -1,7 +1,6 @@
 "use client"
 
 import { ark } from "@ark-ui/react/factory"
-import { useNumberFormatter } from "@react-aria/i18n"
 import { useMutation, usePaginatedQuery } from "convex/react"
 import { format, isToday, isYesterday } from "date-fns"
 import { useState } from "react"
@@ -13,7 +12,7 @@ import { DataTable, type DataType } from "@/app/(index)/local-comps/DataTable"
 import { Button as AnimatedButton } from "@/components/ui/button/animated-button"
 import { ConfirmButton } from "@/components/ui/confirm-button"
 import { Emoji } from "@/components/ui/emoji"
-import { CURRENCY } from "@/lib/date-utils"
+import { useCurrencyFormatter } from "@/hooks/useCurrencyFormatter"
 import { cn, createCollection } from "@/lib/utils"
 
 export default function TransactionsList() {
@@ -50,11 +49,7 @@ export default function TransactionsList() {
   /**
    * To format the amounts by locale
    */
-  const formatter = useNumberFormatter({
-    style: "currency",
-    currency: CURRENCY,
-    minimumFractionDigits: 0,
-  })
+  const formatter = useCurrencyFormatter()
 
   /**
    * Render the Virtusuo list

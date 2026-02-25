@@ -1,13 +1,11 @@
-import { useNumberFormatter } from "@react-aria/i18n"
 import { useMutation } from "convex/react"
 import { Label } from "react-aria-components"
 import { api } from "#/convex/_generated/api"
 import type { Doc } from "#/convex/_generated/dataModel"
 import { List } from "@/components/ui/list-v2"
 import { Switch } from "@/components/ui/switch"
-import { CURRENCY } from "@/lib/date-utils"
+import { useCurrencyFormatter } from "@/hooks/useCurrencyFormatter"
 import { cn } from "@/lib/utils"
-
 import { DeleteAccount } from "./DeleteAccount"
 
 export function OtherSettings({
@@ -17,12 +15,9 @@ export function OtherSettings({
   isEditing: boolean
   account: Doc<"accounts">
 }) {
-  const formatter = useNumberFormatter({
-    style: "currency",
-    currency: CURRENCY,
-    minimumFractionDigits: 0,
-  })
+  const formatter = useCurrencyFormatter()
   const fmtBalance = formatter.format(account.currentBalance)
+
   const toggleActive = useMutation(
     api.accounts.toggleActive
   ).withOptimisticUpdate((localStore, { id }) => {

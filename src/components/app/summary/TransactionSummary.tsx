@@ -1,6 +1,5 @@
 "use client"
 
-import { useNumberFormatter } from "@react-aria/i18n"
 import { useQuery } from "convex/react"
 import type { FunctionReturnType } from "convex/server"
 import {
@@ -18,7 +17,7 @@ import { Button } from "react-aria-components"
 import { api } from "#/convex/_generated/api"
 import { formatTransactionSummary } from "#/convex/utils"
 import Bar from "@/components/ui/bar"
-import { CURRENCY } from "@/lib/date-utils"
+import { useCurrencyFormatter } from "@/hooks/useCurrencyFormatter"
 import { cn } from "@/lib/utils"
 
 const TransactionSummary = () => {
@@ -85,11 +84,7 @@ const Overview = ({
   >
 }) => {
   const { netFlow, expenseAmount, incomeAmount } = summary.breakdown
-  const formatter = useNumberFormatter({
-    style: "currency",
-    currency: CURRENCY,
-    minimumFractionDigits: 0,
-  })
+  const formatter = useCurrencyFormatter()
 
   const Stats = ({
     label,
