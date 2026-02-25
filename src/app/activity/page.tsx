@@ -1,6 +1,5 @@
 import { Container } from "@/components/layout/container"
-
-import TransactionsList from "./local-comps/TransactionList"
+import { TransactionList } from "./local-comps/transaction-list"
 
 export default function Page() {
   return (
@@ -10,7 +9,7 @@ export default function Page() {
           Activities
         </h3>
 
-        <TransactionsList />
+        <TransactionList />
       </div>
     </Container>
   )
