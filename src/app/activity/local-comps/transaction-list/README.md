@@ -34,10 +34,10 @@ Renders a virtualized list of transactions. Clicking a row opens a Drawer with t
 
 State lives in `TransactionList` and is passed down as props:
 
-| State       | Type         | Purpose                    |
-| ----------- | ------------ | -------------------------- | ------------------------ |
-| `activeTxn` | `Transaction | null`                      | The selected transaction |
-| `open`      | `boolean`    | Controls drawer visibility |
+| State       | Type                  | Purpose                    |
+| ----------- | --------------------- | -------------------------- |
+| `activeTxn` | `Transaction \| null` | The selected transaction   |
+| `open`      | `boolean`             | Controls drawer visibility |
 
 When a list item is clicked, `onPress` sets both `activeTxn` (the full transaction object) and `open: true`. The Drawer reads these as props and renders the detail view.
 
