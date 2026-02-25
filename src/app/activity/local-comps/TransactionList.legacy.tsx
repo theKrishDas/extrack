@@ -15,6 +15,10 @@ import { Emoji } from "@/components/ui/emoji"
 import { useCurrencyFormatter } from "@/hooks/useCurrencyFormatter"
 import { cn, createCollection } from "@/lib/utils"
 
+/**
+ * @deprecated Legacy component, will be removed in a future release.
+ * @todo Remove this component.
+ */
 export default function TransactionsList() {
   /**
    * Convex query to get paginated transactions
