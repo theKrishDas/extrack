@@ -1,6 +1,7 @@
 "use client"
 
 import { usePaginatedQuery } from "convex/react"
+import { useState } from "react"
 import {
   Header,
   ListBox,
@@ -17,6 +18,7 @@ import { Spacer } from "@/components/ui/spacer"
 import { useCurrencyFormatter } from "@/hooks/useCurrencyFormatter"
 import { formatDateGroup } from "@/lib/date-utils"
 import { cn, createCollection } from "@/lib/utils"
+import { Drawer } from "./Drawer"
 import { ListEndMessage } from "./ListEndMessage"
 
 export function TransactionList() {
@@ -35,8 +37,17 @@ export function TransactionList() {
 
   const formatter = useCurrencyFormatter()
 
+  // Store full transaction object instead of just ID
+  // Avoids O(n) .find() lookups and handles pagination changes gracefully
+  const [activeTxn, setActiveTxn] = useState<
+    (typeof transactions)[number] | null
+  >(null)
+  const [open, setOpen] = useState(false)
+
   return (
     <>
+      <Drawer onOpenChange={setOpen} open={open} txn={activeTxn} />
+
       <Virtualizer
         layout={ListLayout}
         layoutOptions={{
@@ -52,7 +63,7 @@ export function TransactionList() {
           renderEmptyState={() => <Spinner />}
           selectionMode="single"
         >
-          {groups.map((group, idx) => {
+          {groups.map((group, grpIdx) => {
             const [groupName, transactions] = group
 
             return (
@@ -62,13 +73,19 @@ export function TransactionList() {
                     "pointer-events-none select-none truncate px-4 font-medium text-label-tertiary text-sm leading-8",
                     // FIXME: This sticky is not working
                     "sticky z-10",
-                    idx > 0 && "mt-6"
+                    grpIdx > 0 && "mt-6"
                   )}
                 >
                   {groupName}
                 </Header>
-                {transactions.map(
-                  ({ _id: txnId, amount, category: { name, icon } }, idx) => (
+                {transactions.map((txn, txnIdx) => {
+                  const {
+                    _id: txnId,
+                    amount,
+                    category: { name, icon },
+                  } = txn
+
+                  return (
                     <ListBoxItem
                       className={({ isFocusVisible }) =>
                         cn(
@@ -78,15 +95,19 @@ export function TransactionList() {
                           isFocusVisible === true &&
                             "rounded-sm! ring-3 ring-ios-blue",
                           // rounded-top for the first item
-                          idx === 0 &&
+                          txnIdx === 0 &&
                             "supports-[corner-shape:squircle]:corner-squircle rounded-t-2xl supports-[corner-shape:squircle]:rounded-t-4xl",
                           // rounded-bottom for the last item
-                          idx === transactions.length - 1 &&
+                          txnIdx === transactions.length - 1 &&
                             "supports-[corner-shape:squircle]:corner-squircle rounded-b-2xl supports-[corner-shape:squircle]:rounded-b-4xl"
                         )
                       }
                       id={txnId}
                       key={txnId}
+                      onPress={() => {
+                        setActiveTxn(txn)
+                        setOpen(true)
+                      }}
                     >
                       <Emoji aria-hidden={true} className="mr-3">
                         {icon}
@@ -104,13 +125,13 @@ export function TransactionList() {
                             "ListItemSeparator",
                             "absolute inset-x-0 bottom-0 translate-y-1/2 border-b border-b-separator-opaque opacity-30 mix-blend-color-dodge group-data-[focus-visible=true]/ListItem:hidden",
                             // Hide separater for the last item
-                            idx === transactions.length - 1 && "hidden"
+                            txnIdx === transactions.length - 1 && "hidden"
                           )}
                         />
                       </div>
                     </ListBoxItem>
                   )
-                )}
+                })}
               </ListBoxSection>
             )
           })}
