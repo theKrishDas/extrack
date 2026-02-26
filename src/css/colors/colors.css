@@ -7,6 +7,10 @@
 
   --background: var(--background-primary);
 
+  --background-primary-elevated: oklch(100% 0 0);
+  --background-secondary-elevated: oklch(96.26% 0.0066 286.27);
+  --background-tertiary-elevated: oklch(100% 0 0);
+
   --ios-red: oklch(65.42% 0.2321 28.66);
   --ios-orange: oklch(76.52% 0.1752 62.57);
   --ios-yellow: oklch(86.52% 0.1768 90.38);
@@ -116,6 +120,10 @@
     --background-primary: oklch(0% 0 0);
     --background-secondary: oklch(22.73% 0.0038 286.09);
     --background-tertiary: oklch(29.39% 0.0036 286.18);
+
+    --background-primary-elevated: oklch(22.73% 0.0038 286.09);
+    --background-secondary-elevated: oklch(29.39% 0.0036 286.18);
+    --background-tertiary-elevated: oklch(34.92% 0.0034 286.22);
 
     --ios-red: oklch(66.33% 0.2236 28.29);
     --ios-orange: oklch(78.24% 0.171055 67.2231);

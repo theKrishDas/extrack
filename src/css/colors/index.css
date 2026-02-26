@@ -6,6 +6,9 @@
   --color-background-primary: var(--background-primary);
   --color-background-secondary: var(--background-secondary);
   --color-background-tertiary: var(--background-tertiary);
+  --color-background-primary-elevated: var(--background-primary-elevated);
+  --color-background-secondary-elevated: var(--background-secondary-elevated);
+  --color-background-tertiary-elevated: var(--background-tertiary-elevated);
   --color-ios-red: var(--ios-red);
   --color-ios-orange: var(--ios-orange);
   --color-ios-yellow: var(--ios-yellow);
