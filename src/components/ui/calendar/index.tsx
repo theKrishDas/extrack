@@ -34,7 +34,7 @@ export function Calendar<T extends DateValue>({
       {...props}
       className={composeTailwindRenderProps(
         props.className,
-        "@container flex w-[calc(10*var(--spacing)*7)] max-w-full flex-col" // tailwind's (w-4 * 7 cells)
+        "@container flex w-[calc(11*var(--spacing)*7)] max-w-full flex-col" // tailwind's (w-11 * 7 cells)
       )}
     >
       <CalendarHeader />
