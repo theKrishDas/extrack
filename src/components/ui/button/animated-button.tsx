@@ -49,7 +49,7 @@ const Button = ({
           size,
           isIconOnly,
           fullWidth,
-          focusTreatment: false,
+          focusTreatment: "aria",
           className,
         })
       )}

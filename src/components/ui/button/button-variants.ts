@@ -48,8 +48,11 @@ export const buttonVariants = cva(
         false: "",
       },
       focusTreatment: {
-        true: "ring-[var(--button-color)]/50 ring-offset-background focus:outline-none focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-offset-2", // focus
-        false: "",
+        // use the default focus-visible selector for default buttons
+        default:
+          "ring-[var(--button-color)]/50 ring-offset-background focus:outline-none focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-offset-2", // focus
+        // use data-focus-visible attribute for RACButtons
+        aria: "ring-[var(--button-color)]/50 ring-offset-background focus:outline-none focus-visible:outline-none data-focus-visible:ring-4 data-focus-visible:ring-offset-2",
       },
     },
     compoundVariants: [
@@ -83,7 +86,7 @@ export const buttonVariants = cva(
       size: "md",
       isIconOnly: false,
       fullWidth: false,
-      focusTreatment: true,
+      focusTreatment: "default",
     },
   }
 )
