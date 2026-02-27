@@ -6,6 +6,7 @@ export const currencyFormatOptions = {
   style: "currency",
   currency: CURRENCY,
   minimumFractionDigits: 0,
+  maximumFractionDigits: 2,
 } as const
 
 /** Formats a number as a currency string using the default {@link currencyFormatOptions}. */
