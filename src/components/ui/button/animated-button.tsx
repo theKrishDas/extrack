@@ -42,7 +42,6 @@ const Button = ({
     <RacButton
       {...rest}
       className={cn(
-        "focus:outline-none focus-visible:outline-none",
         buttonVariants({
           variant,
           color,
