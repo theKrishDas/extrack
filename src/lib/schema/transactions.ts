@@ -10,7 +10,9 @@ export type TTransactionType = "income" | "expense"
 
 export const newTransactionSchema = z.object({
   amount: z
-    .number()
+    .number({
+      required_error: "Amount is required.",
+    })
     .min(MINIMUM_TRANSACTION_AMOUNT, {
       message: `Amount must be at least ${MINIMUM_TRANSACTION_AMOUNT}.`,
     })
