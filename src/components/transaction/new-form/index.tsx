@@ -12,9 +12,13 @@ import type { TransactionTypes } from "@/lib/constants/transaction-types"
 import { useAppForm } from "./hooks/form-context"
 import { type NewTransactionSchemaType, newTransactionSchema } from "./schema"
 
-export function Form() {
-  const txnType: TransactionTypes = "expense" // TODO: accept it as a prop from the parent
-  const defaults = useQuery(api.transactions.getFormDefaults, { type: txnType })
+export function Form(props: {
+  type: TransactionTypes
+  afterSubmit?: (data: NewTransactionSchemaType) => void
+}) {
+  const { type, afterSubmit } = props
+  const defaults = useQuery(api.transactions.getFormDefaults, { type })
+
   const formatter = useCurrencyFormatter()
   const form = useAppForm({
     validators: {
@@ -27,7 +31,7 @@ export function Form() {
       amount: undefined as never,
       date: Date.now(),
       note: undefined,
-      type: txnType,
+      type,
     } as NewTransactionSchemaType,
     onSubmit: ({ value: data }) => {
       toast("Sbmittion data", {
@@ -37,6 +41,7 @@ export function Form() {
           </pre>
         ),
       })
+      afterSubmit?.(data)
     },
   })
 
