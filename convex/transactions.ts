@@ -1,5 +1,5 @@
 import { paginationOptsValidator } from "convex/server"
-import { v } from "convex/values"
+import { ConvexError, v } from "convex/values"
 import { stream } from "convex-helpers/server/stream"
 
 import { transactionTypes } from "../src/lib/constants/transaction-types"
@@ -146,5 +146,67 @@ export const getJoinedPaginated = query({
       ...paginationOpts,
       maximumRowsRead: 50,
     })
+  },
+})
+
+export const getFormDefaults = query({
+  args: { type: v.union(...transactionTypes.map((t) => v.literal(t))) },
+  handler: async (ctx, { type }) => {
+    const user = await getCurrentUserOrThrow(ctx)
+
+    const accounts = await ctx.db
+      .query("accounts")
+      .withIndex("by_owner", (q) => q.eq("ownerId", user.ownerId))
+      .collect()
+
+    if (!accounts.length)
+      throw new ConvexError({
+        message: "No account found",
+        code: 404,
+        context: {
+          userId: user._id,
+          ownerId: user.ownerId,
+        },
+      })
+
+    const categories = await ctx.db
+      .query("categories")
+      .withIndex("by_type", (q) =>
+        q.eq("ownerId", user.ownerId).eq("type", type)
+      )
+      .collect()
+
+    if (!categories.length)
+      throw new ConvexError({
+        message: "No category found",
+        code: 404,
+        context: {
+          userId: user._id,
+          ownerId: user.ownerId,
+          type,
+        },
+      })
+
+    const latestTxn = await ctx.db
+      .query("transactions")
+      .withIndex("by_type", (q) =>
+        q.eq("ownerId", user.ownerId).eq("type", type)
+      )
+      .order("desc")
+      .first()
+
+    // use the last transaction to get the last category
+    // if no transaction exists, use the first category
+    const lastUsedCategory = latestTxn?.category ?? categories[0]._id
+    const defaultAccount = user.defaultAccount
+
+    return {
+      defaults: {
+        account: defaultAccount,
+        category: lastUsedCategory,
+      },
+      accounts,
+      categories,
+    }
   },
 })
