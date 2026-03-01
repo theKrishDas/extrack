@@ -2,6 +2,7 @@ import {
   createFormHook,
   createFormHookContexts,
 } from "@tanstack/react-form-nextjs"
+import { AccountField } from "../fields/account-field"
 import { AmountField } from "../fields/amount-field"
 import { CategoryField } from "../fields/category-field"
 import { DateField } from "../fields/date-field"
@@ -18,6 +19,7 @@ export const { useAppForm } = createFormHook({
     NoteField,
     DateField,
     CategoryField,
+    AccountField,
   },
   formComponents: {},
 })

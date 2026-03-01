@@ -7,14 +7,14 @@ import { Emoji } from "@/components/ui/emoji"
 import { cn, wait } from "@/lib/utils"
 import { useFieldContext } from "../hooks/form-context"
 
-export function CategoryField({
-  categories,
+export function AccountField({
+  accounts,
 }: {
-  categories: Doc<"categories">[] | undefined
+  accounts: Doc<"accounts">[] | undefined
 }) {
   const [open, setOpen] = useState(false)
   const field = useFieldContext<string>()
-  const isPending = !categories
+  const isPending = !accounts
 
   return (
     <>
@@ -25,20 +25,20 @@ export function CategoryField({
         onPress={() => setOpen(true)}
         size="sm"
       >
-        <span aria-hidden={true}>􀏪</span>
-        <span className="sr-only">Choose Category</span>
+        <span aria-hidden={true}>􁖋</span>
+        <span className="sr-only">Choose Account</span>
       </Button>
 
       {!isPending && (
         <Drawer.Root onOpenChange={setOpen} open={open}>
           <Drawer.Content>
-            <Drawer.Title>Select category for this transaction</Drawer.Title>
+            <Drawer.Title>Select account for this transaction</Drawer.Title>
 
             <ListBox
               aria-label="Categories"
               className="ListBoxRoot block p-0 [&_.ListBoxItem]:first:rounded-t-2xl [&_.ListBoxItem]:last:rounded-b-2xl [&_.ListBoxItem]:last:supports-[corner-shape:squircle]:rounded-b-4xl [&_.ListBoxItem]:first:supports-[corner-shape:squircle]:rounded-t-4xl"
               disallowEmptySelection
-              items={categories}
+              items={accounts}
               onBlur={field.handleBlur}
               onSelectionChange={async ([key]) => {
                 field.handleChange(String(key))
@@ -67,16 +67,7 @@ export function CategoryField({
                 >
                   <Emoji
                     aria-hidden={true}
-                    className={cn(
-                      "mr-3 flex items-center gap-3"
-                      // Color swatch before the icon
-                      // "before:supports-[corner-shape:squircle]:corner-squircle before:block before:size-4 before:bg-(--item-color) before:content-[''] before:supports-[corner-shape:squircle]:rounded-xl"
-                    )}
-                    style={
-                      {
-                        "--item-color": `var(--ios-${cat.color}, var(--foreground))`,
-                      } as React.CSSProperties
-                    }
+                    className="mr-3 flex items-center gap-3"
                   >
                     {cat.icon}
                   </Emoji>

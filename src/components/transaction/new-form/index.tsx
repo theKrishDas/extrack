@@ -86,6 +86,12 @@ export function Form(props: {
       >
         <form.AppField
           children={(field) => (
+            <field.AccountField accounts={defaults?.accounts} />
+          )}
+          name="account"
+        />
+        <form.AppField
+          children={(field) => (
             <field.CategoryField categories={defaults?.categories} />
           )}
           name="category"
