@@ -1,5 +1,5 @@
-import { v } from "convex/values"
-
+import { ConvexError, v } from "convex/values"
+import { ACCOUNTS_PER_USER_MAX } from "#lib/constants/constraints"
 import { transactionTypes } from "../src/lib/constants/transaction-types"
 import { internal } from "./_generated/api"
 import { internalMutation, mutation, query } from "./_generated/server"
@@ -217,16 +217,28 @@ export const syncBalance = internalMutation({
   },
 })
 
-/*
- * Balance Querries
+/**
+ * Returns the balance for a given account or the combined balance across all accounts of a user.
+ *
+ * @param account - `"combined"` to sum all accounts, or an account ID for a specific one.
+ * @returns The balance as a number.
+ * @throws If the account is not found or does not belong to the authenticated user.
  */
 export const getBalance = query({
-  args: { account: v.union(v.literal("all"), v.id("accounts")) },
+  args: { account: v.union(v.literal("combined"), v.id("accounts")) },
   handler: async (ctx, { account }) => {
-    if (account === "all") {
-      const accounts = await ctx.db.query("accounts").collect()
-      const balance = accounts.reduce((acc, v) => acc + v.currentBalance, 0)
-      return balance
+    const user = await getCurrentUserOrThrow(ctx)
+
+    if (account === "combined") {
+      // Sum balances across all accounts for this user.
+      // Uses take() with the known per-user account cap instead of collect()
+      // to limit the number of rows read.
+      const accounts = await ctx.db
+        .query("accounts")
+        .withIndex("by_owner", (q) => q.eq("ownerId", user.ownerId))
+        .take(ACCOUNTS_PER_USER_MAX)
+
+      return accounts.reduce((sum, a) => sum + a.currentBalance, 0)
     }
 
     const relevantAccount = await ctx.db
@@ -235,9 +247,28 @@ export const getBalance = query({
       .unique()
 
     if (!relevantAccount)
-      throw new Error("Account with the given Id does not exist!")
+      throw new ConvexError({
+        message: "Account not found.",
+        code: 404,
+        context: {
+          accountId: account,
+          userId: user._id,
+          ownerId: user.ownerId,
+        },
+      })
 
-    const balance = relevantAccount.currentBalance
-    return balance
+    if (relevantAccount.ownerId !== user.ownerId)
+      throw new ConvexError({
+        message: "Account does not belong to the authenticated user.",
+        code: 403,
+        context: {
+          accountId: account,
+          accountOwnerId: relevantAccount.ownerId,
+          userId: user._id,
+          ownerId: user.ownerId,
+        },
+      })
+
+    return relevantAccount.currentBalance
   },
 })

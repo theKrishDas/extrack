@@ -1,7 +1,7 @@
 import { useQuery } from "convex/react"
+import type { FunctionArgs } from "convex/server"
 import { endOfToday } from "date-fns"
 import { api } from "#/convex/_generated/api"
-import type { Id } from "#/convex/_generated/dataModel"
 
 /**
  * Calculates a date range from a given start date up to an optional end date,
@@ -28,9 +28,8 @@ export const getDateRange = (date: number, end?: number) => {
 export const useBalanceOn = ({
   date,
   account,
-}: {
+}: FunctionArgs<typeof api.accounts.getBalance> & {
   date: number
-  account: "all" | Id<"accounts">
 }): { balance: number; currentBalance: number } | undefined => {
   // Define the date range from the given historical date up to today.
   const { start, end } = getDateRange(date)
