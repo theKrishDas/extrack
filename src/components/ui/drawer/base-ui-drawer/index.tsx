@@ -41,15 +41,19 @@ const Content = ({
 )
 const Title = ({
   className,
+  srOnly = false,
   ...rest
-}: React.ComponentProps<typeof DrawerPrimitive.Title>) => (
+}: React.ComponentProps<typeof DrawerPrimitive.Title> & {
+  srOnly?: boolean
+}) => (
   <DrawerPrimitive.Title
     className={cn(
       "max-w-[65%] truncate px-2 font-semibold text-label-primary text-xl tracking-[0.015rem]",
+      srOnly && "sr-only",
       className
     )}
     {...rest}
   />
 )
 const Description = DrawerPrimitive.Description
-export const Drawer = { Root, Trigger, Close, Content, Title }
+export const Drawer = { Root, Trigger, Close, Content, Title, Description }

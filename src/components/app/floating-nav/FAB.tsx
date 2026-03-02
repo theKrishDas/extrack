@@ -5,12 +5,9 @@ import { AnimatePresence, motion, type Variants } from "motion/react"
 import { useState } from "react"
 import { RxPlus } from "react-icons/rx"
 import { physics } from "@/components/app/dock"
-import {
-  Form,
-  Provider as FormProvider,
-} from "@/components/form/transaction/new-v2"
+import { Form } from "@/components/transaction/new-form"
 import { Button } from "@/components/ui/button"
-import { Drawer } from "@/components/ui/drawer/drawer-v2"
+import { Drawer } from "@/components/ui/drawer/base-ui-drawer"
 import type { TTransactionType } from "@/lib/schema/transactions"
 import { cn, wait } from "@/lib/utils"
 
@@ -44,14 +41,14 @@ const popupVariants: Variants = {
 }
 
 export function FAB() {
-  const [open, setOpen] = useState(false)
+  const [popoverOpen, setPopoverOpen] = useState(false)
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [transactionType, setTransactionType] =
     useState<TTransactionType>("expense")
 
   const handleButtonClick = async (type: TTransactionType) => {
     setTransactionType(type)
-    setOpen(false)
+    setPopoverOpen(false)
     await wait(50) // wait for povover-close animation to finish
     setDrawerOpen(true)
   }
@@ -59,7 +56,11 @@ export function FAB() {
   return (
     <>
       {/* Popover menu for transaction type selection */}
-      <Popover.Root modal={true} onOpenChange={setOpen} open={open}>
+      <Popover.Root
+        modal={true}
+        onOpenChange={setPopoverOpen}
+        open={popoverOpen}
+      >
         <Popover.Trigger
           render={
             <Button
@@ -73,7 +74,7 @@ export function FAB() {
           <RxPlus size="0.9em" strokeWidth={0.5} />
         </Popover.Trigger>
         <AnimatePresence>
-          {open && (
+          {popoverOpen && (
             <Popover.Portal keepMounted>
               <Popover.Backdrop
                 className="fixed inset-0 z-50 bg-black/30 backdrop-blur-xs"
@@ -141,23 +142,13 @@ export function FAB() {
       </Popover.Root>
 
       {/* Drawer for new transaction form */}
-      <Drawer.Root
-        onOpenChange={setDrawerOpen}
-        open={drawerOpen}
-        showHandle
-        useBlur
-      >
+      <Drawer.Root onOpenChange={setDrawerOpen} open={drawerOpen}>
         <Drawer.Content>
-          <Drawer.Header className="h-8">
-            <Drawer.Title srOnly>New {transactionType}</Drawer.Title>
-          </Drawer.Header>
-
-          <FormProvider
+          <Drawer.Title srOnly>New {transactionType}</Drawer.Title>
+          <Form
             afterSubmit={() => setDrawerOpen(false)}
             type={transactionType}
-          >
-            <Form />
-          </FormProvider>
+          />
         </Drawer.Content>
       </Drawer.Root>
     </>
