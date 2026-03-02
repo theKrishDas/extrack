@@ -1,4 +1,3 @@
-import { ConvexError } from "convex/values"
 import { convexTest } from "convex-test"
 import { describe, expect, test } from "vitest"
 import { api, internal } from "../../_generated/api"
@@ -39,7 +38,7 @@ describe("accounts.getBalance", () => {
   })
 
   describe("combined", () => {
-    test.todo("throws when account does not exist", async () => {
+    test("throws when account does not exist", async () => {
       const t = convexTest(schema)
       const asUser = t.withIdentity(userIdentity)
       await asUser.mutation(internal.users.onboard, {
@@ -59,9 +58,9 @@ describe("accounts.getBalance", () => {
         asUser.query(api.accounts.getBalance, {
           account: "combined",
         })
-        // err-code: 500
-        // "Invariant violation: user must have at least one account. Verify onboarding setup and mutation guards."
-      ).rejects.instanceOf(ConvexError)
+      ).rejects.toThrowError(
+        "Invariant violation: user must have at least one account. Verify onboarding setup and mutation guards."
+      )
     })
 
     test("returns sum of currentBalance across all accounts", async () => {

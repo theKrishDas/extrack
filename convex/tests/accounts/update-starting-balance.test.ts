@@ -118,7 +118,7 @@ describe("accounts.updateStartingBalance", () => {
       ).rejects.toBeInstanceOf(ConvexError)
     })
 
-    test.todo("rejects balance below ACCOUNT_BALANCE_MIN", async () => {
+    test("rejects balance below ACCOUNT_BALANCE_MIN", async () => {
       const t = convexTest(schema)
       const asUser = t.withIdentity(userIdentity)
       await asUser.mutation(internal.users.onboard, {
@@ -131,10 +131,10 @@ describe("accounts.updateStartingBalance", () => {
           id: accountId,
           balance: ACCOUNT_BALANCE_MIN - 1,
         })
-      ).rejects.toBeInstanceOf(ConvexError)
+      ).rejects.toThrowError("Balance is outside the allowed range.")
     })
 
-    test.todo("rejects balance above ACCOUNT_BALANCE_MAX", async () => {
+    test("rejects balance above ACCOUNT_BALANCE_MAX", async () => {
       const t = convexTest(schema)
       const asUser = t.withIdentity(userIdentity)
       await asUser.mutation(internal.users.onboard, {
@@ -147,7 +147,7 @@ describe("accounts.updateStartingBalance", () => {
           id: accountId,
           balance: ACCOUNT_BALANCE_MAX + 1,
         })
-      ).rejects.toBeInstanceOf(ConvexError)
+      ).rejects.toThrowError("Balance is outside the allowed range.")
     })
 
     test("accepts balance of 0", async () => {

@@ -64,7 +64,7 @@ export const add = mutation({
         type: args.type,
         note: args.note,
       }),
-      ctx.runMutation(internal.accounts.applyTransaction, {
+      ctx.runMutation(internal.accounts.adjustBalance, {
         id: args.account,
         amount: args.amount,
         type: args.type,
@@ -90,7 +90,7 @@ export const remove = mutation({
 
     await Promise.all([
       ctx.db.delete(id),
-      ctx.runMutation(internal.accounts.applyTransaction, {
+      ctx.runMutation(internal.accounts.adjustBalance, {
         id: account._id,
         amount,
         type: type === "expense" ? "income" : "expense",

@@ -12,6 +12,7 @@ import type * as accounts from "../accounts.js";
 import type * as categories from "../categories.js";
 import type * as http from "../http.js";
 import type * as summary from "../summary.js";
+import type * as tests_helpers from "../tests/helpers.js";
 import type * as transactions from "../transactions.js";
 import type * as user from "../user.js";
 import type * as users from "../users.js";
@@ -28,6 +29,7 @@ declare const fullApi: ApiFromModules<{
   categories: typeof categories;
   http: typeof http;
   summary: typeof summary;
+  "tests/helpers": typeof tests_helpers;
   transactions: typeof transactions;
   user: typeof user;
   users: typeof users;
