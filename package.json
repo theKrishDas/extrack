@@ -14,7 +14,12 @@
     "convex:sync": "convex dev --until-success",
     "convex:init": "convex dev --configure --until-success",
     "clean:dev": "bun x rimraf .next && next dev --turbopack",
-    "clean:build": "bun x rimraf .next && next build"
+    "clean:build": "bun x rimraf .next && next build",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:ui": "vitest --ui",
+    "test:debug": "vitest --inspect-brk --no-file-parallelism",
+    "test:coverage": "vitest run --coverage --coverage.reporter=text"
   },
   "dependencies": {
     "@ark-ui/react": "^5.31.0",
@@ -53,12 +58,17 @@
   },
   "devDependencies": {
     "@biomejs/biome": "2.3.15",
+    "@edge-runtime/vm": "^5.0.0",
     "@iconify/react": "^6.0.2",
     "@types/node": "^20.19.33",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
+    "@vitest/coverage-v8": "^4.0.18",
+    "@vitest/ui": "^4.0.18",
+    "convex-test": "^0.0.41",
     "react-icons": "^5.5.0",
     "typescript": "^5.9.3",
-    "ultracite": "7.2.0"
+    "ultracite": "7.2.0",
+    "vitest": "^4.0.18"
   }
 }
