@@ -37,9 +37,9 @@ export default defineSchema({
     is_default: v.boolean(),
     name: v.string(),
     startingBalance: v.number(),
-    currentBalance: v.number(),
     is_active: v.boolean(),
     icon: v.string(),
+    netFlow: v.number(),
   })
     .index("by_owner", ["ownerId"])
     .index("by_name", ["ownerId", "name"])

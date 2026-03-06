@@ -37,7 +37,7 @@ export const onboard = internalMutation({
         ownerId: userId,
         name: account.name,
         startingBalance: account.startingBalance,
-        currentBalance: account.startingBalance,
+        netFlow: 0,
         is_active: true,
         is_default: account.is_default,
         icon: account.icon,

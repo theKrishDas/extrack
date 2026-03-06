@@ -7,7 +7,6 @@ import {
   TRANSACTION_AMOUNT_MIN,
 } from "#lib/constants/constraints"
 import { transactionTypes } from "../src/lib/constants/transaction-types"
-import { internal } from "./_generated/api"
 import { internalMutation, mutation, query } from "./_generated/server"
 import { getCurrentUserOrThrow } from "./utils"
 
@@ -152,7 +151,7 @@ export const add = mutation({
       ownerId: user.ownerId,
       name: accountName,
       startingBalance: balance,
-      currentBalance: balance,
+      netFlow: 0,
       is_active: true,
       is_default: false,
       icon,
@@ -248,10 +247,7 @@ export const update = mutation({
         })
     }
 
-    await ctx.db.patch(accountId, {
-      name: accountName,
-      icon,
-    })
+    await ctx.db.patch(accountId, { name: accountName, icon })
 
     return accountId
   },
@@ -394,6 +390,7 @@ export const setDefault = mutation({
  * @returns The account ID, previous balance, and updated balance.
  * @throws If the account is not found.
  */
+// TODO: rename to applyTransactionFlow
 export const adjustBalance = internalMutation({
   args: {
     id: v.id("accounts"),
@@ -422,15 +419,16 @@ export const adjustBalance = internalMutation({
         context: { accountId },
       })
 
-    const { currentBalance: prevBalance } = existing
+    const previousBalance = existing.startingBalance + existing.netFlow
 
     // Apply the amount as positive (income) or negative (expense).
     const direction = type === "expense" ? -1 : 1
-    const newBalance = prevBalance + amount * direction
+    const newNetFlow = existing.netFlow + amount * direction
+    const newBalance = existing.startingBalance + newNetFlow
 
-    await ctx.db.patch(accountId, { currentBalance: newBalance })
+    await ctx.db.patch(accountId, { netFlow: newNetFlow })
 
-    return { id: accountId, prevBalance, balance: newBalance }
+    return { id: accountId, balance: newBalance, previousBalance }
   },
 })
 
@@ -540,10 +538,6 @@ export const updateCurrentBalance = mutation({
 
     await ctx.db.patch(accountId, { startingBalance: newBalance })
 
-    // Reconcile current balance against all transactions.
-    // Awaited to ensure both updates succeed or fail together.
-    await ctx.runMutation(internal.accounts.syncBalance, { account: accountId })
-
     return accountId
   },
 })
@@ -559,6 +553,7 @@ export const updateCurrentBalance = mutation({
  * @returns The starting and newly reconciled current balance.
  * @throws If the account is not found.
  */
+// TODO: rename this mutation
 export const syncBalance = internalMutation({
   args: { account: v.id("accounts") },
   handler: async (ctx, { account: accountId }) => {
@@ -582,22 +577,22 @@ export const syncBalance = internalMutation({
       // skip if no transaction has been recorded
       return {
         startingBalance: account.startingBalance,
-        currentBalance: account.currentBalance,
+        netFlow: account.netFlow,
       }
     }
 
     // Convert each transaction to a signed amount (income positive, expense negative),
     // then sum to get the net change since the starting balance.
-    const net = transactions
-      .map((t) => t.amount * (t.type === "expense" ? -1 : 1))
-      .reduce((sum, a) => sum + a, 0)
+    const net = transactions.reduce((sum, t) => {
+      const direction = t.type === "expense" ? -1 : 1
+      return sum + t.amount * direction
+    }, 0)
 
-    const newBalance = account.startingBalance + net
-    await ctx.db.patch(account._id, { currentBalance: newBalance })
+    await ctx.db.patch(account._id, { netFlow: net })
 
     return {
       startingBalance: account.startingBalance,
-      currentBalance: newBalance,
+      netFlow: net,
     }
   },
 })
@@ -635,7 +630,7 @@ export const getBalance = query({
           },
         })
 
-      return accounts.reduce((sum, a) => sum + a.currentBalance, 0)
+      return accounts.reduce((sum, a) => sum + a.startingBalance + a.netFlow, 0)
     }
 
     const relevantAccount = await ctx.db.get(accountId)
@@ -663,6 +658,6 @@ export const getBalance = query({
         },
       })
 
-    return relevantAccount.currentBalance
+    return relevantAccount.startingBalance + relevantAccount.netFlow
   },
 })
