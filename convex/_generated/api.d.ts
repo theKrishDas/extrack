@@ -11,6 +11,7 @@
 import type * as accounts from "../accounts.js";
 import type * as categories from "../categories.js";
 import type * as http from "../http.js";
+import type * as lib_doc from "../lib/doc.js";
 import type * as summary from "../summary.js";
 import type * as tests_helpers from "../tests/helpers.js";
 import type * as transactions from "../transactions.js";
@@ -28,6 +29,7 @@ declare const fullApi: ApiFromModules<{
   accounts: typeof accounts;
   categories: typeof categories;
   http: typeof http;
+  "lib/doc": typeof lib_doc;
   summary: typeof summary;
   "tests/helpers": typeof tests_helpers;
   transactions: typeof transactions;
