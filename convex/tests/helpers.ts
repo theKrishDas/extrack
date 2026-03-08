@@ -31,7 +31,7 @@ export function seedAccount(
       is_default: false,
       name: opts.name ?? "My Wallet",
       startingBalance,
-      currentBalance: opts.currentBalance ?? startingBalance,
+      netFlow: 0,
       icon: "X",
     })
   })
@@ -97,7 +97,7 @@ export function getDeletedAccountId(t: TestConvex<typeof schema>) {
       is_default: false,
       name: "Temp",
       startingBalance: 0,
-      currentBalance: 0,
+      netFlow: 0,
       icon: "X",
     })
     await ctx.db.delete(id)
