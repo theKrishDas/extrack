@@ -13,7 +13,7 @@ import { Spacer } from "@/components/ui/spacer"
 import { CURRENCY } from "@/lib/date-utils"
 
 export function Accounts() {
-  const accounts = useQuery(api.accounts.getAll)
+  const accounts = useQuery(api.account.list)
 
   if (!accounts) return <Spinner />
 

@@ -15,7 +15,7 @@ import {
 import { type ReactNode, useState } from "react"
 import { Button } from "react-aria-components"
 import { api } from "#/convex/_generated/api"
-import { formatTransactionSummary } from "#/convex/utils"
+import { formatTransactionSummary } from "#/convex/lib/utils"
 import Bar from "@/components/ui/bar"
 import { useCurrencyFormatter } from "@/hooks/useCurrencyFormatter"
 import { cn } from "@/lib/utils"
@@ -42,7 +42,7 @@ const TransactionSummary = () => {
   )
   const [showingSubBreakdown, setShowingSubBreakdown] = useState(false)
   const [activeIndex, setActiveIndex] = useState(todaysIndex)
-  const summary = useQuery(api.summary.getTransactionSummaryByTimeframe, {
+  const summary = useQuery(api.analytics.getFlowSummary, {
     timeframes: timeframesInNumber,
     accounts: [],
   })
@@ -79,9 +79,7 @@ const TransactionSummary = () => {
 const Overview = ({
   summary,
 }: {
-  summary: FunctionReturnType<
-    typeof api.summary.getTransactionSummaryByTimeframe
-  >
+  summary: FunctionReturnType<typeof api.analytics.getFlowSummary>
 }) => {
   const { netFlow, expenseAmount, incomeAmount } = summary.breakdown
   const formatter = useCurrencyFormatter()
@@ -132,9 +130,7 @@ const Bars = ({
   setActive,
   showingSubBreakdown,
 }: {
-  summary: FunctionReturnType<
-    typeof api.summary.getTransactionSummaryByTimeframe
-  >
+  summary: FunctionReturnType<typeof api.analytics.getFlowSummary>
   onBarClick?: (idx: number) => void
   setActive: (idx: number) => boolean
   showingSubBreakdown: boolean

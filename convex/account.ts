@@ -6,13 +6,13 @@ import {
   TRANSACTION_AMOUNT_MAX,
   TRANSACTION_AMOUNT_MIN,
 } from "#lib/constants/constraints"
-import { transactionTypes } from "../src/lib/constants/transaction-types"
+import { transactionTypes } from "#lib/constants/transaction-types"
 import { internalMutation, mutation, query } from "./_generated/server"
-import { getCurrentUserOrThrow } from "./utils"
+import { getCurrentUserOrThrow } from "./lib/utils"
 
 // Uses take() with the known per-user account cap instead of collect()
 // to limit the number of rows read.
-export const getAll = query({
+export const list = query({
   handler: async (ctx) => {
     const user = await getCurrentUserOrThrow(ctx)
     return await ctx.db
@@ -22,7 +22,7 @@ export const getAll = query({
   },
 })
 
-export const getById = query({
+export const get = query({
   args: { id: v.id("accounts") },
   handler: async (ctx, { id }) => {
     return await ctx.db.get(id)
@@ -38,7 +38,7 @@ export const getById = query({
  * @example
  * ```ts
  * export default function AccountInfo({ id }: { id: string }) {
- *   const account = useQuery(api.accounts.getByStringId, { id })
+ *   const account = useQuery(api.account.getByStringId, { id })
  * }
  * ```
  *
@@ -76,7 +76,7 @@ export const getByStringId = query({
  * @throws If the user has reached the account limit, the name is invalid or duplicate,
  * or the balance is out of the allowed range.
  */
-export const add = mutation({
+export const create = mutation({
   args: {
     name: v.string(),
     balance: v.optional(v.number()),
@@ -390,8 +390,7 @@ export const setDefault = mutation({
  * @returns The account ID, previous balance, and updated balance.
  * @throws If the account is not found.
  */
-// TODO: rename to applyTransactionFlow
-export const adjustBalance = internalMutation({
+export const applyTransactionFlow = internalMutation({
   args: {
     id: v.id("accounts"),
     type: v.union(...transactionTypes.map((t) => v.literal(t))),
@@ -444,7 +443,7 @@ export const adjustBalance = internalMutation({
  * @param id - The account to delete.
  * @throws If the account is the user's current default account.
  */
-export const remove = mutation({
+const deleteAccount = mutation({
   args: { id: v.id("accounts") },
   handler: async (ctx, { id: accountId }) => {
     const user = await getCurrentUserOrThrow(ctx)
@@ -484,7 +483,7 @@ export const remove = mutation({
 /**
  * Updates the starting balance for an account and reconciles the current balance.
  *
- * Triggers `syncBalance` internally, which performs a full table scan on transactions.
+ * Triggers `reconcileBalance` internally, which performs a full table scan on transactions.
  *
  * @todo Rate-limit this mutation on the client to avoid excessive reconciliation calls.
  *
@@ -493,7 +492,7 @@ export const remove = mutation({
  * @returns The updated account ID.
  * @throws If the account is not found or does not belong to the authenticated user.
  */
-export const updateCurrentBalance = mutation({
+export const setStartingBalance = mutation({
   args: { id: v.id("accounts"), balance: v.number() },
   handler: async (ctx, { id: accountId, balance: newBalance }) => {
     const user = await getCurrentUserOrThrow(ctx)
@@ -553,8 +552,7 @@ export const updateCurrentBalance = mutation({
  * @returns The starting and newly reconciled current balance.
  * @throws If the account is not found.
  */
-// TODO: rename this mutation
-export const syncBalance = internalMutation({
+export const reconcileBalance = internalMutation({
   args: { account: v.id("accounts") },
   handler: async (ctx, { account: accountId }) => {
     const account = await ctx.db.get(accountId)
@@ -661,3 +659,6 @@ export const getBalance = query({
     return relevantAccount.startingBalance + relevantAccount.netFlow
   },
 })
+
+// DX alias so clients can call `api.account.delete(...)`
+export { deleteAccount as delete }

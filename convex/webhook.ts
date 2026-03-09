@@ -18,7 +18,7 @@ const handleClerkWebhook = httpAction(async (ctx, request) => {
     const userId = event.data.id
     console.log(`Onboarding new user: ${userId}`)
 
-    await ctx.runMutation(internal.users.onboard, { userId })
+    await ctx.runMutation(internal.userOnboarding.onboardUser, { userId })
 
     console.log(`User ${userId} onboarded successfully`)
   }

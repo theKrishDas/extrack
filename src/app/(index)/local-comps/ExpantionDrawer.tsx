@@ -1,6 +1,7 @@
 import { useMutation, useQuery } from "convex/react"
 import type { Dispatch, SetStateAction } from "react"
 import { api } from "#/convex/_generated/api"
+import type { Doc } from "#/convex/_generated/dataModel"
 import { Button } from "@/components/ui/button"
 import { ConfirmButton } from "@/components/ui/confirm-button"
 import {
@@ -12,9 +13,7 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from "@/components/ui/drawer"
-import type { Transaction } from "@/lib/types/transactions"
 import { formatDate } from "@/lib/utils"
-
 import { DataTable, type DataType } from "./DataTable"
 
 export default function ExpantionDrawer({
@@ -24,9 +23,9 @@ export default function ExpantionDrawer({
 }: {
   open: boolean
   setOpen: Dispatch<SetStateAction<boolean>>
-  transaction: Transaction
+  transaction: Doc<"transactions">
 }) {
-  const removeTransaction = useMutation(api.transactions.remove)
+  const removeTransaction = useMutation(api.transaction.delete)
   const {
     amount,
     note,
@@ -35,8 +34,8 @@ export default function ExpantionDrawer({
     category: categoryId,
     account: accountId,
   } = transaction
-  const category = useQuery(api.categories.getById, { id: categoryId })
-  const account = useQuery(api.accounts.getById, { id: accountId })
+  const category = useQuery(api.category.get, { id: categoryId })
+  const account = useQuery(api.account.get, { id: accountId })
 
   const data: DataType = {
     header: ["Key", "value"],

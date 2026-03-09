@@ -17,7 +17,7 @@ export function Form(props: {
   afterSubmit?: (data: NewTransactionSchemaType) => void
 }) {
   const { type, afterSubmit } = props
-  const defaults = useQuery(api.transactions.getFormDefaults, { type })
+  const context = useQuery(api.transaction.getCreateContext, { type })
 
   const formatter = useCurrencyFormatter()
   const form = useAppForm({
@@ -50,10 +50,10 @@ export function Form(props: {
   // useEffect patches only account/category once loaded, so fields like
   // amount and date are immediately interactive.
   useEffect(() => {
-    if (!defaults) return
-    form.setFieldValue("account", defaults.defaults.account)
-    form.setFieldValue("category", defaults.defaults.category)
-  }, [defaults, form])
+    if (!context) return
+    form.setFieldValue("account", context.defaults.account)
+    form.setFieldValue("category", context.defaults.category)
+  }, [context, form])
 
   return (
     <form
@@ -86,13 +86,13 @@ export function Form(props: {
       >
         <form.AppField
           children={(field) => (
-            <field.AccountField accounts={defaults?.accounts} />
+            <field.AccountField accounts={context?.accounts} />
           )}
           name="account"
         />
         <form.AppField
           children={(field) => (
-            <field.CategoryField categories={defaults?.categories} />
+            <field.CategoryField categories={context?.categories} />
           )}
           name="category"
         />

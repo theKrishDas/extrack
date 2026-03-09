@@ -164,8 +164,8 @@ function NoteInput() {
  */
 function DetailsDrawer() {
   const { transactionType: type, form } = useNewTransaction()
-  const availableCategories = useQuery(api.categories.getByType, { type })
-  const availableAccounts = useQuery(api.accounts.getAll)
+  const availableCategories = useQuery(api.category.listByType, { type })
+  const availableAccounts = useQuery(api.account.list)
   const { setValue } = form
 
   useEffect(() => {

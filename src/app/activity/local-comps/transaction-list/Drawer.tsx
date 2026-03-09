@@ -17,7 +17,7 @@ function Comp({
 }: {
   txn:
     | FunctionReturnType<
-        typeof api.transactions.getJoinedPaginated
+        typeof api.transaction.listPaginatedDetailed
       >["page"][number]
     | null
   onClose?: () => void
@@ -25,7 +25,7 @@ function Comp({
   onOpenChange: (o: boolean) => void
 }) {
   const formatter = useCurrencyFormatter()
-  const removeTransaction = useMutation(api.transactions.remove)
+  const removeTransaction = useMutation(api.transaction.delete)
 
   if (!txn) return
 

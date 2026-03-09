@@ -22,7 +22,7 @@ import type { api } from "#/convex/_generated/api";
 import { createPreloadedQueryContext } from "@/lib/convex/context";
 
 export const { Provider: AccountsProvider, useData: useAccounts } =
-  createPreloadedQueryContext<typeof api.accounts.getAll>();
+  createPreloadedQueryContext<typeof api.account.list>();
 ```
 
 ### 2. Preload data in a Server Component
@@ -35,7 +35,7 @@ import { AccountsProvider } from "./context";
 import { AccountsList } from "./AccountsList";
 
 export default async function Page() {
-  const preloaded = await preloadAuthQuery(api.accounts.getAll);
+  const preloaded = await preloadAuthQuery(api.account.list);
 
   return (
     <AccountsProvider preloaded={preloaded}>

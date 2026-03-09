@@ -19,23 +19,23 @@ export function OtherSettings({
   const fmtBalance = formatter.format(account.currentBalance)
 
   const toggleActive = useMutation(
-    api.accounts.toggleActive
+    api.account.toggleActive
   ).withOptimisticUpdate((localStore, { id }) => {
-    const existing = localStore.getQuery(api.accounts.getByStringId, { id })
+    const existing = localStore.getQuery(api.account.getByStringId, { id })
     if (existing) {
       localStore.setQuery(
-        api.accounts.getByStringId,
+        api.account.getByStringId,
         { id },
         { ...existing, is_active: !existing.is_active }
       )
     }
   })
-  const setDefault = useMutation(api.accounts.setDefault).withOptimisticUpdate(
+  const setDefault = useMutation(api.account.setDefault).withOptimisticUpdate(
     (localStore, { id, default: val }) => {
-      const existing = localStore.getQuery(api.accounts.getByStringId, { id })
+      const existing = localStore.getQuery(api.account.getByStringId, { id })
       if (existing) {
         localStore.setQuery(
-          api.accounts.getByStringId,
+          api.account.getByStringId,
           { id },
           { ...existing, is_default: val }
         )

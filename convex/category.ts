@@ -1,11 +1,10 @@
 import { v } from "convex/values"
-
-import { colors } from "../src/lib/constants/colors"
-import { transactionTypes } from "../src/lib/constants/transaction-types"
+import { colors } from "#lib/constants/colors"
+import { transactionTypes } from "#lib/constants/transaction-types"
 import { mutation, query } from "./_generated/server"
-import { getCurrentUserOrThrow } from "./utils"
+import { getCurrentUserOrThrow } from "./lib/utils"
 
-export const getAll = query({
+export const list = query({
   args: {},
   handler: async (ctx) => {
     const user = await getCurrentUserOrThrow(ctx)
@@ -16,7 +15,7 @@ export const getAll = query({
   },
 })
 
-export const getById = query({
+export const get = query({
   args: { id: v.id("categories") },
   handler: async (ctx, { id }) => {
     return await ctx.db
@@ -26,7 +25,7 @@ export const getById = query({
   },
 })
 
-export const getByType = query({
+export const listByType = query({
   args: { type: v.union(...transactionTypes.map((t) => v.literal(t))) },
   handler: async (ctx, { type }) => {
     const user = await getCurrentUserOrThrow(ctx)
@@ -39,7 +38,7 @@ export const getByType = query({
   },
 })
 
-export const add = mutation({
+export const create = mutation({
   args: {
     name: v.string(),
     color: v.union(...colors.map((c) => v.literal(c))),
@@ -86,7 +85,7 @@ export const update = mutation({
   },
 })
 
-export const remove = mutation({
+const deleteCategory = mutation({
   args: { id: v.id("categories") },
   handler: async (ctx, { id: categoryId }) => {
     const user = await getCurrentUserOrThrow(ctx)
@@ -106,3 +105,6 @@ export const remove = mutation({
     ])
   },
 })
+
+// DX alias so clients can call `api.category.delete(...)`
+export { deleteCategory as delete }

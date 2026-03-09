@@ -18,7 +18,7 @@ import Note from "./Note"
 const Form = ({ afterSubmit }: { afterSubmit?: () => void }) => {
   const { form, transactionType } = useNewTransaction()
   const { handleSubmit } = form
-  const addTransaction = useMutation(api.transactions.add)
+  const addTransaction = useMutation(api.transaction.create)
 
   const onSubmit = (data: NewTransactionSchemaType) => {
     const { amount, category, note, account } = data

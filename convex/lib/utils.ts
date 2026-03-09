@@ -1,11 +1,6 @@
 import { ConvexError } from "convex/values"
-import type { Doc } from "./_generated/dataModel"
-import type { MutationCtx, QueryCtx } from "./_generated/server"
-
-type FormatTransactionSummaryType = {
-  transactions: Doc<"transactions">[]
-  timeframe: { start: number; end: number }
-}
+import type { Doc } from "../_generated/dataModel"
+import type { MutationCtx, QueryCtx } from "../_generated/server"
 
 export async function getCurrentUserOrThrow(ctx: QueryCtx | MutationCtx) {
   const identity = await ctx.auth.getUserIdentity()
@@ -19,6 +14,11 @@ export async function getCurrentUserOrThrow(ctx: QueryCtx | MutationCtx) {
   if (!user) throw new ConvexError({ code: "USER_NOT_STORED" })
 
   return user
+}
+
+type FormatTransactionSummaryType = {
+  transactions: Doc<"transactions">[]
+  timeframe: { start: number; end: number }
 }
 
 function formatTransactionSummary(args: FormatTransactionSummaryType[]) {

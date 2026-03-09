@@ -27,7 +27,7 @@ const AccountSelect = () => {
   const {
     form: { control, setValue },
   } = useNewTransaction()
-  const accounts = useQuery(api.accounts.getAll)
+  const accounts = useQuery(api.account.list)
   const accountFromLocalStorage = getLastUsedAccount()
 
   useEffect(() => {

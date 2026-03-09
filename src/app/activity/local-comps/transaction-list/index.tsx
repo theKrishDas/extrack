@@ -28,7 +28,7 @@ export function TransactionList() {
     isLoading,
     status,
   } = usePaginatedQuery(
-    api.transactions.getJoinedPaginated,
+    api.transaction.listPaginatedDetailed,
     {},
     { initialNumItems: 12 }
   )

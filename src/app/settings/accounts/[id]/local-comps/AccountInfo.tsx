@@ -19,16 +19,16 @@ import { IconPicker } from "./IconPicker"
 import { OtherSettings } from "./OtherSettings"
 
 export default function AccountInfo({ id }: { id: string }) {
-  const account = useQuery(api.accounts.getByStringId, { id })
+  const account = useQuery(api.account.getByStringId, { id })
   const editable = !!account
 
-  const update = useMutation(api.accounts.update).withOptimisticUpdate(
+  const update = useMutation(api.account.update).withOptimisticUpdate(
     (localStore, args) => {
       const { id, ...rest } = args
-      const existing = localStore.getQuery(api.accounts.getByStringId, { id })
+      const existing = localStore.getQuery(api.account.getByStringId, { id })
       if (existing) {
         localStore.setQuery(
-          api.accounts.getByStringId,
+          api.account.getByStringId,
           { id },
           { ...existing, ...rest }
         )

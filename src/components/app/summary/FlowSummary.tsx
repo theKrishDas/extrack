@@ -40,7 +40,7 @@ const FlowSummary = () => {
   /**
    * Convex call to get the summary
    */
-  const summary = useQuery(api.summary.getTransactionSummaryByTimeframe, {
+  const summary = useQuery(api.analytics.getFlowSummary, {
     timeframes: timeframesInNumber,
     accounts: [],
   })
@@ -56,7 +56,7 @@ const FlowSummary = () => {
 const Summary = ({
   data,
 }: {
-  data: FunctionReturnType<typeof api.summary.getTransactionSummaryByTimeframe>
+  data: FunctionReturnType<typeof api.analytics.getFlowSummary>
 }) => {
   const [activeIndex, setActiveIndex] = useState<number | undefined>(undefined)
   const isDaySelected = activeIndex !== undefined

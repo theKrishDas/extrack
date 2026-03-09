@@ -43,7 +43,7 @@ export function Provider({
     resolver: zodResolver(newTransactionSchema),
   })
 
-  const addTransaction = useMutation(api.transactions.add)
+  const addTransaction = useMutation(api.transaction.create)
 
   const onSubmit = (data: NewTransactionSchemaType) => {
     const { amount, category, note, account } = data

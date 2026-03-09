@@ -30,7 +30,7 @@ const CategorySelect = () => {
     transactionType,
   } = useNewTransaction()
 
-  const availableCategories = useQuery(api.categories.getByType, {
+  const availableCategories = useQuery(api.category.listByType, {
     type: transactionType,
   })
   const categoryFromLocalStorage = getLastUsedCategory(transactionType)

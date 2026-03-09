@@ -22,7 +22,7 @@ import {
 import { cn, sanitizeName } from "@/lib/utils"
 
 export function Form({ afterSumbmit }: { afterSumbmit?: () => void }) {
-  const create = useMutation(api.accounts.add)
+  const create = useMutation(api.account.create)
   const form = useForm<NewAccountSchemaType>({
     defaultValues: {
       name: undefined,

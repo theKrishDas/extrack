@@ -1,9 +1,9 @@
 import { v } from "convex/values"
 
 import { query } from "./_generated/server"
-import { formatTransactionSummary, getCurrentUserOrThrow } from "./utils"
+import { formatTransactionSummary, getCurrentUserOrThrow } from "./lib/utils"
 
-export const getTransactionSummaryByTimeframe = query({
+export const getFlowSummary = query({
   args: {
     accounts: v.array(v.id("accounts")),
     timeframes: v.union(

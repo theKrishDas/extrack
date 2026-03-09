@@ -8,16 +8,15 @@
  * @module
  */
 
-import type * as accounts from "../accounts.js";
-import type * as categories from "../categories.js";
-import type * as http from "../http.js";
+import type * as account from "../account.js";
+import type * as analytics from "../analytics.js";
+import type * as category from "../category.js";
 import type * as lib_doc from "../lib/doc.js";
-import type * as summary from "../summary.js";
+import type * as lib_utils from "../lib/utils.js";
 import type * as tests_helpers from "../tests/helpers.js";
-import type * as transactions from "../transactions.js";
-import type * as user from "../user.js";
-import type * as users from "../users.js";
-import type * as utils from "../utils.js";
+import type * as transaction from "../transaction.js";
+import type * as userOnboarding from "../userOnboarding.js";
+import type * as webhook from "../webhook.js";
 
 import type {
   ApiFromModules,
@@ -26,16 +25,15 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
-  accounts: typeof accounts;
-  categories: typeof categories;
-  http: typeof http;
+  account: typeof account;
+  analytics: typeof analytics;
+  category: typeof category;
   "lib/doc": typeof lib_doc;
-  summary: typeof summary;
+  "lib/utils": typeof lib_utils;
   "tests/helpers": typeof tests_helpers;
-  transactions: typeof transactions;
-  user: typeof user;
-  users: typeof users;
-  utils: typeof utils;
+  transaction: typeof transaction;
+  userOnboarding: typeof userOnboarding;
+  webhook: typeof webhook;
 }>;
 
 /**

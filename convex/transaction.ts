@@ -1,14 +1,13 @@
 import { paginationOptsValidator } from "convex/server"
 import { ConvexError, v } from "convex/values"
 import { stream } from "convex-helpers/server/stream"
-
-import { transactionTypes } from "../src/lib/constants/transaction-types"
+import { transactionTypes } from "#lib/constants/transaction-types"
 import { internal } from "./_generated/api"
 import { mutation, query } from "./_generated/server"
+import { getCurrentUserOrThrow } from "./lib/utils"
 import schema from "./schema"
-import { getCurrentUserOrThrow } from "./utils"
 
-export const getAll = query({
+export const list = query({
   args: {},
   handler: async (ctx) => {
     const user = await getCurrentUserOrThrow(ctx)
@@ -21,12 +20,12 @@ export const getAll = query({
   },
 })
 
-export const getById = query({
+export const get = query({
   args: { id: v.id("transactions") },
   handler: async (ctx, { id }) => await ctx.db.get(id),
 })
 
-export const add = mutation({
+export const create = mutation({
   args: {
     amount: v.number(),
     note: v.optional(v.string()),
@@ -64,7 +63,7 @@ export const add = mutation({
         type: args.type,
         note: args.note,
       }),
-      ctx.runMutation(internal.accounts.adjustBalance, {
+      ctx.runMutation(internal.account.applyTransactionFlow, {
         id: args.account,
         amount: args.amount,
         type: args.type,
@@ -73,7 +72,7 @@ export const add = mutation({
   },
 })
 
-export const remove = mutation({
+const deleteTransaction = mutation({
   args: { id: v.id("transactions") },
   handler: async (ctx, { id }) => {
     const transaction = await ctx.db.get(id)
@@ -90,7 +89,7 @@ export const remove = mutation({
 
     await Promise.all([
       ctx.db.delete(id),
-      ctx.runMutation(internal.accounts.adjustBalance, {
+      ctx.runMutation(internal.account.applyTransactionFlow, {
         id: account._id,
         amount,
         type: type === "expense" ? "income" : "expense",
@@ -101,7 +100,7 @@ export const remove = mutation({
   },
 })
 
-export const getBetweenTimeframe = query({
+export const listByTimeframe = query({
   args: { start: v.number(), end: v.number() },
   handler: async (ctx, { start, end }) => {
     const user = await getCurrentUserOrThrow(ctx)
@@ -115,7 +114,7 @@ export const getBetweenTimeframe = query({
   },
 })
 
-export const getJoinedPaginated = query({
+export const listPaginatedDetailed = query({
   args: { paginationOpts: paginationOptsValidator },
   handler: async (ctx, { paginationOpts }) => {
     const user = await getCurrentUserOrThrow(ctx)
@@ -149,7 +148,7 @@ export const getJoinedPaginated = query({
   },
 })
 
-export const getFormDefaults = query({
+export const getCreateContext = query({
   args: { type: v.union(...transactionTypes.map((t) => v.literal(t))) },
   handler: async (ctx, { type }) => {
     const user = await getCurrentUserOrThrow(ctx)
@@ -210,3 +209,6 @@ export const getFormDefaults = query({
     }
   },
 })
+
+// DX alias so clients can call `api.transaction.delete(...)`
+export { deleteTransaction as delete }

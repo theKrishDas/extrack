@@ -31,7 +31,7 @@ import {
 import { cn, sanitizeName } from "@/lib/utils"
 
 export function Categories() {
-  const categories = useQuery(api.categories.getAll)
+  const categories = useQuery(api.category.list)
 
   if (!categories) return <Spinner />
 
@@ -101,7 +101,7 @@ function Item({ category }: { category: Doc<"categories"> }) {
 
 function CategoryActions({ category }: { category: Doc<"categories"> }) {
   const [open, setOpen] = useState(false)
-  const deleteCategory = useMutation(api.categories.remove)
+  const deleteCategory = useMutation(api.category.delete)
   const handleDelete = () => {
     deleteCategory({ id: category._id })
     setOpen(false)
@@ -140,7 +140,7 @@ function EditCategory({
   category: Doc<"categories">
   afterEdit?: () => void
 }) {
-  const update = useMutation(api.categories.update)
+  const update = useMutation(api.category.update)
   const form = useForm<NewCategorySchemaType>({
     defaultValues: {
       type: category.type,

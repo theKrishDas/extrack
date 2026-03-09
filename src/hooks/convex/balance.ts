@@ -28,20 +28,20 @@ export const getDateRange = (date: number, end?: number) => {
 export const useBalanceOn = ({
   date,
   account,
-}: FunctionArgs<typeof api.accounts.getBalance> & {
+}: FunctionArgs<typeof api.account.getBalance> & {
   date: number
 }): { balance: number; currentBalance: number } | undefined => {
   // Define the date range from the given historical date up to today.
   const { start, end } = getDateRange(date)
 
   // Fetch all transactions that occurred within the calculated date range from Convex.
-  const transactionsBetween = useQuery(api.transactions.getBetweenTimeframe, {
+  const transactionsBetween = useQuery(api.transaction.listByTimeframe, {
     start,
     end,
   })
 
   // Fetch the current total balance across all accounts from Convex.
-  const balance = useQuery(api.accounts.getBalance, { account })
+  const balance = useQuery(api.account.getBalance, { account })
 
   // If either transactions or the current balance are still loading, return undefined.
   if (transactionsBetween === undefined || balance === undefined) {

@@ -28,7 +28,7 @@ export default function TransactionsList() {
     loadMore,
     isLoading,
   } = usePaginatedQuery(
-    api.transactions.getJoinedPaginated,
+    api.transaction.listPaginatedDetailed,
     {},
     { initialNumItems: 12 }
   )
@@ -86,7 +86,7 @@ export default function TransactionsList() {
             ],
           }
           const [open, setOpen] = useState(false)
-          const removeTransaction = useMutation(api.transactions.remove)
+          const removeTransaction = useMutation(api.transaction.delete)
 
           return (
             <Drawer.Root onOpenChange={setOpen} open={open}>

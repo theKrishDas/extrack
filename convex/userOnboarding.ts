@@ -15,7 +15,7 @@ import { internalMutation } from "./_generated/server"
  *
  * The function is idempotent - if the user already has accounts, it skips onboarding.
  */
-export const onboard = internalMutation({
+export const onboardUser = internalMutation({
   args: { userId: v.string() },
   handler: async (ctx, { userId }) => {
     // Check if user already has accounts to prevent duplicate onboarding
