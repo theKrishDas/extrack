@@ -198,7 +198,7 @@ export const update = mutation({
         })
     }
 
-    await ctx.db.patch(accountId, { name: accountName, icon })
+    await ctx.db.patch("accounts", accountId, { name: accountName, icon })
 
     return accountId
   },
@@ -231,7 +231,7 @@ export const toggleActive = mutation({
         message: "Default account must remain active.",
       })
 
-    await ctx.db.patch(accountId, { is_active: nextState })
+    await ctx.db.patch("accounts", accountId, { is_active: nextState })
 
     return accountId
   },
@@ -263,7 +263,7 @@ export const setDefault = mutation({
         message: "Cannot set an inactive account as default.",
       })
 
-    await ctx.db.patch(user._id, { defaultAccount: account._id })
+    await ctx.db.patch("user", user._id, { defaultAccount: account._id })
 
     return accountId
   },
@@ -309,7 +309,7 @@ export const applyTransactionFlow = internalMutation({
     const newNetFlow = account.netFlow + amount * direction
     const newBalance = account.startingBalance + newNetFlow
 
-    await ctx.db.patch(accountId, { netFlow: newNetFlow })
+    await ctx.db.patch("accounts", accountId, { netFlow: newNetFlow })
 
     return { id: accountId, balance: newBalance, previousBalance }
   },
@@ -353,8 +353,8 @@ const deleteAccount = mutation({
       .collect()
 
     await Promise.all([
-      ...transactions.map((txn) => ctx.db.delete(txn._id)),
-      ctx.db.delete(accountId),
+      ...transactions.map((txn) => ctx.db.delete("transactions", txn._id)),
+      ctx.db.delete("accounts", accountId),
     ])
   },
 })
@@ -385,7 +385,7 @@ export const setStartingBalance = mutation({
 
     await getDoc(ctx.db, accountId).mustBeOwnedBy(user.ownerId)
 
-    await ctx.db.patch(accountId, { startingBalance: newBalance })
+    await ctx.db.patch("accounts", accountId, { startingBalance: newBalance })
 
     return accountId
   },
@@ -402,7 +402,7 @@ export const setStartingBalance = mutation({
  * @returns The starting and newly reconciled current balance.
  * @throws If the account is not found.
  */
-export const reconcileBalance = internalMutation({
+export const recomputeNetFlow = internalMutation({
   args: { account: v.id("accounts") },
   handler: async (ctx, { account: accountId }) => {
     const account = await getDoc(ctx.db, accountId).mustExist()
@@ -430,7 +430,7 @@ export const reconcileBalance = internalMutation({
       return sum + t.amount * direction
     }, 0)
 
-    await ctx.db.patch(account._id, { netFlow: net })
+    await ctx.db.patch("accounts", account._id, { netFlow: net })
 
     return {
       startingBalance: account.startingBalance,
@@ -442,16 +442,16 @@ export const reconcileBalance = internalMutation({
 /**
  * Returns the balance for a given account or the combined balance across all accounts of a user.
  *
- * @param account - `"combined"` to sum all accounts, or an account ID for a specific one.
+ * @param account - `"*"` to sum all accounts, or an account ID for a specific one.
  * @returns The balance as a number.
  * @throws If the account is not found or does not belong to the authenticated user.
  */
 export const getBalance = query({
-  args: { account: v.union(v.literal("combined"), v.id("accounts")) },
+  args: { account: v.union(v.literal("*"), v.id("accounts")) },
   handler: async (ctx, { account: accountId }) => {
     const user = await getCurrentUserOrThrow(ctx)
 
-    if (accountId === "combined") {
+    if (accountId === "*") {
       // Sum balances across all accounts for this user.
       // Uses take() with the known per-user account cap instead of collect()
       // to limit the number of rows read.

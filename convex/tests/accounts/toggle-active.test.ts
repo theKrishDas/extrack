@@ -63,7 +63,7 @@ function getDeletedAccountId(t: TestConvex<typeof schema>, ownerId: string) {
       netFlow: 0,
       icon: "X",
     })
-    await ctx.db.delete(id)
+    await ctx.db.delete("accounts", id)
     return id
   })
 }
@@ -207,7 +207,7 @@ describe("accounts.toggleActive", () => {
           throw new Error("User has no defaultAccountId")
 
         const id = user.defaultAccount
-        await ctx.db.patch(id, { is_active: false })
+        await ctx.db.patch("accounts", id, { is_active: false })
         return id
       })
 

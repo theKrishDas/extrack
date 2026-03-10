@@ -22,7 +22,7 @@ describe("accounts.getBalance", () => {
       const t = convexTest(schema)
 
       await expect(
-        t.query(api.account.getBalance, { account: "combined" })
+        t.query(api.account.getBalance, { account: "*" })
       ).rejects.toThrowError("UNAUTHENTICATED")
     })
 
@@ -32,7 +32,7 @@ describe("accounts.getBalance", () => {
       await expect(
         t
           .withIdentity(userIdentity)
-          .query(api.account.getBalance, { account: "combined" })
+          .query(api.account.getBalance, { account: "*" })
       ).rejects.toThrowError("USER_NOT_STORED")
     })
   })
@@ -51,11 +51,13 @@ describe("accounts.getBalance", () => {
           .query("accounts")
           .withIndex("by_owner", (q) => q.eq("ownerId", userIdentity.subject))
           .collect()
-        await Promise.all(accounts.map((a) => ctx.db.delete(a._id)))
+        await Promise.all(accounts.map((a) => ctx.db.delete("accounts", a._id)))
       })
 
-      expect(
-        asUser.query(api.account.getBalance, { account: "combined" })
+      await expect(
+        asUser.query(api.account.getBalance, {
+          account: "*",
+        })
       ).rejects.toThrowError(
         "Internal invariant violated: user has no accounts"
       )
@@ -87,7 +89,7 @@ describe("accounts.getBalance", () => {
           .query("accounts")
           .withIndex("by_owner", (q) => q.eq("ownerId", userIdentity.subject))
           .collect()
-        await Promise.all(accounts.map((a) => ctx.db.delete(a._id)))
+        await Promise.all(accounts.map((a) => ctx.db.delete("accounts", a._id)))
       })
 
       await seedAccount(t, {
@@ -107,7 +109,7 @@ describe("accounts.getBalance", () => {
       })
 
       const result = await asUser.query(api.account.getBalance, {
-        account: "combined",
+        account: "*",
       })
       expect(result).toBe(4000)
     })
@@ -130,7 +132,7 @@ describe("accounts.getBalance", () => {
           .query("accounts")
           .withIndex("by_owner", (q) => q.eq("ownerId", userIdentity.subject))
           .collect()
-        await Promise.all(accounts.map((a) => ctx.db.delete(a._id)))
+        await Promise.all(accounts.map((a) => ctx.db.delete("accounts", a._id)))
       })
 
       await seedAccount(t, {
@@ -146,7 +148,7 @@ describe("accounts.getBalance", () => {
 
       const result = await t
         .withIdentity(userIdentity)
-        .query(api.account.getBalance, { account: "combined" })
+        .query(api.account.getBalance, { account: "*" })
       expect(result).toBe(1000)
     })
   })

@@ -10,7 +10,7 @@ import {
   seedTransaction,
 } from "../helpers"
 
-describe("accounts.reconcileBalance", () => {
+describe("accounts.recomputeNetFlow", () => {
   // -------------------------------------------------------------------------
   // Account existence
   // -------------------------------------------------------------------------
@@ -21,7 +21,7 @@ describe("accounts.reconcileBalance", () => {
       const deletedId = await getDeletedAccountId(t)
 
       expect(
-        t.mutation(internal.account.reconcileBalance, { account: deletedId })
+        t.mutation(internal.account.recomputeNetFlow, { account: deletedId })
       ).rejects.toThrowError("DOCUMENT_NOT_FOUND")
     })
   })
@@ -38,7 +38,7 @@ describe("accounts.reconcileBalance", () => {
         netFlow: 0,
       })
 
-      const result = await t.mutation(internal.account.reconcileBalance, {
+      const result = await t.mutation(internal.account.recomputeNetFlow, {
         account: accountId,
       })
 
@@ -52,7 +52,7 @@ describe("accounts.reconcileBalance", () => {
         netFlow: 50, // intentionally stale
       })
 
-      await t.mutation(internal.account.reconcileBalance, {
+      await t.mutation(internal.account.recomputeNetFlow, {
         account: accountId,
       })
 
@@ -85,7 +85,7 @@ describe("accounts.reconcileBalance", () => {
       expect(before.netFlow).toEqual(0)
       expect(before.startingBalance + before.netFlow).toEqual(500)
 
-      const result = await t.mutation(internal.account.reconcileBalance, {
+      const result = await t.mutation(internal.account.recomputeNetFlow, {
         account: accountId,
       })
 
@@ -106,7 +106,7 @@ describe("accounts.reconcileBalance", () => {
         type: "expense",
       })
 
-      const result = await t.mutation(internal.account.reconcileBalance, {
+      const result = await t.mutation(internal.account.recomputeNetFlow, {
         account: accountId,
       })
 
@@ -146,7 +146,7 @@ describe("accounts.reconcileBalance", () => {
         type: "income",
       })
 
-      const result = await t.mutation(internal.account.reconcileBalance, {
+      const result = await t.mutation(internal.account.recomputeNetFlow, {
         account: accountId,
       })
 
@@ -169,7 +169,7 @@ describe("accounts.reconcileBalance", () => {
         type: "expense",
       })
 
-      const result = await t.mutation(internal.account.reconcileBalance, {
+      const result = await t.mutation(internal.account.recomputeNetFlow, {
         account: accountId,
       })
 
@@ -193,7 +193,7 @@ describe("accounts.reconcileBalance", () => {
         type: "income",
       })
 
-      await t.mutation(internal.account.reconcileBalance, {
+      await t.mutation(internal.account.recomputeNetFlow, {
         account: accountId,
       })
 
@@ -221,7 +221,7 @@ describe("accounts.reconcileBalance", () => {
         type: "income",
       })
 
-      const result = await t.mutation(internal.account.reconcileBalance, {
+      const result = await t.mutation(internal.account.recomputeNetFlow, {
         account: accountA,
       })
 
@@ -253,7 +253,7 @@ describe("accounts.reconcileBalance", () => {
         })
       }
 
-      const result = await t.mutation(internal.account.reconcileBalance, {
+      const result = await t.mutation(internal.account.recomputeNetFlow, {
         account: accountId,
       })
 

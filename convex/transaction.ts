@@ -80,7 +80,7 @@ const deleteTransaction = mutation({
     const { amount, type } = transaction
 
     await Promise.all([
-      ctx.db.delete(id),
+      ctx.db.delete("transactions", id),
       ctx.runMutation(internal.account.applyTransactionFlow, {
         id: account._id,
         amount,

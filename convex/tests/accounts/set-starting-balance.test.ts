@@ -272,7 +272,7 @@ describe("accounts.setStartingBalance", () => {
       expect(updated.startingBalance + updated.netFlow).toBe(1000)
     })
 
-    test("manual reconciliation via reconcileBalance works after setStartingBalance", async () => {
+    test("manual reconciliation via recomputeNetFlow works after setStartingBalance", async () => {
       const t = convexTest(schema)
       const asUser = t.withIdentity(userIdentity)
       await asUser.mutation(internal.userOnboarding.onboardUser, {
@@ -305,7 +305,7 @@ describe("accounts.setStartingBalance", () => {
       })
 
       // Manually reconcile
-      await t.mutation(internal.account.reconcileBalance, {
+      await t.mutation(internal.account.recomputeNetFlow, {
         account: accountId,
       })
 
@@ -372,7 +372,7 @@ describe("accounts.setStartingBalance", () => {
       })
 
       // Manually reconcile to update netFlow
-      await t.mutation(internal.account.reconcileBalance, {
+      await t.mutation(internal.account.recomputeNetFlow, {
         account: accountId,
       })
 

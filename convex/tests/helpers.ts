@@ -122,7 +122,7 @@ export function getDeletedAccountId(t: TestConvex<typeof schema>) {
       netFlow: 0,
       icon: "X",
     })
-    await ctx.db.delete(id)
+    await ctx.db.delete("accounts", id)
     return id
   })
 }

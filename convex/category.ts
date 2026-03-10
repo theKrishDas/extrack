@@ -85,7 +85,7 @@ export const update = mutation({
     icon: v.optional(v.string()),
   },
   handler: async (ctx, { id, ...rest }) => {
-    await ctx.db.patch(id, { ...rest })
+    await ctx.db.patch("categories", id, { ...rest })
   },
 })
 
@@ -106,8 +106,8 @@ const deleteCategory = mutation({
       .collect()
 
     await Promise.all([
-      ...transactions.map((txn) => ctx.db.delete(txn._id)),
-      ctx.db.delete(categoryId),
+      ...transactions.map((txn) => ctx.db.delete("transactions", txn._id)),
+      ctx.db.delete("categories", categoryId),
     ])
   },
 })

@@ -11,7 +11,7 @@ const Balance = () => {
   const date = startOfMonth(subMonths(new Date(), 0))
   const balances = useBalanceOn({
     date: date.getTime(),
-    account: "combined",
+    account: "*",
   })
   if (!balances) return <p>Loading balance...</p>
 
