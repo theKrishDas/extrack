@@ -110,7 +110,7 @@ describe("getDoc", () => {
       expect(doc.ownerId).toEqual("user_clerk_123")
     })
 
-    it("throws FORBIDDEN when ownerId does not match", async () => {
+    it("throws DOCUMENT_NOT_OWNED when ownerId does not match", async () => {
       const t = convexTest(schema)
       const accountId = await seedAccount(t, { ownerId: "user_clerk_123" })
 
@@ -118,8 +118,8 @@ describe("getDoc", () => {
         getDoc(ctx.db, accountId).mustBeOwnedBy("user_clerk_456")
       )
 
-      await expect(result).rejects.toBeInstanceOf(ConvexError)
-      await expect(result).rejects.toThrowError(ErrorCode.FORBIDDEN)
+      expect(result).rejects.toBeInstanceOf(ConvexError)
+      expect(result).rejects.toThrowError("DOCUMENT_NOT_OWNED")
     })
 
     it("throws NOT_FOUND when document does not exist, before checking ownership", async () => {

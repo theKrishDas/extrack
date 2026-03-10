@@ -54,12 +54,10 @@ describe("accounts.getBalance", () => {
         await Promise.all(accounts.map((a) => ctx.db.delete(a._id)))
       })
 
-      await expect(
-        asUser.query(api.account.getBalance, {
-          account: "combined",
-        })
+      expect(
+        asUser.query(api.account.getBalance, { account: "combined" })
       ).rejects.toThrowError(
-        "Invariant violation: user must have at least one account. Verify onboarding setup and mutation guards."
+        "Internal invariant violated: user has no accounts"
       )
     })
 
@@ -72,9 +70,9 @@ describe("accounts.getBalance", () => {
 
       const deletedId = await getDeletedAccountId(t)
 
-      await expect(
+      expect(
         asUser.query(api.account.getBalance, { account: deletedId })
-      ).rejects.toThrowError("Account not found")
+      ).rejects.toThrowError("DOCUMENT_NOT_FOUND")
     })
 
     test("returns sum of computed balance across all accounts", async () => {
@@ -163,9 +161,9 @@ describe("accounts.getBalance", () => {
 
       const deletedId = await getDeletedAccountId(t)
 
-      await expect(
+      expect(
         asUser.query(api.account.getBalance, { account: deletedId })
-      ).rejects.toThrowError("Account not found.")
+      ).rejects.toThrowError("DOCUMENT_NOT_FOUND")
     })
 
     test("throws when account belongs to a different user", async () => {
@@ -185,13 +183,11 @@ describe("accounts.getBalance", () => {
         ownerId: otherUserIdentity.subject,
       })
 
-      await expect(
+      expect(
         t
           .withIdentity(userIdentity)
           .query(api.account.getBalance, { account: otherAccountId })
-      ).rejects.toThrowError(
-        "Account does not belong to the authenticated user."
-      )
+      ).rejects.toThrowError("DOCUMENT_NOT_OWNED")
     })
 
     test("returns computed balance for the specified account", async () => {

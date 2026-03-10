@@ -8,6 +8,7 @@ import {
 } from "#lib/constants/constraints"
 import { transactionTypes } from "#lib/constants/transaction-types"
 import { internalMutation, mutation, query } from "./_generated/server"
+import { getDoc } from "./lib/doc"
 import { getCurrentUserOrThrow } from "./lib/utils"
 
 // Uses take() with the known per-user account cap instead of collect()
@@ -53,10 +54,9 @@ export const getByStringId = query({
 
     if (!normalizedId)
       throw new ConvexError({
+        code: "INVALID_ACCOUNT_ID",
         message:
           "Invalid account ID — could not normalize to a valid accounts ID.",
-        code: 400,
-        context: { accountId: id },
       })
 
     return await ctx.db.get(normalizedId)
@@ -92,13 +92,9 @@ export const create = mutation({
 
     if (accounts.length >= ACCOUNTS_PER_USER_MAX)
       throw new ConvexError({
-        message: "Account limit reached. Cannot create more accounts.",
-        code: 403,
-        context: {
-          limit: ACCOUNTS_PER_USER_MAX,
-          userId: user._id,
-          ownerId: user.ownerId,
-        },
+        code: "ACCOUNT_LIMIT_REACHED",
+        message: `You've reached the maximum number of accounts (${ACCOUNTS_PER_USER_MAX}). Delete one before adding another.`,
+        limit: ACCOUNTS_PER_USER_MAX,
       })
 
     // TODO: validate name using zod (length, characters, etc.)
@@ -106,12 +102,8 @@ export const create = mutation({
 
     if (!accountName)
       throw new ConvexError({
+        code: "ACCOUNT_NAME_EMPTY",
         message: "Account name cannot be empty.",
-        code: 400,
-        context: {
-          userId: user._id,
-          ownerId: user.ownerId,
-        },
       })
 
     const balance = args.balance ?? 0
@@ -121,15 +113,10 @@ export const create = mutation({
       balance > ACCOUNT_STARTING_BALANCE_MAX
     )
       throw new ConvexError({
+        code: "INVALID_BALANCE_RANGE",
         message: "Balance is outside the allowed range.",
-        code: 422,
-        context: {
-          balance,
-          min: ACCOUNT_STARTING_BALANCE_MIN,
-          max: ACCOUNT_STARTING_BALANCE_MAX,
-          userId: user._id,
-          ownerId: user.ownerId,
-        },
+        min: ACCOUNT_STARTING_BALANCE_MIN,
+        max: ACCOUNT_STARTING_BALANCE_MAX,
       })
 
     // TODO: use better defaults here
@@ -140,14 +127,9 @@ export const create = mutation({
 
     if (existing)
       throw new ConvexError({
-        message: "An account with this name already exists.",
-        code: 409,
-        context: {
-          givenName: accountName,
-          existingAccountId: existing._id,
-          userId: user._id,
-          ownerId: user.ownerId,
-        },
+        code: "ACCOUNT_NAME_TAKEN",
+        message:
+          "An account with this name already exists. Please choose a different name.",
       })
 
     return await ctx.db.insert("accounts", {
@@ -185,51 +167,22 @@ export const update = mutation({
   handler: async (ctx, { id: accountId, name, icon }) => {
     const user = await getCurrentUserOrThrow(ctx)
 
-    const existing = await ctx.db.get(accountId)
-
-    if (!existing)
-      throw new ConvexError({
-        message: "Account not found.",
-        code: 404,
-        context: {
-          accountId,
-          userId: user._id,
-          ownerId: user.ownerId,
-        },
-      })
-
-    if (existing.ownerId !== user.ownerId)
-      throw new ConvexError({
-        message: "Account does not belong to the authenticated user.",
-        code: 403,
-        context: {
-          accountId,
-          accountOwnerId: existing.ownerId,
-          userId: user._id,
-          ownerId: user.ownerId,
-        },
-      })
+    const account = await getDoc(ctx.db, accountId).mustBeOwnedBy(user.ownerId)
 
     // TODO: validate name using zod (length, characters, etc.)
     const accountName = name.trim()
 
     if (!accountName)
       throw new ConvexError({
+        code: "ACCOUNT_NAME_EMPTY",
         message: "Account name cannot be empty.",
-        code: 400,
-        context: {
-          accountId,
-          userId: user._id,
-          ownerId: user.ownerId,
-        },
       })
 
     // Already in desired state — no write needed.
-    if (existing.name === accountName && existing.icon === icon)
-      return accountId
+    if (account.name === accountName && account.icon === icon) return accountId
 
     // Only check duplicates if the name actually changes.
-    if (existing.name !== accountName) {
+    if (account.name !== accountName) {
       const duplicate = await ctx.db
         .query("accounts")
         .withIndex("by_name", (q) =>
@@ -239,14 +192,9 @@ export const update = mutation({
 
       if (duplicate && duplicate._id !== accountId)
         throw new ConvexError({
-          message: "An account with this name already exists.",
-          code: 409,
-          context: {
-            givenName: accountName,
-            existingAccountId: duplicate._id,
-            userId: user._id,
-            ownerId: user.ownerId,
-          },
+          code: "ACCOUNT_NAME_TAKEN",
+          message:
+            "An account with this name already exists. Please choose a different name.",
         })
     }
 
@@ -273,42 +221,14 @@ export const toggleActive = mutation({
   handler: async (ctx, { id: accountId }) => {
     const user = await getCurrentUserOrThrow(ctx)
 
-    const existing = await ctx.db.get(accountId)
+    const account = await getDoc(ctx.db, accountId).mustBeOwnedBy(user.ownerId)
 
-    if (!existing)
+    const nextState = !account.is_active
+
+    if (user.defaultAccount === account._id && !nextState)
       throw new ConvexError({
-        message: "Account not found.",
-        code: 404,
-        context: {
-          accountId,
-          userId: user._id,
-          ownerId: user.ownerId,
-        },
-      })
-
-    if (existing.ownerId !== user.ownerId)
-      throw new ConvexError({
-        message: "Account does not belong to the authenticated user.",
-        code: 403,
-        context: {
-          accountId,
-          accountOwnerId: existing.ownerId,
-          userId: user._id,
-          ownerId: user.ownerId,
-        },
-      })
-
-    const nextState = !existing.is_active
-
-    if (user.defaultAccount === existing._id && !nextState)
-      throw new ConvexError({
+        code: "DEFAULT_ACCOUNT_MUST_BE_ACTIVE",
         message: "Default account must remain active.",
-        code: 422,
-        context: {
-          accountId,
-          userId: user._id,
-          ownerId: user.ownerId,
-        },
       })
 
     await ctx.db.patch(accountId, { is_active: nextState })
@@ -335,43 +255,15 @@ export const setDefault = mutation({
       // Already the default — no write needed.
       return accountId
 
-    const existing = await ctx.db.get(accountId)
+    const account = await getDoc(ctx.db, accountId).mustBeOwnedBy(user.ownerId)
 
-    if (!existing)
+    if (!account.is_active)
       throw new ConvexError({
-        message: "Account not found.",
-        code: 404,
-        context: {
-          accountId,
-          userId: user._id,
-          ownerId: user.ownerId,
-        },
-      })
-
-    if (existing.ownerId !== user.ownerId)
-      throw new ConvexError({
-        message: "Account does not belong to the authenticated user.",
-        code: 403,
-        context: {
-          accountId,
-          accountOwnerId: existing.ownerId,
-          userId: user._id,
-          ownerId: user.ownerId,
-        },
-      })
-
-    if (!existing.is_active)
-      throw new ConvexError({
+        code: "INACTIVE_ACCOUNT_CANNOT_BE_DEFAULT",
         message: "Cannot set an inactive account as default.",
-        code: 403,
-        context: {
-          accountId,
-          userId: user._id,
-          ownerId: user.ownerId,
-        },
       })
 
-    await ctx.db.patch(user._id, { defaultAccount: existing._id })
+    await ctx.db.patch(user._id, { defaultAccount: account._id })
 
     return accountId
   },
@@ -402,31 +294,20 @@ export const applyTransactionFlow = internalMutation({
   handler: async (ctx, { id: accountId, type, amount }) => {
     if (amount < TRANSACTION_AMOUNT_MIN || amount > TRANSACTION_AMOUNT_MAX)
       throw new ConvexError({
+        code: "INVALID_TRANSACTION_AMOUNT",
         message: "Amount is outside the allowed range.",
-        code: 422,
-        context: {
-          amount,
-          min: TRANSACTION_AMOUNT_MIN,
-          max: TRANSACTION_AMOUNT_MAX,
-          accountId,
-        },
+        min: TRANSACTION_AMOUNT_MIN,
+        max: TRANSACTION_AMOUNT_MAX,
       })
 
-    const existing = await ctx.db.get(accountId)
+    const account = await getDoc(ctx.db, accountId).mustExist()
 
-    if (!existing)
-      throw new ConvexError({
-        message: "Account not found.",
-        code: 404,
-        context: { accountId },
-      })
-
-    const previousBalance = existing.startingBalance + existing.netFlow
+    const previousBalance = account.startingBalance + account.netFlow
 
     // Apply the amount as positive (income) or negative (expense).
     const direction = type === "expense" ? -1 : 1
-    const newNetFlow = existing.netFlow + amount * direction
-    const newBalance = existing.startingBalance + newNetFlow
+    const newNetFlow = account.netFlow + amount * direction
+    const newBalance = account.startingBalance + newNetFlow
 
     await ctx.db.patch(accountId, { netFlow: newNetFlow })
 
@@ -456,14 +337,9 @@ const deleteAccount = mutation({
       // Blocking deletion here ensures there is always one account
       // and that the default is never left pointing to a deleted account.
       throw new ConvexError({
+        code: "DEFAULT_ACCOUNT_DELETE_FORBIDDEN",
         message:
           "Cannot delete the default account. Set another account as default before deleting this one.",
-        code: 403,
-        context: {
-          accountId,
-          userId: user._id,
-          ownerId: user.ownerId,
-        },
       })
     }
 
@@ -501,41 +377,13 @@ export const setStartingBalance = mutation({
       newBalance > ACCOUNT_STARTING_BALANCE_MAX
     )
       throw new ConvexError({
+        code: "INVALID_BALANCE_RANGE",
         message: "Balance is outside the allowed range.",
-        code: 422,
-        context: {
-          newBalance,
-          min: ACCOUNT_STARTING_BALANCE_MIN,
-          max: ACCOUNT_STARTING_BALANCE_MAX,
-          userId: user._id,
-          ownerId: user.ownerId,
-        },
+        min: ACCOUNT_STARTING_BALANCE_MIN,
+        max: ACCOUNT_STARTING_BALANCE_MAX,
       })
 
-    const account = await ctx.db.get(accountId)
-
-    if (!account)
-      throw new ConvexError({
-        message: "Account not found.",
-        code: 404,
-        context: {
-          accountId,
-          userId: user._id,
-          ownerId: user.ownerId,
-        },
-      })
-
-    if (account.ownerId !== user.ownerId)
-      throw new ConvexError({
-        message: "Account does not belong to the authenticated user.",
-        code: 403,
-        context: {
-          accountId,
-          accountOwnerId: account.ownerId,
-          userId: user._id,
-          ownerId: user.ownerId,
-        },
-      })
+    await getDoc(ctx.db, accountId).mustBeOwnedBy(user.ownerId)
 
     await ctx.db.patch(accountId, { startingBalance: newBalance })
 
@@ -557,14 +405,7 @@ export const setStartingBalance = mutation({
 export const reconcileBalance = internalMutation({
   args: { account: v.id("accounts") },
   handler: async (ctx, { account: accountId }) => {
-    const account = await ctx.db.get(accountId)
-
-    if (!account)
-      throw new ConvexError({
-        message: "Account not found.",
-        code: 404,
-        context: { accountId },
-      })
+    const account = await getDoc(ctx.db, accountId).mustExist()
 
     const transactions = await ctx.db
       .query("transactions")
@@ -619,47 +460,26 @@ export const getBalance = query({
         .withIndex("by_owner", (q) => q.eq("ownerId", user.ownerId))
         .take(ACCOUNTS_PER_USER_MAX)
 
-      if (!accounts.length)
-        throw new ConvexError({
-          message:
-            "Invariant violation: user must have at least one account. Verify onboarding setup and mutation guards.",
-          code: 500,
-          context: {
-            accountId,
+      if (!accounts.length) {
+        console.error(
+          JSON.stringify({
+            severity: "CRITICAL",
+            invariant: "USER_HAS_NO_ACCOUNTS",
             userId: user._id,
             ownerId: user.ownerId,
-          },
-        })
+            message:
+              "Invariant violated: user has zero accounts, expected at least 1",
+          })
+        )
+        throw new Error("Internal invariant violated: user has no accounts")
+      }
 
       return accounts.reduce((sum, a) => sum + a.startingBalance + a.netFlow, 0)
     }
 
-    const relevantAccount = await ctx.db.get(accountId)
+    const account = await getDoc(ctx.db, accountId).mustBeOwnedBy(user.ownerId)
 
-    if (!relevantAccount)
-      throw new ConvexError({
-        message: "Account not found.",
-        code: 404,
-        context: {
-          accountId,
-          userId: user._id,
-          ownerId: user.ownerId,
-        },
-      })
-
-    if (relevantAccount.ownerId !== user.ownerId)
-      throw new ConvexError({
-        message: "Account does not belong to the authenticated user.",
-        code: 403,
-        context: {
-          accountId,
-          accountOwnerId: relevantAccount.ownerId,
-          userId: user._id,
-          ownerId: user.ownerId,
-        },
-      })
-
-    return relevantAccount.startingBalance + relevantAccount.netFlow
+    return account.startingBalance + account.netFlow
   },
 })
 

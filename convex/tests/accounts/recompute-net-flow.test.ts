@@ -20,9 +20,9 @@ describe("accounts.reconcileBalance", () => {
       const t = convexTest(schema)
       const deletedId = await getDeletedAccountId(t)
 
-      await expect(
+      expect(
         t.mutation(internal.account.reconcileBalance, { account: deletedId })
-      ).rejects.toThrowError("Account not found.")
+      ).rejects.toThrowError("DOCUMENT_NOT_FOUND")
     })
   })
 
@@ -57,7 +57,7 @@ describe("accounts.reconcileBalance", () => {
       })
 
       const account = await t.run((ctx) => ctx.db.get(accountId))
-      if (!account) throw AppError.notFound("Account not found")
+      if (!account) throw AppError.notFound("ACCOUNT_NOT_FOUND")
       expect(account.netFlow).toBe(0)
       expect(account.startingBalance + account.netFlow).toBe(1000)
     })

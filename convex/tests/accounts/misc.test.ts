@@ -205,11 +205,9 @@ describe("accounts.add", () => {
     expect(accounts).lengthOf(ACCOUNTS_PER_USER_MAX)
 
     // attempt to create a new account
-    await expect(
+    expect(
       asUser.mutation(api.account.create, { name: "My Wallet" })
-    ).rejects.toThrowError(
-      "Account limit reached. Cannot create more accounts."
-    )
+    ).rejects.toThrowError("ACCOUNT_LIMIT_REACHED")
   })
 
   it("creates a new account", async () => {

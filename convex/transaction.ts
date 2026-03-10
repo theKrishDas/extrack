@@ -4,6 +4,7 @@ import { stream } from "convex-helpers/server/stream"
 import { transactionTypes } from "#lib/constants/transaction-types"
 import { internal } from "./_generated/api"
 import { mutation, query } from "./_generated/server"
+import { getDoc } from "./lib/doc"
 import { getCurrentUserOrThrow } from "./lib/utils"
 import schema from "./schema"
 
@@ -36,20 +37,16 @@ export const create = mutation({
   handler: async (ctx, args) => {
     const user = await getCurrentUserOrThrow(ctx)
     const [account, category] = await Promise.all([
-      ctx.db.get(args.account),
-      ctx.db.get(args.category),
+      getDoc(ctx.db, args.account).mustBeOwnedBy(user.ownerId),
+      getDoc(ctx.db, args.category).mustBeOwnedBy(user.ownerId),
     ])
 
-    if (!account) {
-      throw new Error("Account not found for the given ID.")
-    }
-
-    if (!category) {
-      throw new Error("Category not found for the given ID.")
-    }
-
     if (args.type !== category.type) {
-      throw new Error("Type of the transaction and category doesn't match!")
+      throw new ConvexError({
+        code: "TRANSACTION_CATEGORY_TYPE_MISMATCH",
+        message:
+          "The transaction type and category type don't match. Please select a category that matches the transaction type.",
+      })
     }
 
     await Promise.all([
@@ -74,15 +71,11 @@ export const create = mutation({
 const deleteTransaction = mutation({
   args: { id: v.id("transactions") },
   handler: async (ctx, { id }) => {
-    const transaction = await ctx.db.get(id)
-    if (!transaction) {
-      throw new Error("Transaction not found for the given ID")
-    }
-
-    const account = await ctx.db.get(transaction.account)
-    if (!account) {
-      throw new Error("Account not found for the given ID")
-    }
+    const user = await getCurrentUserOrThrow(ctx)
+    const transaction = await getDoc(ctx.db, id).mustBeOwnedBy(user.ownerId)
+    const account = await getDoc(ctx.db, transaction.account).mustBeOwnedBy(
+      user.ownerId
+    )
 
     const { amount, type } = transaction
 
@@ -124,18 +117,9 @@ export const listPaginatedDetailed = query({
       .order("desc")
       .map(async (transaction) => {
         const [category, account] = await Promise.all([
-          await ctx.db.get(transaction.category),
-          await ctx.db.get(transaction.account),
+          getDoc(ctx.db, transaction.category).mustExist(),
+          getDoc(ctx.db, transaction.account).mustExist(),
         ])
-
-        // This check ensures that the return types for `category` and `account`
-        // do not include null values.
-        // This condition should never be met, as any attempt to retrieve an
-        // invalid account or category using `ctx.db.get(id)` would have already
-        // resulted in an error from Convex by now.
-        if (!(category && account)) {
-          throw new Error("Invariant violated: missing related record")
-        }
 
         return { ...transaction, category, account }
       })
@@ -157,15 +141,19 @@ export const getCreateContext = query({
       .withIndex("by_owner", (q) => q.eq("ownerId", user.ownerId))
       .collect()
 
-    if (!accounts.length)
-      throw new ConvexError({
-        message: "No account found",
-        code: 404,
-        context: {
+    if (!accounts.length) {
+      console.error(
+        JSON.stringify({
+          severity: "CRITICAL",
+          invariant: "USER_HAS_NO_ACCOUNTS",
           userId: user._id,
           ownerId: user.ownerId,
-        },
-      })
+          message:
+            "Invariant violated: user has zero accounts, expected at least 1",
+        })
+      )
+      throw new Error("Internal invariant violated: user has no accounts")
+    }
 
     const categories = await ctx.db
       .query("categories")
@@ -174,16 +162,22 @@ export const getCreateContext = query({
       )
       .collect()
 
-    if (!categories.length)
-      throw new ConvexError({
-        message: "No category found",
-        code: 404,
-        context: {
+    if (!categories.length) {
+      console.error(
+        JSON.stringify({
+          severity: "CRITICAL",
+          invariant: "USER_HAS_NO_CATEGORIES_FOR_TYPE",
           userId: user._id,
           ownerId: user.ownerId,
           type,
-        },
-      })
+          message:
+            "Invariant violated: user has zero categories for transaction type, expected at least 1",
+        })
+      )
+      throw new Error(
+        "Internal invariant violated: user has no categories for this type"
+      )
+    }
 
     const latestTxn = await ctx.db
       .query("transactions")

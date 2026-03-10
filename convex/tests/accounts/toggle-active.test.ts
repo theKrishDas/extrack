@@ -115,9 +115,9 @@ describe("accounts.toggleActive", () => {
 
       const deletedId = await getDeletedAccountId(t, userIdentity.subject)
 
-      await expect(
+      expect(
         asUser.mutation(api.account.toggleActive, { id: deletedId })
-      ).rejects.toThrowError("Account not found.")
+      ).rejects.toThrowError("DOCUMENT_NOT_FOUND")
     })
   })
 
@@ -145,13 +145,11 @@ describe("accounts.toggleActive", () => {
         ownerId: otherUserIdentity.subject,
       })
 
-      await expect(
+      expect(
         t.withIdentity(userIdentity).mutation(api.account.toggleActive, {
           id: otherAccountId,
         })
-      ).rejects.toThrowError(
-        "Account does not belong to the authenticated user."
-      )
+      ).rejects.toThrowError("DOCUMENT_NOT_OWNED")
     })
   })
 
@@ -183,9 +181,9 @@ describe("accounts.toggleActive", () => {
         return user.defaultAccount
       })
 
-      await expect(
+      expect(
         asUser.mutation(api.account.toggleActive, { id: defaultAccountId })
-      ).rejects.toThrowError("Default account must remain active.")
+      ).rejects.toThrowError("DEFAULT_ACCOUNT_MUST_BE_ACTIVE")
     })
 
     test("allows activating the default account if it is somehow inactive", async () => {

@@ -1,7 +1,8 @@
-import { v } from "convex/values"
+import { ConvexError, v } from "convex/values"
 import { colors } from "#lib/constants/colors"
 import { transactionTypes } from "#lib/constants/transaction-types"
 import { mutation, query } from "./_generated/server"
+import { getDoc } from "./lib/doc"
 import { getCurrentUserOrThrow } from "./lib/utils"
 
 export const list = query({
@@ -55,7 +56,10 @@ export const create = mutation({
       .unique()
 
     if (existing) {
-      throw new Error(`Category with name "${name}" already exists`)
+      throw new ConvexError({
+        code: "CATEGORY_NAME_TAKEN",
+        message: `A category with the name "${name}" already exists. Please choose a different name.`,
+      })
     }
 
     const is_vendor = false
@@ -89,8 +93,10 @@ const deleteCategory = mutation({
   args: { id: v.id("categories") },
   handler: async (ctx, { id: categoryId }) => {
     const user = await getCurrentUserOrThrow(ctx)
-    const category = await ctx.db.get(categoryId)
-    if (category?.is_vendor === true) return
+    const category = await getDoc(ctx.db, categoryId).mustBeOwnedBy(
+      user.ownerId
+    )
+    if (category.is_vendor === true) return
 
     const transactions = await ctx.db
       .query("transactions")

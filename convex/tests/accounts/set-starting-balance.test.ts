@@ -1,4 +1,3 @@
-import { ConvexError } from "convex/values"
 import { convexTest } from "convex-test"
 import { describe, expect, test } from "vitest"
 import {
@@ -33,7 +32,7 @@ describe("accounts.setStartingBalance", () => {
       const t = convexTest(schema)
       const accountId = await seedAccount(t)
 
-      await expect(
+      expect(
         t.mutation(api.account.setStartingBalance, {
           id: accountId,
           balance: 0,
@@ -64,12 +63,12 @@ describe("accounts.setStartingBalance", () => {
 
       const deletedId = await getDeletedAccountId(t)
 
-      await expect(
+      expect(
         asUser.mutation(api.account.setStartingBalance, {
           id: deletedId,
           balance: 0,
         })
-      ).rejects.toThrowError("Account not found.")
+      ).rejects.toThrowError("DOCUMENT_NOT_FOUND")
     })
   })
 
@@ -91,14 +90,12 @@ describe("accounts.setStartingBalance", () => {
         ownerId: otherUserIdentity.subject,
       })
 
-      await expect(
+      expect(
         t.withIdentity(userIdentity).mutation(api.account.setStartingBalance, {
           id: otherAccountId,
           balance: 0,
         })
-      ).rejects.toThrowError(
-        "Account does not belong to the authenticated user."
-      )
+      ).rejects.toThrowError("DOCUMENT_NOT_OWNED")
     })
   })
 
@@ -111,12 +108,12 @@ describe("accounts.setStartingBalance", () => {
       })
       const accountId = await seedAccount(t)
 
-      await expect(
+      expect(
         asUser.mutation(api.account.setStartingBalance, {
           id: accountId,
           balance: 1.5,
         })
-      ).rejects.toBeInstanceOf(ConvexError)
+      ).rejects.toThrowError("INVALID_BALANCE_RANGE")
     })
 
     test("rejects balance below ACCOUNT_STARTING_BALANCE_MAX", async () => {
@@ -127,12 +124,12 @@ describe("accounts.setStartingBalance", () => {
       })
       const accountId = await seedAccount(t)
 
-      await expect(
+      expect(
         asUser.mutation(api.account.setStartingBalance, {
           id: accountId,
           balance: ACCOUNT_STARTING_BALANCE_MIN - 1,
         })
-      ).rejects.toThrowError("Balance is outside the allowed range.")
+      ).rejects.toThrowError("INVALID_BALANCE_RANGE")
     })
 
     test("rejects balance above ACCOUNT_STARTING_BALANCE_MIN", async () => {
@@ -143,12 +140,12 @@ describe("accounts.setStartingBalance", () => {
       })
       const accountId = await seedAccount(t)
 
-      await expect(
+      expect(
         asUser.mutation(api.account.setStartingBalance, {
           id: accountId,
           balance: ACCOUNT_STARTING_BALANCE_MAX + 1,
         })
-      ).rejects.toThrowError("Balance is outside the allowed range.")
+      ).rejects.toThrowError("INVALID_BALANCE_RANGE")
     })
 
     test("accepts balance of 0", async () => {

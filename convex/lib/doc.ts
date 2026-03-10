@@ -1,5 +1,4 @@
 import { ConvexError } from "convex/values"
-import { AppError } from "#lib/errors"
 import type { Id, TableNames } from "../_generated/dataModel"
 import type { DatabaseReader } from "../_generated/server"
 
@@ -36,13 +35,12 @@ export const getDoc = <TableName extends TableNames>(
    */
   async function mustExist() {
     const doc = await docPromise
-    if (!doc)
-      throw new ConvexError(
-        AppError.notFound("Document not found", {
-          domain: "db",
-          context: { id },
-        }).toData() as never
-      )
+    if (!doc) {
+      throw new ConvexError({
+        code: "DOCUMENT_NOT_FOUND",
+        message: "Document not found.",
+      })
+    }
     return doc
   }
 
@@ -56,13 +54,12 @@ export const getDoc = <TableName extends TableNames>(
     const doc = await mustExist()
 
     // Ownership check runs only after existence is confirmed
-    if (doc.ownerId !== userId)
-      throw new ConvexError(
-        AppError.forbidden(undefined, {
-          domain: "db",
-          context: { id, userId },
-        }).toData() as never
-      )
+    if (doc.ownerId !== userId) {
+      throw new ConvexError({
+        code: "DOCUMENT_NOT_OWNED",
+        message: "You don't have permission to access this document.",
+      })
+    }
     return doc
   }
 

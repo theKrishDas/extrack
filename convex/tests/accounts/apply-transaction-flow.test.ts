@@ -1,3 +1,4 @@
+import { ConvexError } from "convex/values"
 import { convexTest } from "convex-test"
 import { describe, expect, test } from "vitest"
 import {
@@ -19,13 +20,13 @@ describe("account.applyTransactionFlow", () => {
       const t = convexTest(schema)
       const deletedId = await getDeletedAccountId(t)
 
-      await expect(
-        t.mutation(internal.account.applyTransactionFlow, {
-          id: deletedId,
-          type: "income",
-          amount: 100,
-        })
-      ).rejects.toThrowError("Account not found.")
+      const mutation = t.mutation(internal.account.applyTransactionFlow, {
+        id: deletedId,
+        type: "income",
+        amount: 100,
+      })
+      await expect(mutation).rejects.toBeInstanceOf(ConvexError)
+      await expect(mutation).rejects.toThrowError("DOCUMENT_NOT_FOUND")
     })
   })
 

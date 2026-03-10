@@ -65,9 +65,9 @@ describe("accounts.setDefault", () => {
 
       const deletedId = await getDeletedAccountId(t)
 
-      await expect(
+      expect(
         asUser.mutation(api.account.setDefault, { id: deletedId })
-      ).rejects.toThrowError("Account not found.")
+      ).rejects.toThrowError("DOCUMENT_NOT_FOUND")
     })
   })
 
@@ -94,13 +94,11 @@ describe("accounts.setDefault", () => {
         ownerId: otherUserIdentity.subject,
       })
 
-      await expect(
+      expect(
         t.withIdentity(userIdentity).mutation(api.account.setDefault, {
           id: otherAccountId,
         })
-      ).rejects.toThrowError(
-        "Account does not belong to the authenticated user."
-      )
+      ).rejects.toThrowError("DOCUMENT_NOT_OWNED")
     })
   })
 
@@ -118,9 +116,9 @@ describe("accounts.setDefault", () => {
 
       const inactiveAccountId = await seedAccount(t, { is_active: false })
 
-      await expect(
+      expect(
         asUser.mutation(api.account.setDefault, { id: inactiveAccountId })
-      ).rejects.toThrowError("Cannot set an inactive account as default.")
+      ).rejects.toThrowError("INACTIVE_ACCOUNT_CANNOT_BE_DEFAULT")
     })
   })
 
