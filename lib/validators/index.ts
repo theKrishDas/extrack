@@ -1,14 +1,25 @@
 import { z } from "zod"
 import { NO_CONSECUTIVE_SPACES, NO_LEADING_SPACE } from "../regex"
 
-/** Base schema for monetary values in cents: integer, safe, nonnegative, finite. */
-export const centsBase = z.number().int().safe().nonnegative().finite()
+/** Base schema for monetary values (cents or dollars): number, safe, nonnegative, and finite. */
+const monetaryNumberBase = z.number().safe().nonnegative().finite()
 
 /** Base schema for name strings: no leading space, no consecutive spaces. */
-export const nameBase = z
+const nameBase = z
   .string()
   .regex(NO_LEADING_SPACE, "Must not start with a space")
   .regex(NO_CONSECUTIVE_SPACES, "No consecutive spaces")
+
+/** Builds a `ZodNumber` monetary schema with optional int constraint, bounds, and a min/max sanity check. */
+function monetary(int: boolean, min?: number, max?: number) {
+  if (min !== undefined && max !== undefined && min > max)
+    throw new RangeError(`min (${min}) must not exceed max (${max})`)
+
+  const base = int ? monetaryNumberBase.int() : monetaryNumberBase
+  const withMin = min !== undefined ? base.min(min) : base
+  const withMax = max !== undefined ? withMin.max(max) : withMin
+  return withMax
+}
 
 /**
  * Shared Zod schema validators.
@@ -25,12 +36,20 @@ export const v = {
    * v.cents()        // any nonnegative integer
    * v.cents(0, 9999) // 0–9999 cents
    */
-  cents(min?: number, max?: number) {
-    let schema = centsBase
-    if (min !== undefined) schema = schema.min(min) as typeof centsBase
-    if (max !== undefined) schema = schema.max(max) as typeof centsBase
-    return schema
-  },
+  cents: (min?: number, max?: number) => monetary(true, min, max),
+
+  /**
+   * Returns a Zod schema for a monetary value in dollars.
+   *
+   * @param min - Minimum dollar value (inclusive).
+   * @param max - Maximum dollar value (inclusive).
+   * @returns Zod schema validating a nonnegative finite dollar amount within the given bounds.
+   *
+   * @example
+   * v.dollars()          // any nonnegative number
+   * v.dollars(0, 999.99) // 0–999.99 dollars
+   */
+  dollars: (min?: number, max?: number) => monetary(false, min, max),
 
   /**
    * Returns a Zod schema for a name string with length constraints.
@@ -42,7 +61,5 @@ export const v = {
    * @example
    * v.name(1, 50) // non-empty name up to 50 chars
    */
-  name(min: number, max: number) {
-    return nameBase.min(min).max(max)
-  },
+  name: (min: number, max: number) => nameBase.min(min).max(max),
 }

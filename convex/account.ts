@@ -1,7 +1,7 @@
 import { ConvexError, v } from "convex/values"
 import {
-  ACCOUNT_BALANCE_MAX,
-  ACCOUNT_BALANCE_MIN,
+  ACCOUNT_STARTING_BALANCE_MAX,
+  ACCOUNT_STARTING_BALANCE_MIN,
   ACCOUNTS_PER_USER_MAX,
   TRANSACTION_AMOUNT_MAX,
   TRANSACTION_AMOUNT_MIN,
@@ -116,14 +116,17 @@ export const create = mutation({
 
     const balance = args.balance ?? 0
 
-    if (balance < ACCOUNT_BALANCE_MIN || balance > ACCOUNT_BALANCE_MAX)
+    if (
+      balance < ACCOUNT_STARTING_BALANCE_MIN ||
+      balance > ACCOUNT_STARTING_BALANCE_MAX
+    )
       throw new ConvexError({
         message: "Balance is outside the allowed range.",
         code: 422,
         context: {
           balance,
-          min: ACCOUNT_BALANCE_MIN,
-          max: ACCOUNT_BALANCE_MAX,
+          min: ACCOUNT_STARTING_BALANCE_MIN,
+          max: ACCOUNT_STARTING_BALANCE_MAX,
           userId: user._id,
           ownerId: user.ownerId,
         },
@@ -493,14 +496,17 @@ export const setStartingBalance = mutation({
   handler: async (ctx, { id: accountId, balance: newBalance }) => {
     const user = await getCurrentUserOrThrow(ctx)
 
-    if (newBalance < ACCOUNT_BALANCE_MIN || newBalance > ACCOUNT_BALANCE_MAX)
+    if (
+      newBalance < ACCOUNT_STARTING_BALANCE_MIN ||
+      newBalance > ACCOUNT_STARTING_BALANCE_MAX
+    )
       throw new ConvexError({
         message: "Balance is outside the allowed range.",
         code: 422,
         context: {
           newBalance,
-          min: ACCOUNT_BALANCE_MIN,
-          max: ACCOUNT_BALANCE_MAX,
+          min: ACCOUNT_STARTING_BALANCE_MIN,
+          max: ACCOUNT_STARTING_BALANCE_MAX,
           userId: user._id,
           ownerId: user.ownerId,
         },
