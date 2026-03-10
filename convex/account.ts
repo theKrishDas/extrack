@@ -153,7 +153,7 @@ export const create = mutation({
       startingBalance: balance,
       netFlow: 0,
       is_active: true,
-      is_default: false,
+      is_archived: false,
       icon,
     })
   },
@@ -297,7 +297,7 @@ export const toggleActive = mutation({
 
     const nextState = !existing.is_active
 
-    if (existing.is_default && !nextState)
+    if (user.defaultAccount === existing._id && !nextState)
       throw new ConvexError({
         message: "Default account must remain active.",
         code: 422,
@@ -483,10 +483,6 @@ const deleteAccount = mutation({
 /**
  * Updates the starting balance for an account and reconciles the current balance.
  *
- * Triggers `reconcileBalance` internally, which performs a full table scan on transactions.
- *
- * @todo Rate-limit this mutation on the client to avoid excessive reconciliation calls.
- *
  * @param id - The account to update.
  * @param balance - The new starting balance.
  * @returns The updated account ID.
@@ -572,11 +568,12 @@ export const reconcileBalance = internalMutation({
       .collect()
 
     if (!transactions.length) {
-      // skip if no transaction has been recorded
-      return {
-        startingBalance: account.startingBalance,
-        netFlow: account.netFlow,
-      }
+      // reset netFlow to 0 if no transaction has been recorded
+      const netFlow = 0
+      // only patch if netFlow is not already 0
+      if (netFlow !== account.netFlow)
+        await ctx.db.patch("accounts", account._id, { netFlow })
+      return { startingBalance: account.startingBalance, netFlow }
     }
 
     // Convert each transaction to a signed amount (income positive, expense negative),

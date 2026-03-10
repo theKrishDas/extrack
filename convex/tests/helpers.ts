@@ -1,4 +1,5 @@
 import type { TestConvex } from "convex-test"
+import { AppError } from "#lib/errors"
 import type { Id } from "../_generated/dataModel"
 import type schema from "../schema"
 
@@ -18,7 +19,7 @@ export function seedAccount(
   opts: {
     ownerId?: string
     startingBalance?: number
-    currentBalance?: number
+    netFlow?: number
     is_active?: boolean
     name?: string
   } = {}
@@ -28,10 +29,10 @@ export function seedAccount(
     return ctx.db.insert("accounts", {
       ownerId: opts.ownerId ?? userIdentity.subject,
       is_active: opts.is_active ?? true,
-      is_default: false,
+      is_archived: false,
       name: opts.name ?? "My Wallet",
       startingBalance,
-      netFlow: 0,
+      netFlow: opts.netFlow ?? 0,
       icon: "X",
     })
   })
@@ -65,6 +66,27 @@ export function seedTransaction(
 }
 
 /**
+ * Reads the defaultAccount from the user row for the given ownerId.
+ */
+export function getDefaultAccountId(
+  t: TestConvex<typeof schema>,
+  ownerId: string
+) {
+  return t.run(async (ctx) => {
+    const user = await ctx.db
+      .query("user")
+      .withIndex("by_owner", (q) => q.eq("ownerId", ownerId))
+      .unique()
+
+    if (!user)
+      throw AppError.notFound("User not found", {
+        context: { ownerId },
+      })
+    return user.defaultAccount
+  })
+}
+
+/**
  * Seeds an category directly into the DB for the given ownerId.
  * Use only when you need a category that bypasses business logic
  * (e.g. to test ownership checks or non-existent IDs).
@@ -94,7 +116,7 @@ export function getDeletedAccountId(t: TestConvex<typeof schema>) {
     const id = await ctx.db.insert("accounts", {
       ownerId: userIdentity.subject,
       is_active: true,
-      is_default: false,
+      is_archived: false,
       name: "Temp",
       startingBalance: 0,
       netFlow: 0,

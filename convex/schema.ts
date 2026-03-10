@@ -1,8 +1,7 @@
 import { defineSchema, defineTable } from "convex/server"
 import { v } from "convex/values"
-
-import { colors } from "../src/lib/constants/colors"
-import { transactionTypes } from "../src/lib/constants/transaction-types"
+import { colors } from "#lib/constants/colors"
+import { transactionTypes } from "#lib/constants/transaction-types"
 
 export default defineSchema({
   transactions: defineTable({
@@ -23,27 +22,25 @@ export default defineSchema({
   categories: defineTable({
     ownerId: v.string(),
     name: v.string(),
-    color: v.union(...colors.map((c) => v.literal(c))),
     type: v.union(...transactionTypes.map((t) => v.literal(t))),
-    is_vendor: v.boolean(),
+    color: v.union(...colors.map((c) => v.literal(c))),
     icon: v.string(),
+    is_vendor: v.boolean(),
   })
     .index("by_owner", ["ownerId"])
-    .index("by_type", ["ownerId", "type"])
     .index("by_type_name", ["ownerId", "type", "name"]),
 
   accounts: defineTable({
     ownerId: v.string(),
-    is_default: v.boolean(),
     name: v.string(),
     startingBalance: v.number(),
-    is_active: v.boolean(),
     icon: v.string(),
     netFlow: v.number(),
+    is_active: v.boolean(),
+    is_archived: v.boolean(),
   })
     .index("by_owner", ["ownerId"])
-    .index("by_name", ["ownerId", "name"])
-    .index("by_default", ["ownerId", "is_default"]),
+    .index("by_name", ["ownerId", "name"]),
 
   user: defineTable({
     ownerId: v.string(),

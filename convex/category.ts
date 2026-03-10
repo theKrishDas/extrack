@@ -31,7 +31,7 @@ export const listByType = query({
     const user = await getCurrentUserOrThrow(ctx)
     return await ctx.db
       .query("categories")
-      .withIndex("by_type", (q) =>
+      .withIndex("by_type_name", (q) =>
         q.eq("ownerId", user.ownerId).eq("type", type)
       )
       .collect()

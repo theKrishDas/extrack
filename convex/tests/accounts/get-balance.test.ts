@@ -22,7 +22,7 @@ describe("accounts.getBalance", () => {
       const t = convexTest(schema)
 
       await expect(
-        t.query(api.accounts.getBalance, { account: "combined" })
+        t.query(api.account.getBalance, { account: "combined" })
       ).rejects.toThrowError("UNAUTHENTICATED")
     })
 
@@ -32,16 +32,16 @@ describe("accounts.getBalance", () => {
       await expect(
         t
           .withIdentity(userIdentity)
-          .query(api.accounts.getBalance, { account: "combined" })
+          .query(api.account.getBalance, { account: "combined" })
       ).rejects.toThrowError("USER_NOT_STORED")
     })
   })
 
   describe("combined", () => {
-    test("throws when account does not exist", async () => {
+    test("throws when no accounts exist", async () => {
       const t = convexTest(schema)
       const asUser = t.withIdentity(userIdentity)
-      await asUser.mutation(internal.users.onboard, {
+      await asUser.mutation(internal.userOnboarding.onboardUser, {
         userId: userIdentity.subject,
       })
 
@@ -55,7 +55,7 @@ describe("accounts.getBalance", () => {
       })
 
       await expect(
-        asUser.query(api.accounts.getBalance, {
+        asUser.query(api.account.getBalance, {
           account: "combined",
         })
       ).rejects.toThrowError(
@@ -63,10 +63,24 @@ describe("accounts.getBalance", () => {
       )
     })
 
-    test("returns sum of currentBalance across all accounts", async () => {
+    test("throws NOT_FOUND when account does not exist", async () => {
       const t = convexTest(schema)
       const asUser = t.withIdentity(userIdentity)
-      await asUser.mutation(internal.users.onboard, {
+      await asUser.mutation(internal.userOnboarding.onboardUser, {
+        userId: userIdentity.subject,
+      })
+
+      const deletedId = await getDeletedAccountId(t)
+
+      await expect(
+        asUser.query(api.account.getBalance, { account: deletedId })
+      ).rejects.toThrowError("Account not found")
+    })
+
+    test("returns sum of computed balance across all accounts", async () => {
+      const t = convexTest(schema)
+      const asUser = t.withIdentity(userIdentity)
+      await asUser.mutation(internal.userOnboarding.onboardUser, {
         userId: userIdentity.subject,
       })
 
@@ -80,18 +94,21 @@ describe("accounts.getBalance", () => {
 
       await seedAccount(t, {
         ownerId: userIdentity.subject,
-        currentBalance: 1000,
+        startingBalance: 0,
+        netFlow: 1000,
       })
       await seedAccount(t, {
         ownerId: userIdentity.subject,
-        currentBalance: 2500,
+        startingBalance: 0,
+        netFlow: 2500,
       })
       await seedAccount(t, {
         ownerId: userIdentity.subject,
-        currentBalance: 500,
+        startingBalance: 0,
+        netFlow: 500,
       })
 
-      const result = await asUser.query(api.accounts.getBalance, {
+      const result = await asUser.query(api.account.getBalance, {
         account: "combined",
       })
       expect(result).toBe(4000)
@@ -101,10 +118,14 @@ describe("accounts.getBalance", () => {
       const t = convexTest(schema)
       await t
         .withIdentity(userIdentity)
-        .mutation(internal.users.onboard, { userId: userIdentity.subject })
+        .mutation(internal.userOnboarding.onboardUser, {
+          userId: userIdentity.subject,
+        })
       await t
         .withIdentity(otherUserIdentity)
-        .mutation(internal.users.onboard, { userId: otherUserIdentity.subject })
+        .mutation(internal.userOnboarding.onboardUser, {
+          userId: otherUserIdentity.subject,
+        })
 
       await t.run(async (ctx) => {
         const accounts = await ctx.db
@@ -116,16 +137,18 @@ describe("accounts.getBalance", () => {
 
       await seedAccount(t, {
         ownerId: userIdentity.subject,
-        currentBalance: 1000,
+        startingBalance: 0,
+        netFlow: 1000,
       })
       await seedAccount(t, {
         ownerId: otherUserIdentity.subject,
-        currentBalance: 9999,
+        startingBalance: 0,
+        netFlow: 9999,
       })
 
       const result = await t
         .withIdentity(userIdentity)
-        .query(api.accounts.getBalance, { account: "combined" })
+        .query(api.account.getBalance, { account: "combined" })
       expect(result).toBe(1000)
     })
   })
@@ -134,14 +157,14 @@ describe("accounts.getBalance", () => {
     test("throws when account id does not exist", async () => {
       const t = convexTest(schema)
       const asUser = t.withIdentity(userIdentity)
-      await asUser.mutation(internal.users.onboard, {
+      await asUser.mutation(internal.userOnboarding.onboardUser, {
         userId: userIdentity.subject,
       })
 
       const deletedId = await getDeletedAccountId(t)
 
       await expect(
-        asUser.query(api.accounts.getBalance, { account: deletedId })
+        asUser.query(api.account.getBalance, { account: deletedId })
       ).rejects.toThrowError("Account not found.")
     })
 
@@ -149,10 +172,14 @@ describe("accounts.getBalance", () => {
       const t = convexTest(schema)
       await t
         .withIdentity(userIdentity)
-        .mutation(internal.users.onboard, { userId: userIdentity.subject })
+        .mutation(internal.userOnboarding.onboardUser, {
+          userId: userIdentity.subject,
+        })
       await t
         .withIdentity(otherUserIdentity)
-        .mutation(internal.users.onboard, { userId: otherUserIdentity.subject })
+        .mutation(internal.userOnboarding.onboardUser, {
+          userId: otherUserIdentity.subject,
+        })
 
       const otherAccountId = await seedAccount(t, {
         ownerId: otherUserIdentity.subject,
@@ -161,46 +188,86 @@ describe("accounts.getBalance", () => {
       await expect(
         t
           .withIdentity(userIdentity)
-          .query(api.accounts.getBalance, { account: otherAccountId })
+          .query(api.account.getBalance, { account: otherAccountId })
       ).rejects.toThrowError(
         "Account does not belong to the authenticated user."
       )
     })
 
-    test("returns currentBalance for the specified account", async () => {
+    test("returns computed balance for the specified account", async () => {
       const t = convexTest(schema)
       const asUser = t.withIdentity(userIdentity)
-      await asUser.mutation(internal.users.onboard, {
+      await asUser.mutation(internal.userOnboarding.onboardUser, {
         userId: userIdentity.subject,
       })
 
       const accountId = await seedAccount(t, {
         ownerId: userIdentity.subject,
-        currentBalance: 3750,
+        startingBalance: 0,
+        netFlow: 3750,
       })
 
-      const result = await asUser.query(api.accounts.getBalance, {
+      const result = await asUser.query(api.account.getBalance, {
         account: accountId,
       })
       expect(result).toBe(3750)
     })
 
-    test("returns 0 when currentBalance is 0", async () => {
+    test("returns 0 when computed balance is 0", async () => {
       const t = convexTest(schema)
       const asUser = t.withIdentity(userIdentity)
-      await asUser.mutation(internal.users.onboard, {
+      await asUser.mutation(internal.userOnboarding.onboardUser, {
         userId: userIdentity.subject,
       })
 
       const accountId = await seedAccount(t, {
         ownerId: userIdentity.subject,
-        currentBalance: 0,
+        startingBalance: 0,
+        netFlow: 0,
       })
 
-      const result = await asUser.query(api.accounts.getBalance, {
+      const result = await asUser.query(api.account.getBalance, {
         account: accountId,
       })
       expect(result).toBe(0)
+    })
+
+    test("returns negative balance when netFlow is negative", async () => {
+      const t = convexTest(schema)
+      const asUser = t.withIdentity(userIdentity)
+      await asUser.mutation(internal.userOnboarding.onboardUser, {
+        userId: userIdentity.subject,
+      })
+
+      const accountId = await seedAccount(t, {
+        ownerId: userIdentity.subject,
+        startingBalance: 100,
+        netFlow: -250,
+      })
+
+      const result = await asUser.query(api.account.getBalance, {
+        account: accountId,
+      })
+      expect(result).toBe(-150)
+    })
+
+    test("correctly computes balance with non-zero startingBalance and netFlow", async () => {
+      const t = convexTest(schema)
+      const asUser = t.withIdentity(userIdentity)
+      await asUser.mutation(internal.userOnboarding.onboardUser, {
+        userId: userIdentity.subject,
+      })
+
+      const accountId = await seedAccount(t, {
+        ownerId: userIdentity.subject,
+        startingBalance: 5000,
+        netFlow: 1200,
+      })
+
+      const result = await asUser.query(api.account.getBalance, {
+        account: accountId,
+      })
+      expect(result).toBe(6200)
     })
   })
 })

@@ -17,7 +17,7 @@ const identity = {
 describe("users.onboard", () => {
   const t = convexTest(schema)
   it("initializes a user with vendor accounts and categories", async () => {
-    const result = await t.mutation(internal.users.onboard, {
+    const result = await t.mutation(internal.userOnboarding.onboardUser, {
       userId: identity.subject,
     })
 
@@ -93,7 +93,7 @@ describe("accounts.get", () => {
   it("throws UNAUTHENTICATED error when user is not authenticated", async () => {
     const t = convexTest(schema)
 
-    await expect(async () => t.query(api.accounts.getAll)).rejects.toThrowError(
+    await expect(async () => t.query(api.account.list)).rejects.toThrowError(
       JSON.stringify({ code: "UNAUTHENTICATED" })
     )
   })
@@ -102,7 +102,7 @@ describe("accounts.get", () => {
     const t = convexTest(schema)
 
     await expect(() =>
-      t.withIdentity(identity).query(api.accounts.getAll)
+      t.withIdentity(identity).query(api.account.list)
     ).rejects.toThrowError(JSON.stringify({ code: "USER_NOT_STORED" }))
   })
 })
@@ -113,10 +113,12 @@ describe("accounts.add", () => {
     const asUser = t.withIdentity(identity)
 
     // onboard user make sure vendor accounts are created
-    await asUser.mutation(internal.users.onboard, { userId: identity.subject })
+    await asUser.mutation(internal.userOnboarding.onboardUser, {
+      userId: identity.subject,
+    })
 
     // Attempt to create a duplicate — this should now throw
-    const mutation = asUser.mutation(api.accounts.add, { name: "Main" })
+    const mutation = asUser.mutation(api.account.create, { name: "Main" })
     await expect(mutation).rejects.toBeInstanceOf(ConvexError)
     await expect(mutation).rejects.toThrowError(
       "An account with this name already exists."
@@ -128,10 +130,12 @@ describe("accounts.add", () => {
     const asUser = t.withIdentity(identity)
 
     // onboard user make sure vendor accounts are created
-    await asUser.mutation(internal.users.onboard, { userId: identity.subject })
+    await asUser.mutation(internal.userOnboarding.onboardUser, {
+      userId: identity.subject,
+    })
 
     // Attempt to create a account with empty name
-    const mutation = asUser.mutation(api.accounts.add, { name: "" })
+    const mutation = asUser.mutation(api.account.create, { name: "" })
     await expect(mutation).rejects.toBeInstanceOf(ConvexError)
     await expect(mutation).rejects.toThrowError("Account name cannot be empty.")
   })
@@ -141,24 +145,26 @@ describe("accounts.add", () => {
     const asUser = t.withIdentity(identity)
 
     // onboard user make sure vendor accounts are created
-    await asUser.mutation(internal.users.onboard, { userId: identity.subject })
+    await asUser.mutation(internal.userOnboarding.onboardUser, {
+      userId: identity.subject,
+    })
 
-    const mutation1 = asUser.mutation(api.accounts.add, {
+    const mutation1 = asUser.mutation(api.account.create, {
       name: "My Wallet",
       balance: -1 * 100,
     })
     await expect(mutation1).rejects.toBeInstanceOf(ConvexError)
     await expect(mutation1).rejects.toThrowError(
-      "Starting balance is outside the allowed range."
+      "Balance is outside the allowed range"
     )
 
-    const mutation2 = asUser.mutation(api.accounts.add, {
+    const mutation2 = asUser.mutation(api.account.create, {
       name: "My Second Wallet",
       balance: 10 ** 10,
     })
     await expect(mutation2).rejects.toBeInstanceOf(ConvexError)
     await expect(mutation2).rejects.toThrowError(
-      "Starting balance is outside the allowed range."
+      "Balance is outside the allowed range"
     )
   })
 
@@ -168,10 +174,10 @@ describe("accounts.add", () => {
   //   const asUser = t.withIdentity(identity)
 
   //   // onboard user make sure vendor accounts are created
-  //   await asUser.mutation(internal.users.onboard, { userId: identity.subject })
+  //   await asUser.mutation(internal.userOnboarding.onboardUser, { userId: identity.subject })
 
   //   await expect(
-  //     asUser.mutation(api.accounts.add, { name: "My Wallet" })
+  //     asUser.mutation(api.account.create, { name: "My Wallet" })
   //   ).rejects.toThrowError("Account name cannot be empty.")
   // })
 
@@ -180,12 +186,14 @@ describe("accounts.add", () => {
     const asUser = t.withIdentity(identity)
 
     // onboard user make sure vendor accounts are created
-    await asUser.mutation(internal.users.onboard, { userId: identity.subject })
+    await asUser.mutation(internal.userOnboarding.onboardUser, {
+      userId: identity.subject,
+    })
 
     // Create accounts one by one up to the limit
     // end at 3 as 2 accounts are already created while onboarding
     for (let i = 0; i < 3; i++) {
-      await asUser.mutation(api.accounts.add, { name: `ACC-${i}` })
+      await asUser.mutation(api.account.create, { name: `ACC-${i}` })
     }
     const accounts = await t.run((ctx) =>
       ctx.db
@@ -198,7 +206,7 @@ describe("accounts.add", () => {
 
     // attempt to create a new account
     await expect(
-      asUser.mutation(api.accounts.add, { name: "My Wallet" })
+      asUser.mutation(api.account.create, { name: "My Wallet" })
     ).rejects.toThrowError(
       "Account limit reached. Cannot create more accounts."
     )
@@ -209,10 +217,12 @@ describe("accounts.add", () => {
     const asUser = t.withIdentity(identity)
 
     // onboard user make sure vendor accounts are created
-    await asUser.mutation(internal.users.onboard, { userId: identity.subject })
+    await asUser.mutation(internal.userOnboarding.onboardUser, {
+      userId: identity.subject,
+    })
 
     // using defaults
-    const mutation1 = asUser.mutation(api.accounts.add, { name: "My Wallet" })
+    const mutation1 = asUser.mutation(api.account.create, { name: "My Wallet" })
     await expect(mutation1).resolves.toBeDefined()
     // test existence
     expect(
@@ -220,7 +230,7 @@ describe("accounts.add", () => {
     ).not.toBeNull()
 
     // overwriting the defaults
-    const mutation2 = asUser.mutation(api.accounts.add, {
+    const mutation2 = asUser.mutation(api.account.create, {
       name: "My Second Wallet",
       balance: 0,
       icon: "",
@@ -236,7 +246,7 @@ describe("accounts.add", () => {
 describe("accounts.getAll", () => {
   it("throws UNAUTHENTICATED error when user is not authenticated", async () => {
     const t = convexTest(schema)
-    await expect(t.query(api.accounts.getAll)).rejects.toThrowError(
+    await expect(t.query(api.account.list)).rejects.toThrowError(
       "UNAUTHENTICATED"
     )
   })
@@ -244,7 +254,7 @@ describe("accounts.getAll", () => {
   it("throws USER_NOT_STORED error when user identity exists but user is not in database", async () => {
     const t = convexTest(schema)
     const asUser = t.withIdentity(identity)
-    await expect(asUser.query(api.accounts.getAll)).rejects.toThrowError(
+    await expect(asUser.query(api.account.list)).rejects.toThrowError(
       "USER_NOT_STORED"
     )
   })
@@ -252,9 +262,11 @@ describe("accounts.getAll", () => {
   it("returns only accounts owned by the authenticated user", async () => {
     const t = convexTest(schema)
     const asUser = t.withIdentity(identity)
-    await asUser.mutation(internal.users.onboard, { userId: identity.subject })
+    await asUser.mutation(internal.userOnboarding.onboardUser, {
+      userId: identity.subject,
+    })
 
-    const allAccounts = await asUser.query(api.accounts.getAll)
+    const allAccounts = await asUser.query(api.account.list)
     const userAccounts = allAccounts.filter(
       (a) => a.ownerId === identity.subject
     )
@@ -264,7 +276,9 @@ describe("accounts.getAll", () => {
   it("returns all user accounts after each creation", async () => {
     const t = convexTest(schema)
     const asUser = t.withIdentity(identity)
-    await asUser.mutation(internal.users.onboard, { userId: identity.subject })
+    await asUser.mutation(internal.userOnboarding.onboardUser, {
+      userId: identity.subject,
+    })
 
     const newAccountNames = Array.from(
       { length: ACCOUNTS_PER_USER_MAX - vendorAccounts.length },
@@ -274,8 +288,8 @@ describe("accounts.getAll", () => {
     // Create accounts up to max limit
     // After each add, verify getAll matches raw DB query
     for (const name of newAccountNames) {
-      await asUser.mutation(api.accounts.add, { name })
-      const accounts = await asUser.query(api.accounts.getAll)
+      await asUser.mutation(api.account.create, { name })
+      const accounts = await asUser.query(api.account.list)
       expect(
         await t.run((ctx) =>
           ctx.db.query("accounts").withIndex("by_owner").collect()
@@ -289,7 +303,9 @@ describe("accounts.settings", () => {
   it("throws when deactivating the default account", async () => {
     const t = convexTest(schema)
     const asUser = t.withIdentity(identity)
-    await asUser.mutation(internal.users.onboard, { userId: identity.subject })
+    await asUser.mutation(internal.userOnboarding.onboardUser, {
+      userId: identity.subject,
+    })
 
     // get the default account
     const userAccount = await t.run((ctx) =>
@@ -303,7 +319,7 @@ describe("accounts.settings", () => {
 
     // attempt to set inactive
     await expect(
-      asUser.mutation(api.accounts.toggleActive, {
+      asUser.mutation(api.account.toggleActive, {
         id: userAccount.defaultAccount,
       })
     ).rejects.toThrowError("Default account must remain active")
@@ -314,7 +330,9 @@ describe("accounts.settings", () => {
   it("deactivating accounts", async () => {
     const t = convexTest(schema)
     const asUser = t.withIdentity(identity)
-    await asUser.mutation(internal.users.onboard, { userId: identity.subject })
+    await asUser.mutation(internal.userOnboarding.onboardUser, {
+      userId: identity.subject,
+    })
 
     // get the default account
     const userAccount = await t.run((ctx) =>
@@ -337,7 +355,7 @@ describe("accounts.settings", () => {
 
     for (const account of nonDefaultAccounts) {
       expect(
-        await asUser.mutation(api.accounts.toggleActive, {
+        await asUser.mutation(api.account.toggleActive, {
           id: account._id,
         })
       ).not.toBeNull()

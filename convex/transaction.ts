@@ -8,7 +8,6 @@ import { getCurrentUserOrThrow } from "./lib/utils"
 import schema from "./schema"
 
 export const list = query({
-  args: {},
   handler: async (ctx) => {
     const user = await getCurrentUserOrThrow(ctx)
 
@@ -170,7 +169,7 @@ export const getCreateContext = query({
 
     const categories = await ctx.db
       .query("categories")
-      .withIndex("by_type", (q) =>
+      .withIndex("by_type_name", (q) =>
         q.eq("ownerId", user.ownerId).eq("type", type)
       )
       .collect()

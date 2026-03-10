@@ -1,5 +1,6 @@
 import { convexTest } from "convex-test"
 import { describe, expect, test } from "vitest"
+import { AppError } from "#lib/errors"
 import { internal } from "../../_generated/api"
 import schema from "../../schema"
 import {
@@ -9,11 +10,7 @@ import {
   seedTransaction,
 } from "../helpers"
 
-// ---------------------------------------------------------------------------
-// Tests
-// ---------------------------------------------------------------------------
-
-describe("accounts.syncBalance", () => {
+describe("accounts.reconcileBalance", () => {
   // -------------------------------------------------------------------------
   // Account existence
   // -------------------------------------------------------------------------
@@ -24,7 +21,7 @@ describe("accounts.syncBalance", () => {
       const deletedId = await getDeletedAccountId(t)
 
       await expect(
-        t.mutation(internal.accounts.syncBalance, { account: deletedId })
+        t.mutation(internal.account.reconcileBalance, { account: deletedId })
       ).rejects.toThrowError("Account not found.")
     })
   })
@@ -34,31 +31,35 @@ describe("accounts.syncBalance", () => {
   // -------------------------------------------------------------------------
 
   describe("idempotency", () => {
-    test("returns starting and current balance unchanged when no transactions exist", async () => {
+    test("returns starting balance and netFlow unchanged when no transactions exist", async () => {
       const t = convexTest(schema)
       const accountId = await seedAccount(t, {
         startingBalance: 1000,
-        currentBalance: 1000,
+        netFlow: 0,
       })
 
-      const result = await t.mutation(internal.accounts.syncBalance, {
+      const result = await t.mutation(internal.account.reconcileBalance, {
         account: accountId,
       })
 
-      expect(result).toEqual({ startingBalance: 1000, currentBalance: 1000 })
+      expect(result).toEqual({ startingBalance: 1000, netFlow: 0 })
     })
 
-    test.todo("resets currentBalance to startingBalance and patches db when no transactions exist but balances are out of sync", async () => {
+    test("resets netFlow to 0 and patches db when no transactions exist but netFlow is non-zero", async () => {
       const t = convexTest(schema)
       const accountId = await seedAccount(t, {
         startingBalance: 1000,
-        currentBalance: 999, // intentionally stale
+        netFlow: 50, // intentionally stale
       })
 
-      await t.mutation(internal.accounts.syncBalance, { account: accountId })
+      await t.mutation(internal.account.reconcileBalance, {
+        account: accountId,
+      })
 
       const account = await t.run((ctx) => ctx.db.get(accountId))
-      expect(account?.currentBalance).toBe(1000)
+      if (!account) throw AppError.notFound("Account not found")
+      expect(account.netFlow).toBe(0)
+      expect(account.startingBalance + account.netFlow).toBe(1000)
     })
   })
 
@@ -67,7 +68,7 @@ describe("accounts.syncBalance", () => {
   // -------------------------------------------------------------------------
 
   describe("algorithm correctness", () => {
-    test("computes balance from starting balance + income", async () => {
+    test("computes netFlow from starting balance + income", async () => {
       const t = convexTest(schema)
       const accountId = await seedAccount(t, { startingBalance: 500 })
       const categoryId = await seedCategory(t, { type: "income" })
@@ -78,18 +79,23 @@ describe("accounts.syncBalance", () => {
         type: "income",
       })
 
-      // currentBalance must not change now
-      const _ = await t.run((ctx) => ctx.db.get(accountId))
-      expect(_?.currentBalance).toEqual(500)
+      // netFlow should be 0 before reconciliation
+      const before = await t.run((ctx) => ctx.db.get(accountId))
+      if (!before) throw AppError.notFound("Account not found")
+      expect(before.netFlow).toEqual(0)
+      expect(before.startingBalance + before.netFlow).toEqual(500)
 
-      const result = await t.mutation(internal.accounts.syncBalance, {
+      const result = await t.mutation(internal.account.reconcileBalance, {
         account: accountId,
       })
 
-      expect(result).toEqual({ startingBalance: 500, currentBalance: 800 })
+      expect(result).toEqual({ startingBalance: 500, netFlow: 300 })
+      const after = await t.run((ctx) => ctx.db.get(accountId))
+      if (!after) throw AppError.notFound("Account not found")
+      expect(after.startingBalance + after.netFlow).toBe(800)
     })
 
-    test("computes balance from starting balance - expense", async () => {
+    test("computes netFlow from starting balance - expense", async () => {
       const t = convexTest(schema)
       const accountId = await seedAccount(t, { startingBalance: 500 })
       const categoryId = await seedCategory(t, { type: "expense" })
@@ -100,11 +106,14 @@ describe("accounts.syncBalance", () => {
         type: "expense",
       })
 
-      const result = await t.mutation(internal.accounts.syncBalance, {
+      const result = await t.mutation(internal.account.reconcileBalance, {
         account: accountId,
       })
 
-      expect(result).toEqual({ startingBalance: 500, currentBalance: 300 })
+      expect(result).toEqual({ startingBalance: 500, netFlow: -200 })
+      const account = await t.run((ctx) => ctx.db.get(accountId))
+      if (!account) throw AppError.notFound("Account not found")
+      expect(account.startingBalance + account.netFlow).toBe(300)
     })
 
     test("correctly nets multiple income and expense transactions", async () => {
@@ -137,12 +146,16 @@ describe("accounts.syncBalance", () => {
         type: "income",
       })
 
-      const result = await t.mutation(internal.accounts.syncBalance, {
+      const result = await t.mutation(internal.account.reconcileBalance, {
         account: accountId,
       })
 
-      // 1000 + 500 - 200 - 100 + 300 = 1500
-      expect(result).toEqual({ startingBalance: 1000, currentBalance: 1500 })
+      // netFlow = 500 - 200 - 100 + 300 = 500
+      expect(result).toEqual({ startingBalance: 1000, netFlow: 500 })
+      const account = await t.run((ctx) => ctx.db.get(accountId))
+      // computed balance = 1000 + 500 = 1500
+      if (!account) throw AppError.notFound("Account not found")
+      expect(account.startingBalance + account.netFlow).toBe(1500)
     })
 
     test("allows reconciled balance to go negative", async () => {
@@ -156,18 +169,21 @@ describe("accounts.syncBalance", () => {
         type: "expense",
       })
 
-      const result = await t.mutation(internal.accounts.syncBalance, {
+      const result = await t.mutation(internal.account.reconcileBalance, {
         account: accountId,
       })
 
-      expect(result).toEqual({ startingBalance: 100, currentBalance: -300 })
+      expect(result).toEqual({ startingBalance: 100, netFlow: -400 })
+      const account = await t.run((ctx) => ctx.db.get(accountId))
+      if (!account) throw AppError.notFound("Account not found")
+      expect(account.startingBalance + account.netFlow).toBe(-300)
     })
 
-    test("overwrites a stale currentBalance with the correct reconciled value", async () => {
+    test("overwrites a stale netFlow with the correct reconciled value", async () => {
       const t = convexTest(schema)
       const accountId = await seedAccount(t, {
         startingBalance: 1000,
-        currentBalance: 9999, // stale/incorrect
+        netFlow: 8999, // stale/incorrect (would give balance of 9999)
       })
       const categoryId = await seedCategory(t, { type: "income" })
       await seedTransaction(t, {
@@ -177,10 +193,14 @@ describe("accounts.syncBalance", () => {
         type: "income",
       })
 
-      await t.mutation(internal.accounts.syncBalance, { account: accountId })
+      await t.mutation(internal.account.reconcileBalance, {
+        account: accountId,
+      })
 
       const account = await t.run((ctx) => ctx.db.get(accountId))
-      expect(account?.currentBalance).toBe(1200)
+      if (!account) throw AppError.notFound("Account not found")
+      expect(account.netFlow).toBe(200)
+      expect(account.startingBalance + account.netFlow).toBe(1200)
     })
 
     test("only counts transactions belonging to the given account", async () => {
@@ -201,11 +221,47 @@ describe("accounts.syncBalance", () => {
         type: "income",
       })
 
-      const result = await t.mutation(internal.accounts.syncBalance, {
+      const result = await t.mutation(internal.account.reconcileBalance, {
         account: accountA,
       })
 
-      expect(result).toEqual({ startingBalance: 500, currentBalance: 800 })
+      expect(result).toEqual({ startingBalance: 500, netFlow: 300 })
+      const account = await t.run((ctx) => ctx.db.get(accountA))
+      if (!account) throw AppError.notFound("Account not found")
+      expect(account.startingBalance + account.netFlow).toBe(800)
+    })
+
+    test("handles large number of transactions correctly", async () => {
+      const t = convexTest(schema)
+      const accountId = await seedAccount(t, { startingBalance: 10_000 })
+      const incomeCategoryId = await seedCategory(t, { type: "income" })
+      const expenseCategoryId = await seedCategory(t, { type: "expense" })
+
+      // Create 20 transactions
+      for (let i = 0; i < 10; i++) {
+        await seedTransaction(t, {
+          accountId,
+          categoryId: incomeCategoryId,
+          amount: 100,
+          type: "income",
+        })
+        await seedTransaction(t, {
+          accountId,
+          categoryId: expenseCategoryId,
+          amount: 50,
+          type: "expense",
+        })
+      }
+
+      const result = await t.mutation(internal.account.reconcileBalance, {
+        account: accountId,
+      })
+
+      // netFlow = 10 * 100 - 10 * 50 = 500
+      expect(result).toEqual({ startingBalance: 10_000, netFlow: 500 })
+      const account = await t.run((ctx) => ctx.db.get(accountId))
+      if (!account) throw AppError.notFound("Account not found")
+      expect(account.startingBalance + account.netFlow).toBe(10_500)
     })
   })
 })

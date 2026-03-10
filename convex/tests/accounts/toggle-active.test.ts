@@ -39,10 +39,10 @@ function seedAccount(
     ctx.db.insert("accounts", {
       ownerId: opts.ownerId ?? userIdentity.subject,
       is_active: opts.is_active ?? true,
-      is_default: false,
+      is_archived: false,
       name: "Test Account",
       startingBalance: 0,
-      currentBalance: 0,
+      netFlow: 0,
       icon: "X",
     })
   )
@@ -57,10 +57,10 @@ function getDeletedAccountId(t: TestConvex<typeof schema>, ownerId: string) {
     const id = await ctx.db.insert("accounts", {
       ownerId,
       is_active: true,
-      is_default: false,
+      is_archived: false,
       name: "Temp",
       startingBalance: 0,
-      currentBalance: 0,
+      netFlow: 0,
       icon: "X",
     })
     await ctx.db.delete(id)
@@ -84,7 +84,7 @@ describe("accounts.toggleActive", () => {
       const accountId = await seedAccount(t)
 
       await expect(
-        t.mutation(api.accounts.toggleActive, { id: accountId })
+        t.mutation(api.account.toggleActive, { id: accountId })
       ).rejects.toThrowError("UNAUTHENTICATED")
     })
 
@@ -92,9 +92,9 @@ describe("accounts.toggleActive", () => {
       const t = convexTest(schema)
       const accountId = await seedAccount(t)
 
-      // Has Clerk identity, but internal.users.onboard was never called
+      // Has Clerk identity, but internal.userOnboarding.onboardUser was never called
       await expect(
-        t.withIdentity(userIdentity).mutation(api.accounts.toggleActive, {
+        t.withIdentity(userIdentity).mutation(api.account.toggleActive, {
           id: accountId,
         })
       ).rejects.toThrowError("USER_NOT_STORED")
@@ -109,14 +109,14 @@ describe("accounts.toggleActive", () => {
     test("throws when account id does not exist", async () => {
       const t = convexTest(schema)
       const asUser = t.withIdentity(userIdentity)
-      await asUser.mutation(internal.users.onboard, {
+      await asUser.mutation(internal.userOnboarding.onboardUser, {
         userId: userIdentity.subject,
       })
 
       const deletedId = await getDeletedAccountId(t, userIdentity.subject)
 
       await expect(
-        asUser.mutation(api.accounts.toggleActive, { id: deletedId })
+        asUser.mutation(api.account.toggleActive, { id: deletedId })
       ).rejects.toThrowError("Account not found.")
     })
   })
@@ -129,12 +129,16 @@ describe("accounts.toggleActive", () => {
     test("throws when account belongs to a different user", async () => {
       const t = convexTest(schema)
 
-      await t.withIdentity(userIdentity).mutation(internal.users.onboard, {
-        userId: userIdentity.subject,
-      })
-      await t.withIdentity(otherUserIdentity).mutation(internal.users.onboard, {
-        userId: otherUserIdentity.subject,
-      })
+      await t
+        .withIdentity(userIdentity)
+        .mutation(internal.userOnboarding.onboardUser, {
+          userId: userIdentity.subject,
+        })
+      await t
+        .withIdentity(otherUserIdentity)
+        .mutation(internal.userOnboarding.onboardUser, {
+          userId: otherUserIdentity.subject,
+        })
 
       // Seed an account owned by otherUser directly — bypasses add mutation
       const otherAccountId = await seedAccount(t, {
@@ -142,7 +146,7 @@ describe("accounts.toggleActive", () => {
       })
 
       await expect(
-        t.withIdentity(userIdentity).mutation(api.accounts.toggleActive, {
+        t.withIdentity(userIdentity).mutation(api.account.toggleActive, {
           id: otherAccountId,
         })
       ).rejects.toThrowError(
@@ -159,7 +163,7 @@ describe("accounts.toggleActive", () => {
     test("throws when attempting to deactivate the default account", async () => {
       const t = convexTest(schema)
       const asUser = t.withIdentity(userIdentity)
-      await asUser.mutation(internal.users.onboard, {
+      await asUser.mutation(internal.userOnboarding.onboardUser, {
         userId: userIdentity.subject,
       })
 
@@ -180,14 +184,14 @@ describe("accounts.toggleActive", () => {
       })
 
       await expect(
-        asUser.mutation(api.accounts.toggleActive, { id: defaultAccountId })
+        asUser.mutation(api.account.toggleActive, { id: defaultAccountId })
       ).rejects.toThrowError("Default account must remain active.")
     })
 
     test("allows activating the default account if it is somehow inactive", async () => {
       const t = convexTest(schema)
       const asUser = t.withIdentity(userIdentity)
-      await asUser.mutation(internal.users.onboard, {
+      await asUser.mutation(internal.userOnboarding.onboardUser, {
         userId: userIdentity.subject,
       })
 
@@ -209,7 +213,7 @@ describe("accounts.toggleActive", () => {
         return id
       })
 
-      const result = await asUser.mutation(api.accounts.toggleActive, {
+      const result = await asUser.mutation(api.account.toggleActive, {
         id: defaultAccountId,
       })
 
@@ -227,13 +231,13 @@ describe("accounts.toggleActive", () => {
     test("deactivates an active non-default account", async () => {
       const t = convexTest(schema)
       const asUser = t.withIdentity(userIdentity)
-      await asUser.mutation(internal.users.onboard, {
+      await asUser.mutation(internal.userOnboarding.onboardUser, {
         userId: userIdentity.subject,
       })
 
       const accountId = await seedAccount(t, { is_active: true })
 
-      const result = await asUser.mutation(api.accounts.toggleActive, {
+      const result = await asUser.mutation(api.account.toggleActive, {
         id: accountId,
       })
 
@@ -245,13 +249,13 @@ describe("accounts.toggleActive", () => {
     test("activates an inactive non-default account", async () => {
       const t = convexTest(schema)
       const asUser = t.withIdentity(userIdentity)
-      await asUser.mutation(internal.users.onboard, {
+      await asUser.mutation(internal.userOnboarding.onboardUser, {
         userId: userIdentity.subject,
       })
 
       const accountId = await seedAccount(t, { is_active: false })
 
-      const result = await asUser.mutation(api.accounts.toggleActive, {
+      const result = await asUser.mutation(api.account.toggleActive, {
         id: accountId,
       })
 
@@ -263,13 +267,13 @@ describe("accounts.toggleActive", () => {
     test("returns the account id after a successful toggle", async () => {
       const t = convexTest(schema)
       const asUser = t.withIdentity(userIdentity)
-      await asUser.mutation(internal.users.onboard, {
+      await asUser.mutation(internal.userOnboarding.onboardUser, {
         userId: userIdentity.subject,
       })
 
       const accountId = await seedAccount(t, { is_active: true })
 
-      const result = await asUser.mutation(api.accounts.toggleActive, {
+      const result = await asUser.mutation(api.account.toggleActive, {
         id: accountId,
       })
 
@@ -279,14 +283,14 @@ describe("accounts.toggleActive", () => {
     test("toggling twice restores the original active state", async () => {
       const t = convexTest(schema)
       const asUser = t.withIdentity(userIdentity)
-      await asUser.mutation(internal.users.onboard, {
+      await asUser.mutation(internal.userOnboarding.onboardUser, {
         userId: userIdentity.subject,
       })
 
       const accountId = await seedAccount(t, { is_active: true })
 
-      await asUser.mutation(api.accounts.toggleActive, { id: accountId })
-      await asUser.mutation(api.accounts.toggleActive, { id: accountId })
+      await asUser.mutation(api.account.toggleActive, { id: accountId })
+      await asUser.mutation(api.account.toggleActive, { id: accountId })
 
       const restored = await t.run((ctx) => ctx.db.get(accountId))
       expect(restored?.is_active).toBe(true)
@@ -301,12 +305,16 @@ describe("accounts.toggleActive", () => {
     test("toggling one user's account does not affect another user's account", async () => {
       const t = convexTest(schema)
 
-      await t.withIdentity(userIdentity).mutation(internal.users.onboard, {
-        userId: userIdentity.subject,
-      })
-      await t.withIdentity(otherUserIdentity).mutation(internal.users.onboard, {
-        userId: otherUserIdentity.subject,
-      })
+      await t
+        .withIdentity(userIdentity)
+        .mutation(internal.userOnboarding.onboardUser, {
+          userId: userIdentity.subject,
+        })
+      await t
+        .withIdentity(otherUserIdentity)
+        .mutation(internal.userOnboarding.onboardUser, {
+          userId: otherUserIdentity.subject,
+        })
 
       const myAccount = await seedAccount(t, {
         ownerId: userIdentity.subject,
@@ -317,7 +325,7 @@ describe("accounts.toggleActive", () => {
         is_active: true,
       })
 
-      await t.withIdentity(userIdentity).mutation(api.accounts.toggleActive, {
+      await t.withIdentity(userIdentity).mutation(api.account.toggleActive, {
         id: myAccount,
       })
 

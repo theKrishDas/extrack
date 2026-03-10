@@ -1,8 +1,5 @@
 import { v } from "convex/values"
-import {
-  vendorAccounts,
-  vendorCategories,
-} from "../src/lib/constants/vendor-data"
+import { vendorAccounts, vendorCategories } from "#lib/seed"
 import { internalMutation } from "./_generated/server"
 
 /**
@@ -39,7 +36,7 @@ export const onboardUser = internalMutation({
         startingBalance: account.startingBalance,
         netFlow: 0,
         is_active: true,
-        is_default: account.is_default,
+        is_archived: false,
         icon: account.icon,
       })
     )
@@ -62,17 +59,13 @@ export const onboardUser = internalMutation({
       Promise.all(categoryPromises),
     ])
 
-    // Find the default account (the "Main" account with is_default: true)
-    const defaultAccountIndex = vendorAccounts.findIndex((a) => a.is_default)
-    const defaultAccountId = accountIds[defaultAccountIndex]
-
+    // Set the first account as default
+    const defaultAccountId = accountIds[0]
     // Create user settings with the default account
-    if (defaultAccountId) {
-      await ctx.db.insert("user", {
-        ownerId: userId,
-        defaultAccount: defaultAccountId,
-      })
-    }
+    await ctx.db.insert("user", {
+      ownerId: userId,
+      defaultAccount: defaultAccountId,
+    })
 
     const results = [...accountIds, ...categoryIds]
 
