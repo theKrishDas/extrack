@@ -118,8 +118,8 @@ describe("getDoc", () => {
         getDoc(ctx.db, accountId).mustBeOwnedBy("user_clerk_456")
       )
 
-      expect(result).rejects.toBeInstanceOf(ConvexError)
-      expect(result).rejects.toThrowError("DOCUMENT_NOT_OWNED")
+      await expect(result).rejects.toBeInstanceOf(ConvexError)
+      await expect(result).rejects.toThrowError("DOCUMENT_NOT_OWNED")
     })
 
     it("throws NOT_FOUND when document does not exist, before checking ownership", async () => {

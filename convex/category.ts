@@ -1,9 +1,15 @@
 import { ConvexError, v } from "convex/values"
+import z from "zod/v3"
 import { colors } from "#lib/constants/colors"
+import {
+  CATEGORY_NAME_MAX_LENGTH,
+  CATEGORY_NAME_MIN_LENGTH,
+} from "#lib/constants/constraints"
 import { transactionTypes } from "#lib/constants/transaction-types"
+import { v as vLib } from "#lib/validators"
 import { mutation, query } from "./_generated/server"
 import { getDoc } from "./lib/doc"
-import { getCurrentUserOrThrow } from "./lib/utils"
+import { getCurrentUserOrThrow, zid, zMutation } from "./lib/utils"
 
 export const list = query({
   args: {},
@@ -39,13 +45,13 @@ export const listByType = query({
   },
 })
 
-export const create = mutation({
-  args: {
-    name: v.string(),
-    color: v.union(...colors.map((c) => v.literal(c))),
-    type: v.union(...transactionTypes.map((t) => v.literal(t))),
-    icon: v.optional(v.string()),
-  },
+export const create = zMutation({
+  args: z.object({
+    name: vLib.name(CATEGORY_NAME_MIN_LENGTH, CATEGORY_NAME_MAX_LENGTH),
+    color: z.enum(colors),
+    type: z.enum(transactionTypes),
+    icon: vLib.name(1, 10).optional(),
+  }),
   handler: async (ctx, { name, type, color, icon: argIcon }) => {
     const user = await getCurrentUserOrThrow(ctx)
     const existing = await ctx.db
@@ -77,13 +83,13 @@ export const create = mutation({
   },
 })
 
-export const update = mutation({
-  args: {
-    id: v.id("categories"),
-    name: v.string(),
-    color: v.union(...colors.map((c) => v.literal(c))),
-    icon: v.optional(v.string()),
-  },
+export const update = zMutation({
+  args: z.object({
+    id: zid("categories"),
+    name: vLib.name(CATEGORY_NAME_MIN_LENGTH, CATEGORY_NAME_MAX_LENGTH),
+    color: z.enum(colors),
+    icon: vLib.name(1, 10).optional(),
+  }),
   handler: async (ctx, { id, ...rest }) => {
     await ctx.db.patch("categories", id, { ...rest })
   },

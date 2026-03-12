@@ -1,10 +1,6 @@
 import { ConvexError } from "convex/values"
 import { convexTest } from "convex-test"
 import { describe, expect, test } from "vitest"
-import {
-  TRANSACTION_AMOUNT_MAX,
-  TRANSACTION_AMOUNT_MIN,
-} from "#lib/constants/constraints"
 import { AppError } from "#lib/errors"
 import { internal } from "../../_generated/api"
 import schema from "../../schema"
@@ -140,46 +136,6 @@ describe("account.applyTransactionFlow", () => {
         })
       expect(updated.netFlow).toBe(150)
       expect(updated.startingBalance + updated.netFlow).toBe(150)
-    })
-
-    test("throws when amount is out of range", async () => {
-      const t = convexTest(schema)
-      const accountId = await seedAccount(t, {
-        startingBalance: 0,
-        netFlow: 500,
-      })
-
-      await expect(
-        t.mutation(internal.account.applyTransactionFlow, {
-          id: accountId,
-          type: "income",
-          amount: TRANSACTION_AMOUNT_MAX + 1,
-        })
-      ).rejects.toThrowError("Amount is outside the allowed range.")
-
-      await expect(
-        t.mutation(internal.account.applyTransactionFlow, {
-          id: accountId,
-          type: "income",
-          amount: TRANSACTION_AMOUNT_MIN - 1,
-        })
-      ).rejects.toThrowError("Amount is outside the allowed range.")
-    })
-
-    test.todo("throws when amount has decimal points (not in cents)", async () => {
-      const t = convexTest(schema)
-      const accountId = await seedAccount(t, {
-        startingBalance: 0,
-        netFlow: 500,
-      })
-
-      await expect(
-        t.mutation(internal.account.applyTransactionFlow, {
-          id: accountId,
-          type: "income",
-          amount: 10.5,
-        })
-      ).rejects.toThrowError("Amount must be in cents (integer), received 10.5")
     })
   })
 

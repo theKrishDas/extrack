@@ -1,11 +1,18 @@
 import { paginationOptsValidator } from "convex/server"
 import { ConvexError, v } from "convex/values"
 import { stream } from "convex-helpers/server/stream"
+import z from "zod/v3"
+import {
+  TRANSACTION_AMOUNT_MAX,
+  TRANSACTION_AMOUNT_MIN,
+  TRANSACTION_NOTE_MAX_LENGTH,
+} from "#lib/constants/constraints"
 import { transactionTypes } from "#lib/constants/transaction-types"
+import { v as vLib } from "#lib/validators"
 import { internal } from "./_generated/api"
 import { mutation, query } from "./_generated/server"
 import { getDoc } from "./lib/doc"
-import { getCurrentUserOrThrow } from "./lib/utils"
+import { getCurrentUserOrThrow, zid, zMutation } from "./lib/utils"
 import schema from "./schema"
 
 export const list = query({
@@ -25,15 +32,15 @@ export const get = query({
   handler: async (ctx, { id }) => await ctx.db.get(id),
 })
 
-export const create = mutation({
-  args: {
-    amount: v.number(),
-    note: v.optional(v.string()),
-    type: v.union(...transactionTypes.map((t) => v.literal(t))),
-    category: v.id("categories"),
-    account: v.id("accounts"),
-    date: v.number(),
-  },
+export const create = zMutation({
+  args: z.object({
+    amount: vLib.cents(TRANSACTION_AMOUNT_MIN, TRANSACTION_AMOUNT_MAX),
+    note: z.string().max(TRANSACTION_NOTE_MAX_LENGTH).optional(),
+    type: z.enum(transactionTypes),
+    category: zid("categories"),
+    account: zid("accounts"),
+    date: z.number(),
+  }),
   handler: async (ctx, args) => {
     const user = await getCurrentUserOrThrow(ctx)
     const [account, category] = await Promise.all([

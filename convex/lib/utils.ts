@@ -1,6 +1,18 @@
 import { ConvexError } from "convex/values"
+import { NoOp } from "convex-helpers/server/customFunctions"
+import { zCustomMutation, zCustomQuery } from "convex-helpers/server/zod3"
 import type { Doc } from "../_generated/dataModel"
 import type { MutationCtx, QueryCtx } from "../_generated/server"
+import { mutation, query } from "../_generated/server"
+
+/** A custom mutation builder that accepts Zod validators for argument validation, replacing the standard `mutation` constructor. */
+export const zMutation = zCustomMutation(mutation, NoOp)
+
+/** A custom query builder that accepts Zod validators for argument validation, replacing the standard `query` constructor. */
+export const zQuery = zCustomQuery(query, NoOp)
+
+// biome-ignore lint/performance/noBarrelFile: we need to export zid for convenience
+export { zid } from "convex-helpers/server/zod3"
 
 export async function getCurrentUserOrThrow(ctx: QueryCtx | MutationCtx) {
   const identity = await ctx.auth.getUserIdentity()

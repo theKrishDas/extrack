@@ -72,7 +72,7 @@ describe("accounts.getBalance", () => {
 
       const deletedId = await getDeletedAccountId(t)
 
-      expect(
+      await expect(
         asUser.query(api.account.getBalance, { account: deletedId })
       ).rejects.toThrowError("DOCUMENT_NOT_FOUND")
     })
@@ -163,7 +163,7 @@ describe("accounts.getBalance", () => {
 
       const deletedId = await getDeletedAccountId(t)
 
-      expect(
+      await expect(
         asUser.query(api.account.getBalance, { account: deletedId })
       ).rejects.toThrowError("DOCUMENT_NOT_FOUND")
     })
@@ -185,7 +185,7 @@ describe("accounts.getBalance", () => {
         ownerId: otherUserIdentity.subject,
       })
 
-      expect(
+      await expect(
         t
           .withIdentity(userIdentity)
           .query(api.account.getBalance, { account: otherAccountId })

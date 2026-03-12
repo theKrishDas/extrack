@@ -1,15 +1,17 @@
 import { ConvexError, v } from "convex/values"
+import z from "zod/v3"
 import {
+  ACCOUNT_NAME_MAX_LENGTH,
+  ACCOUNT_NAME_MIN_LENGTH,
   ACCOUNT_STARTING_BALANCE_MAX,
   ACCOUNT_STARTING_BALANCE_MIN,
   ACCOUNTS_PER_USER_MAX,
-  TRANSACTION_AMOUNT_MAX,
-  TRANSACTION_AMOUNT_MIN,
 } from "#lib/constants/constraints"
 import { transactionTypes } from "#lib/constants/transaction-types"
+import { v as vLib } from "#lib/validators"
 import { internalMutation, mutation, query } from "./_generated/server"
 import { getDoc } from "./lib/doc"
-import { getCurrentUserOrThrow } from "./lib/utils"
+import { getCurrentUserOrThrow, zid, zMutation } from "./lib/utils"
 
 // Uses take() with the known per-user account cap instead of collect()
 // to limit the number of rows read.
@@ -76,12 +78,15 @@ export const getByStringId = query({
  * @throws If the user has reached the account limit, the name is invalid or duplicate,
  * or the balance is out of the allowed range.
  */
-export const create = mutation({
-  args: {
-    name: v.string(),
-    balance: v.optional(v.number()),
-    icon: v.optional(v.string()),
-  },
+export const create = zMutation({
+  args: z.object({
+    name: vLib.name(ACCOUNT_NAME_MIN_LENGTH, ACCOUNT_NAME_MAX_LENGTH),
+    balance: vLib.cents(
+      ACCOUNT_STARTING_BALANCE_MIN,
+      ACCOUNT_STARTING_BALANCE_MAX
+    ),
+    icon: vLib.name(1, 10),
+  }),
   handler: async (ctx, args) => {
     const user = await getCurrentUserOrThrow(ctx)
 
@@ -97,34 +102,8 @@ export const create = mutation({
         limit: ACCOUNTS_PER_USER_MAX,
       })
 
-    // TODO: validate name using zod (length, characters, etc.)
     const accountName = args.name.trim()
-
-    if (!accountName)
-      throw new ConvexError({
-        code: "ACCOUNT_NAME_EMPTY",
-        message: "Account name cannot be empty.",
-      })
-
-    const balance = args.balance ?? 0
-
-    if (
-      balance < ACCOUNT_STARTING_BALANCE_MIN ||
-      balance > ACCOUNT_STARTING_BALANCE_MAX
-    )
-      throw new ConvexError({
-        code: "INVALID_BALANCE_RANGE",
-        message: "Balance is outside the allowed range.",
-        min: ACCOUNT_STARTING_BALANCE_MIN,
-        max: ACCOUNT_STARTING_BALANCE_MAX,
-      })
-
-    // TODO: use better defaults here
-    // perhaps use the seed-values
-    const icon = args.icon || "material-symbols:wallet"
-
     const existing = accounts.find((a) => a.name === accountName)
-
     if (existing)
       throw new ConvexError({
         code: "ACCOUNT_NAME_TAKEN",
@@ -135,11 +114,11 @@ export const create = mutation({
     return await ctx.db.insert("accounts", {
       ownerId: user.ownerId,
       name: accountName,
-      startingBalance: balance,
+      startingBalance: args.balance,
       netFlow: 0,
       is_active: true,
       is_archived: false,
-      icon,
+      icon: args.icon,
     })
   },
 })
@@ -158,25 +137,18 @@ export const create = mutation({
  * @throws If the account does not exist, does not belong to the authenticated user,
  * the name is empty, or another account with the same name already exists.
  */
-export const update = mutation({
-  args: {
-    id: v.id("accounts"),
-    name: v.string(),
-    icon: v.string(),
-  },
+export const update = zMutation({
+  args: z.object({
+    id: zid("accounts"),
+    name: vLib.name(ACCOUNT_NAME_MIN_LENGTH, ACCOUNT_NAME_MAX_LENGTH),
+    icon: vLib.name(1, 10),
+  }),
   handler: async (ctx, { id: accountId, name, icon }) => {
     const user = await getCurrentUserOrThrow(ctx)
 
     const account = await getDoc(ctx.db, accountId).mustBeOwnedBy(user.ownerId)
 
-    // TODO: validate name using zod (length, characters, etc.)
     const accountName = name.trim()
-
-    if (!accountName)
-      throw new ConvexError({
-        code: "ACCOUNT_NAME_EMPTY",
-        message: "Account name cannot be empty.",
-      })
 
     // Already in desired state — no write needed.
     if (account.name === accountName && account.icon === icon) return accountId
@@ -292,14 +264,6 @@ export const applyTransactionFlow = internalMutation({
     amount: v.number(),
   },
   handler: async (ctx, { id: accountId, type, amount }) => {
-    if (amount < TRANSACTION_AMOUNT_MIN || amount > TRANSACTION_AMOUNT_MAX)
-      throw new ConvexError({
-        code: "INVALID_TRANSACTION_AMOUNT",
-        message: "Amount is outside the allowed range.",
-        min: TRANSACTION_AMOUNT_MIN,
-        max: TRANSACTION_AMOUNT_MAX,
-      })
-
     const account = await getDoc(ctx.db, accountId).mustExist()
 
     const previousBalance = account.startingBalance + account.netFlow
@@ -367,21 +331,16 @@ const deleteAccount = mutation({
  * @returns The updated account ID.
  * @throws If the account is not found or does not belong to the authenticated user.
  */
-export const setStartingBalance = mutation({
-  args: { id: v.id("accounts"), balance: v.number() },
+export const setStartingBalance = zMutation({
+  args: z.object({
+    id: zid("accounts"),
+    balance: vLib.cents(
+      ACCOUNT_STARTING_BALANCE_MIN,
+      ACCOUNT_STARTING_BALANCE_MAX
+    ),
+  }),
   handler: async (ctx, { id: accountId, balance: newBalance }) => {
     const user = await getCurrentUserOrThrow(ctx)
-
-    if (
-      newBalance < ACCOUNT_STARTING_BALANCE_MIN ||
-      newBalance > ACCOUNT_STARTING_BALANCE_MAX
-    )
-      throw new ConvexError({
-        code: "INVALID_BALANCE_RANGE",
-        message: "Balance is outside the allowed range.",
-        min: ACCOUNT_STARTING_BALANCE_MIN,
-        max: ACCOUNT_STARTING_BALANCE_MAX,
-      })
 
     await getDoc(ctx.db, accountId).mustBeOwnedBy(user.ownerId)
 

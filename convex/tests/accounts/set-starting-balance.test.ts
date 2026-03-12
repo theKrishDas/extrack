@@ -1,3 +1,4 @@
+import { ConvexError } from "convex/values"
 import { convexTest } from "convex-test"
 import { describe, expect, test } from "vitest"
 import {
@@ -32,7 +33,7 @@ describe("accounts.setStartingBalance", () => {
       const t = convexTest(schema)
       const accountId = await seedAccount(t)
 
-      expect(
+      await expect(
         t.mutation(api.account.setStartingBalance, {
           id: accountId,
           balance: 0,
@@ -63,7 +64,7 @@ describe("accounts.setStartingBalance", () => {
 
       const deletedId = await getDeletedAccountId(t)
 
-      expect(
+      await expect(
         asUser.mutation(api.account.setStartingBalance, {
           id: deletedId,
           balance: 0,
@@ -90,7 +91,7 @@ describe("accounts.setStartingBalance", () => {
         ownerId: otherUserIdentity.subject,
       })
 
-      expect(
+      await expect(
         t.withIdentity(userIdentity).mutation(api.account.setStartingBalance, {
           id: otherAccountId,
           balance: 0,
@@ -100,7 +101,7 @@ describe("accounts.setStartingBalance", () => {
   })
 
   describe("balance validation", () => {
-    test.todo("rejects decimal (non-integer) values", async () => {
+    test("rejects decimal (non-integer) values", async () => {
       const t = convexTest(schema)
       const asUser = t.withIdentity(userIdentity)
       await asUser.mutation(internal.userOnboarding.onboardUser, {
@@ -108,15 +109,15 @@ describe("accounts.setStartingBalance", () => {
       })
       const accountId = await seedAccount(t)
 
-      expect(
+      await expect(
         asUser.mutation(api.account.setStartingBalance, {
           id: accountId,
           balance: 1.5,
         })
-      ).rejects.toThrowError("INVALID_BALANCE_RANGE")
+      ).rejects.toBeInstanceOf(ConvexError)
     })
 
-    test("rejects balance below ACCOUNT_STARTING_BALANCE_MAX", async () => {
+    test("rejects balance below ACCOUNT_STARTING_BALANCE_MIN", async () => {
       const t = convexTest(schema)
       const asUser = t.withIdentity(userIdentity)
       await asUser.mutation(internal.userOnboarding.onboardUser, {
@@ -124,15 +125,15 @@ describe("accounts.setStartingBalance", () => {
       })
       const accountId = await seedAccount(t)
 
-      expect(
+      await expect(
         asUser.mutation(api.account.setStartingBalance, {
           id: accountId,
           balance: ACCOUNT_STARTING_BALANCE_MIN - 1,
         })
-      ).rejects.toThrowError("INVALID_BALANCE_RANGE")
+      ).rejects.toBeInstanceOf(ConvexError)
     })
 
-    test("rejects balance above ACCOUNT_STARTING_BALANCE_MIN", async () => {
+    test("rejects balance above ACCOUNT_STARTING_BALANCE_MAX", async () => {
       const t = convexTest(schema)
       const asUser = t.withIdentity(userIdentity)
       await asUser.mutation(internal.userOnboarding.onboardUser, {
@@ -140,12 +141,12 @@ describe("accounts.setStartingBalance", () => {
       })
       const accountId = await seedAccount(t)
 
-      expect(
+      await expect(
         asUser.mutation(api.account.setStartingBalance, {
           id: accountId,
           balance: ACCOUNT_STARTING_BALANCE_MAX + 1,
         })
-      ).rejects.toThrowError("INVALID_BALANCE_RANGE")
+      ).rejects.toBeInstanceOf(ConvexError)
     })
 
     test("accepts balance of 0", async () => {

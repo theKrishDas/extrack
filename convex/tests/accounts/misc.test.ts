@@ -1,9 +1,12 @@
-/// <reference types="vite/client" />
-
 import { ConvexError } from "convex/values"
 import { convexTest } from "convex-test"
 import { describe, expect, it } from "vitest"
-import { ACCOUNTS_PER_USER_MAX } from "#lib/constants/constraints"
+import {
+  ACCOUNT_NAME_MAX_LENGTH,
+  ACCOUNT_STARTING_BALANCE_MAX,
+  ACCOUNT_STARTING_BALANCE_MIN,
+  ACCOUNTS_PER_USER_MAX,
+} from "#lib/constants/constraints"
 import { vendorAccounts } from "#lib/seed"
 import { api, internal } from "../../_generated/api"
 import schema from "../../schema"
@@ -89,11 +92,11 @@ describe("users.onboard", () => {
   })
 })
 
-describe("accounts.get", () => {
+describe("account.get", () => {
   it("throws UNAUTHENTICATED error when user is not authenticated", async () => {
     const t = convexTest(schema)
 
-    await expect(async () => t.query(api.account.list)).rejects.toThrowError(
+    await expect(t.query(api.account.list)).rejects.toThrowError(
       JSON.stringify({ code: "UNAUTHENTICATED" })
     )
   })
@@ -101,13 +104,13 @@ describe("accounts.get", () => {
   it("throws USER_NOT_STORED error when user identity exists but user is not in database", async () => {
     const t = convexTest(schema)
 
-    await expect(() =>
+    await expect(
       t.withIdentity(identity).query(api.account.list)
     ).rejects.toThrowError(JSON.stringify({ code: "USER_NOT_STORED" }))
   })
 })
 
-describe("accounts.add", () => {
+describe("account.create", () => {
   it("throws error when creating account with duplicate name", async () => {
     const t = convexTest(schema)
     const asUser = t.withIdentity(identity)
@@ -118,7 +121,11 @@ describe("accounts.add", () => {
     })
 
     // Attempt to create a duplicate — this should now throw
-    const mutation = asUser.mutation(api.account.create, { name: "Main" })
+    const mutation = asUser.mutation(api.account.create, {
+      name: "Main",
+      icon: "🌏",
+      balance: 0,
+    })
     await expect(mutation).rejects.toBeInstanceOf(ConvexError)
     await expect(mutation).rejects.toThrowError(
       "An account with this name already exists."
@@ -135,9 +142,51 @@ describe("accounts.add", () => {
     })
 
     // Attempt to create a account with empty name
-    const mutation = asUser.mutation(api.account.create, { name: "" })
+    const mutation = asUser.mutation(api.account.create, {
+      name: "",
+      icon: "🌏",
+      balance: 0,
+    })
     await expect(mutation).rejects.toBeInstanceOf(ConvexError)
-    await expect(mutation).rejects.toThrowError("Account name cannot be empty.")
+  })
+
+  it("throws error when name is too long", async () => {
+    const t = convexTest(schema)
+    const asUser = t.withIdentity(identity)
+    // onboard user make sure vendor accounts are created
+    await asUser.mutation(internal.userOnboarding.onboardUser, {
+      userId: identity.subject,
+    })
+
+    const mutation = asUser.mutation(api.account.create, {
+      name: "a".repeat(ACCOUNT_NAME_MAX_LENGTH + 1),
+      balance: 0,
+      icon: "🌏",
+    })
+    await expect(mutation).rejects.toBeInstanceOf(ConvexError)
+    await expect(mutation).rejects.toSatisfy((err) => {
+      expect(err.data as unknown as string).toBeDefined()
+      return true
+    })
+  })
+
+  it("throws error when name is too short", async () => {
+    const t = convexTest(schema)
+    const asUser = t.withIdentity(identity)
+    // onboard user make sure vendor accounts are created
+    await asUser.mutation(internal.userOnboarding.onboardUser, {
+      userId: identity.subject,
+    })
+    const mutation = asUser.mutation(api.account.create, {
+      name: "",
+      balance: 0,
+      icon: "🌏",
+    })
+    await expect(mutation).rejects.toBeInstanceOf(ConvexError)
+    await expect(mutation).rejects.toSatisfy((err) => {
+      expect(err.data as unknown as string).toBeDefined()
+      return true
+    })
   })
 
   it("throws error when balance is out of range", async () => {
@@ -151,35 +200,53 @@ describe("accounts.add", () => {
 
     const mutation1 = asUser.mutation(api.account.create, {
       name: "My Wallet",
-      balance: -1 * 100,
+      balance: ACCOUNT_STARTING_BALANCE_MIN - 1,
+      icon: "🌏",
     })
     await expect(mutation1).rejects.toBeInstanceOf(ConvexError)
-    await expect(mutation1).rejects.toThrowError(
-      "Balance is outside the allowed range"
-    )
 
     const mutation2 = asUser.mutation(api.account.create, {
       name: "My Second Wallet",
-      balance: 10 ** 10,
+      balance: ACCOUNT_STARTING_BALANCE_MAX + 1,
+      icon: "🌏",
     })
     await expect(mutation2).rejects.toBeInstanceOf(ConvexError)
-    await expect(mutation2).rejects.toThrowError(
-      "Balance is outside the allowed range"
-    )
+  })
+  it("throws error when balance is a decimal", async () => {
+    const t = convexTest(schema)
+    const asUser = t.withIdentity(identity)
+
+    // onboard user make sure vendor accounts are created
+    await asUser.mutation(internal.userOnboarding.onboardUser, {
+      userId: identity.subject,
+    })
+
+    await expect(
+      asUser.mutation(api.account.create, {
+        name: "My Wallet",
+        balance: 1.5,
+        icon: "🌏",
+      })
+    ).rejects.toBeInstanceOf(ConvexError)
   })
 
-  // TODO: add this test and check in the mutation
-  // it("throws error when emoji is empty", async () => {
-  //   const t = convexTest(schema)
-  //   const asUser = t.withIdentity(identity)
+  it("throws error when emoji is empty", async () => {
+    const t = convexTest(schema)
+    const asUser = t.withIdentity(identity)
 
-  //   // onboard user make sure vendor accounts are created
-  //   await asUser.mutation(internal.userOnboarding.onboardUser, { userId: identity.subject })
+    // onboard user make sure vendor accounts are created
+    await asUser.mutation(internal.userOnboarding.onboardUser, {
+      userId: identity.subject,
+    })
 
-  //   await expect(
-  //     asUser.mutation(api.account.create, { name: "My Wallet" })
-  //   ).rejects.toThrowError("Account name cannot be empty.")
-  // })
+    await expect(
+      asUser.mutation(api.account.create, {
+        name: "My Wallet",
+        icon: "",
+        balance: 0,
+      })
+    ).rejects.toBeInstanceOf(ConvexError)
+  })
 
   it("throws when account creation limit is reached", async () => {
     const t = convexTest(schema)
@@ -193,7 +260,11 @@ describe("accounts.add", () => {
     // Create accounts one by one up to the limit
     // end at 3 as 2 accounts are already created while onboarding
     for (let i = 0; i < 3; i++) {
-      await asUser.mutation(api.account.create, { name: `ACC-${i}` })
+      await asUser.mutation(api.account.create, {
+        name: `ACC-${i}`,
+        icon: "🌏",
+        balance: 0,
+      })
     }
     const accounts = await t.run((ctx) =>
       ctx.db
@@ -205,8 +276,12 @@ describe("accounts.add", () => {
     expect(accounts).lengthOf(ACCOUNTS_PER_USER_MAX)
 
     // attempt to create a new account
-    expect(
-      asUser.mutation(api.account.create, { name: "My Wallet" })
+    await expect(
+      asUser.mutation(api.account.create, {
+        name: "My Wallet",
+        icon: "🌏",
+        balance: 0,
+      })
     ).rejects.toThrowError("ACCOUNT_LIMIT_REACHED")
   })
 
@@ -220,7 +295,11 @@ describe("accounts.add", () => {
     })
 
     // using defaults
-    const mutation1 = asUser.mutation(api.account.create, { name: "My Wallet" })
+    const mutation1 = asUser.mutation(api.account.create, {
+      name: "My Wallet",
+      icon: "🌏",
+      balance: 0,
+    })
     await expect(mutation1).resolves.toBeDefined()
     // test existence
     expect(
@@ -231,7 +310,7 @@ describe("accounts.add", () => {
     const mutation2 = asUser.mutation(api.account.create, {
       name: "My Second Wallet",
       balance: 0,
-      icon: "",
+      icon: "🌏",
     })
     await expect(mutation2).resolves.toBeDefined()
     // test existence
@@ -241,7 +320,7 @@ describe("accounts.add", () => {
   })
 })
 
-describe("accounts.getAll", () => {
+describe("account.list", () => {
   it("throws UNAUTHENTICATED error when user is not authenticated", async () => {
     const t = convexTest(schema)
     await expect(t.query(api.account.list)).rejects.toThrowError(
@@ -286,7 +365,11 @@ describe("accounts.getAll", () => {
     // Create accounts up to max limit
     // After each add, verify getAll matches raw DB query
     for (const name of newAccountNames) {
-      await asUser.mutation(api.account.create, { name })
+      await asUser.mutation(api.account.create, {
+        name,
+        balance: 0,
+        icon: "🌏",
+      })
       const accounts = await asUser.query(api.account.list)
       expect(
         await t.run((ctx) =>
@@ -297,7 +380,7 @@ describe("accounts.getAll", () => {
   })
 })
 
-describe("accounts.settings", () => {
+describe("account.settings", () => {
   it("throws when deactivating the default account", async () => {
     const t = convexTest(schema)
     const asUser = t.withIdentity(identity)
@@ -322,8 +405,6 @@ describe("accounts.settings", () => {
       })
     ).rejects.toThrowError("Default account must remain active")
   })
-
-  it("throws when setting an inactive account as default")
 
   it("deactivating accounts", async () => {
     const t = convexTest(schema)
