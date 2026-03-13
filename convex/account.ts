@@ -209,6 +209,12 @@ export const toggleActive = mutation({
   },
 })
 
+export const getDefault = query({
+  handler: async (ctx) => {
+    return (await getCurrentUserOrThrow(ctx)).defaultAccount
+  },
+})
+
 /**
  * Sets the given account as the authenticated user's default account.
  *

@@ -14,10 +14,13 @@ import { CURRENCY } from "@/lib/date-utils"
 
 export function Accounts() {
   const accounts = useQuery(api.account.list)
+  const defaultAccountId = useQuery(api.account.getDefault)
 
   if (!accounts) return <Spinner />
 
-  const totalBalance = accounts.reduce((acc, v) => acc + v.currentBalance, 0)
+  // convert cents to dollars and fix to 2 decimals
+  const totalBalance =
+    accounts.reduce((acc, v) => acc + v.netFlow + v.startingBalance, 0) / 100
 
   return (
     <>
@@ -28,6 +31,7 @@ export function Accounts() {
             style: "currency",
             currency: CURRENCY,
             trailingZeroDisplay: "stripIfInteger",
+            maximumFractionDigits: 2,
           }}
           style={{ "--number-flow-char-height": "1.2ch" } as CSSProperties}
           value={totalBalance}
@@ -37,7 +41,11 @@ export function Accounts() {
       <List.Root>
         <List.Wrapper>
           {accounts.map((account) => (
-            <AccountItems account={account} key={account._id} />
+            <AccountItems
+              account={account}
+              isDefault={defaultAccountId === account._id}
+              key={account._id}
+            />
           ))}
 
           <NewAccountDrawer />
@@ -47,7 +55,8 @@ export function Accounts() {
   )
 }
 
-function AccountItems({ account }: { account: Doc<"accounts"> }) {
+function AccountItems(props: { account: Doc<"accounts">; isDefault: boolean }) {
+  const { account, isDefault } = props
   const slug = account._id
 
   return (
@@ -72,7 +81,7 @@ function AccountItems({ account }: { account: Doc<"accounts"> }) {
               <List.Text>{account.name}</List.Text>
 
               {/* TODO: Use chips component here */}
-              {account.is_default && (
+              {isDefault && (
                 <div className="rounded-lg bg-fill-tertiary px-1.5 font-medium text-label-secondary leading-6">
                   Default
                 </div>

@@ -56,7 +56,7 @@ export default function AccountInfo({ id }: { id: string }) {
     if (account)
       form.reset({
         name: account.name,
-        balance: account.currentBalance,
+        balance: account.startingBalance,
         icon: account.icon,
       })
   }, [form, account])

@@ -429,13 +429,6 @@ function AccountSelectionDrawer({ accounts }: { accounts: Doc<"accounts">[] }) {
                   <ListBox.Content>
                     <ListBox.Text level="1">{itemName}</ListBox.Text>
 
-                    {/* TODO: Use chips component here */}
-                    {item.is_default && (
-                      <div className="rounded-lg bg-fill-tertiary px-1.5 text-label-secondary">
-                        Default
-                      </div>
-                    )}
-
                     <Spacer className="flex-1" />
                   </ListBox.Content>
                 </ListBox.Item>

@@ -1,4 +1,4 @@
-import { useMutation } from "convex/react"
+import { useMutation, useQuery } from "convex/react"
 import { Label } from "react-aria-components"
 import { api } from "#/convex/_generated/api"
 import type { Doc } from "#/convex/_generated/dataModel"
@@ -15,8 +15,13 @@ export function OtherSettings({
   isEditing: boolean
   account: Doc<"accounts">
 }) {
+  const defaultAccountId = useQuery(api.account.getDefault)
+  const isDefaultAccount = defaultAccountId === account._id
+
   const formatter = useCurrencyFormatter()
-  const fmtBalance = formatter.format(account.currentBalance)
+  const fmtBalance = formatter.format(
+    (account.startingBalance + account.netFlow) / 100
+  )
 
   const toggleActive = useMutation(
     api.account.toggleActive
@@ -30,18 +35,6 @@ export function OtherSettings({
       )
     }
   })
-  const setDefault = useMutation(api.account.setDefault).withOptimisticUpdate(
-    (localStore, { id, default: val }) => {
-      const existing = localStore.getQuery(api.account.getByStringId, { id })
-      if (existing) {
-        localStore.setQuery(
-          api.account.getByStringId,
-          { id },
-          { ...existing, is_default: val }
-        )
-      }
-    }
-  )
 
   return (
     <List.Root
@@ -78,7 +71,7 @@ export function OtherSettings({
       </List.Wrapper>
 
       <List.Header>
-        <List.Text level="heading">Others</List.Text>
+        <List.Text level="heading">Manage</List.Text>
       </List.Header>
       <List.Wrapper>
         <List.Item>
@@ -86,16 +79,16 @@ export function OtherSettings({
             <List.Trailing>
               <List.Title>
                 <List.Text className="select-none">
-                  <Label htmlFor="activate-account">Active</Label>
+                  <Label htmlFor="activate-account">Use this account</Label>
                 </List.Text>
               </List.Title>
               <List.Accessories>
                 <Switch
                   id="activate-account"
+                  isDisabled={isDefaultAccount}
                   isSelected={account.is_active}
                   onChange={() => {
                     toggleActive({ id: account._id })
-                    setDefault({ id: account._id, default: false })
                   }}
                 >
                   Toggle active
@@ -104,32 +97,11 @@ export function OtherSettings({
             </List.Trailing>
           </List.Content>
         </List.Item>
-        <List.Item>
-          <List.Content>
-            <List.Trailing>
-              <List.Title>
-                <List.Text className="select-none">
-                  <Label htmlFor="default-account">Set as Default</Label>
-                </List.Text>
-              </List.Title>
-              <List.Accessories>
-                <Switch
-                  id="default-account"
-                  isDisabled={!account.is_active}
-                  isSelected={account.is_default}
-                  onChange={(v) => setDefault({ id: account._id, default: v })}
-                >
-                  Default account
-                </Switch>
-              </List.Accessories>
-            </List.Trailing>
-          </List.Content>
-        </List.Item>
       </List.Wrapper>
       <List.Footer>
         <List.Text level="footer">
-          Only one account can be marked as the default. Choosing this account
-          as default will unset the previous default account.
+          When turned off, this account will no longer accept new transactions.
+          Existing transactions remain untouched.
         </List.Text>
       </List.Footer>
 

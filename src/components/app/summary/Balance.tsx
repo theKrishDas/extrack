@@ -26,9 +26,10 @@ const Balance = () => {
           style: "currency",
           currency: CURRENCY,
           trailingZeroDisplay: "stripIfInteger",
+          maximumFractionDigits: 2,
         }}
         style={{ "--number-flow-char-height": "1.2ch" } as CSSProperties}
-        value={balance}
+        value={balance / 100}
       />
 
       <p className="flex items-center text-label-secondary [&_svg]:mr-1 [&_svg]:text-lg">
