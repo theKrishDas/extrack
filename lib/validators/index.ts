@@ -1,19 +1,13 @@
 import { z } from "zod"
 import { NO_CONSECUTIVE_SPACES, NO_LEADING_SPACE } from "../regex"
 
-/** Base schema for monetary values (cents or dollars): number, safe, nonnegative, and finite. */
-const monetaryNumberBase = z.number().safe().nonnegative().finite()
-
-/** Base schema for name strings: no leading space, no consecutive spaces. */
-const nameBase = z
-  .string()
-  .regex(NO_LEADING_SPACE, "Must not start with a space")
-  .regex(NO_CONSECUTIVE_SPACES, "No consecutive spaces")
-
 /** Builds a `ZodNumber` monetary schema with optional int constraint, bounds, and a min/max sanity check. */
-function monetary(int: boolean, min?: number, max?: number) {
+export function monetary(int: boolean, min?: number, max?: number) {
   if (min !== undefined && max !== undefined && min > max)
     throw new RangeError(`min (${min}) must not exceed max (${max})`)
+
+  /** Base schema for monetary values (cents or dollars): number, safe, nonnegative, and finite. */
+  const monetaryNumberBase = z.number().safe().nonnegative().finite()
 
   const base = int ? monetaryNumberBase.int() : monetaryNumberBase
   const withMin = min !== undefined ? base.min(min) : base
@@ -52,14 +46,27 @@ export const v = {
   dollars: (min?: number, max?: number) => monetary(false, min, max),
 
   /**
-   * Returns a Zod schema for a name string with length constraints.
+   * Trims whitespace, then validates no leading spaces or consecutive spaces.
+   * @param min - Minimum character length (inclusive).
+   * @param max - Maximum character length (inclusive).
    *
-   * @param min - Minimum string length (inclusive).
-   * @param max - Maximum string length (inclusive).
    * @returns Zod schema validating a name within the given length bounds.
    *
    * @example
    * v.name(1, 50) // non-empty name up to 50 chars
    */
-  name: (min: number, max: number) => nameBase.min(min).max(max),
+  name: (min: number, max: number) =>
+    z
+      .string()
+      .min(min)
+      .max(max)
+      .transform((val) => val.trim())
+      .refine(
+        (val) => !NO_CONSECUTIVE_SPACES.test(val),
+        "No consecutive spaces"
+      )
+      .refine(
+        (val) => !NO_LEADING_SPACE.test(val),
+        "Must not start with a space"
+      ),
 }

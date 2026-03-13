@@ -1,60 +1,19 @@
 /** biome-ignore-all lint/correctness/noChildrenProp: TanStack Form docs use children prop pattern */
 "use client"
-import { useQuery } from "convex/react"
-import { useEffect } from "react"
 import { Toolbar } from "react-aria-components"
-import { toast } from "sonner"
-import { api } from "#/convex/_generated/api"
 import { Button } from "@/components/ui/button"
 import { Spacer } from "@/components/ui/spacer"
 import { useCurrencyFormatter } from "@/hooks/useCurrencyFormatter"
 import type { TransactionTypes } from "@/lib/constants/transaction-types"
-import { useAppForm } from "./hooks/form-context"
-import { type NewTransactionSchemaType, newTransactionSchema } from "./schema"
+import { useNewTransactionForm } from "./hooks/use-new-transaction-form"
+import type { NewTransactionSchemaType } from "./schema"
 
 export function Form(props: {
   type: TransactionTypes
   afterSubmit?: (data: NewTransactionSchemaType) => void
 }) {
-  const { type, afterSubmit } = props
-  const context = useQuery(api.transaction.getCreateContext, { type })
-
   const formatter = useCurrencyFormatter()
-  const form = useAppForm({
-    validators: {
-      onChange: newTransactionSchema,
-    },
-    defaultValues: {
-      // undefined so the schema rejects submission until they are filled in
-      account: undefined as never,
-      category: undefined as never,
-      amount: undefined as never,
-      date: Date.now(),
-      note: undefined,
-      type,
-    } as NewTransactionSchemaType,
-    onSubmit: ({ value: data }) => {
-      toast("Sbmittion data", {
-        description: (
-          <pre className="corner-squircle w-full max-w-full overflow-x-auto rounded-xl bg-fill-primary p-2 font-mono text-label-primary text-xs">
-            <code>{JSON.stringify(data, null, 2)}</code>
-          </pre>
-        ),
-      })
-      afterSubmit?.(data)
-    },
-  })
-
-  // Convex defaults are async — setting them in defaultValues would either
-  // initialize with undefined (stale) or block the whole form from rendering.
-  // useEffect patches only account/category once loaded, so fields like
-  // amount and date are immediately interactive.
-  useEffect(() => {
-    if (!context) return
-    form.setFieldValue("account", context.defaults.account)
-    form.setFieldValue("category", context.defaults.category)
-  }, [context, form])
-
+  const { form, context } = useNewTransactionForm(props.type, props.afterSubmit)
   return (
     <form
       onSubmit={(e) => {
@@ -115,7 +74,7 @@ function SubmitButton() {
         type="submit"
         variant="filled"
       >
-        􀆅
+        <span aria-hidden={true}>􀆅</span>
       </Button>
     </div>
   )

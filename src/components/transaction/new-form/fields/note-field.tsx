@@ -1,9 +1,10 @@
 import { Input, Label, TextField } from "react-aria-components"
 import { cn } from "tailwind-variants"
+import { NO_CONSECUTIVE_SPACES, NO_LEADING_SPACE } from "#lib/regex"
 import { useFieldContext } from "../hooks/form-context"
 
 export function NoteField(props: { label: string; placeholder: string }) {
-  const field = useFieldContext<string>()
+  const field = useFieldContext<string | undefined>()
   const { label, placeholder } = props
 
   return (
@@ -12,7 +13,14 @@ export function NoteField(props: { label: string; placeholder: string }) {
       isInvalid={!field.state.meta.isValid}
       name={field.name}
       onBlur={field.handleBlur}
-      onChange={field.handleChange}
+      onChange={(value) => {
+        field.handleChange(
+          value
+            .replace(NO_LEADING_SPACE, "") // don't let put space at the beginning
+            .replace(NO_CONSECUTIVE_SPACES, " ") // don't let put consecutive spaces
+        )
+      }}
+      validationBehavior="aria"
       value={field.state.value}
     >
       <Label className="sr-only">{label}</Label>

@@ -1,7 +1,7 @@
 import { Input, Label, NumberField } from "react-aria-components"
 import { cn } from "tailwind-variants"
+import { TRANSACTION_AMOUNT_MAX } from "#lib/constants/constraints"
 import { currencyFormatOptions } from "@/hooks/useCurrencyFormatter"
-import { MAXIMUM_TRANSACTION_AMOUNT } from "@/lib/constants/defaults"
 import { useFieldContext } from "../hooks/form-context"
 
 export function AmountField({
@@ -18,11 +18,12 @@ export function AmountField({
       className="flex h-fit w-full flex-col justify-end outline-none"
       formatOptions={currencyFormatOptions}
       isInvalid={!field.state.meta.isValid}
-      // minValue={MINIMUM_TRANSACTION_AMOUNT}
-      maxValue={MAXIMUM_TRANSACTION_AMOUNT}
+      maxValue={TRANSACTION_AMOUNT_MAX / 100}
+      // minValue={TRANSACTION_AMOUNT_MIN / 100}
       name={field.name}
       onBlur={field.handleBlur}
       onChange={field.handleChange}
+      validationBehavior="aria"
       value={field.state.value}
     >
       {({ state: { numberValue } }) => (

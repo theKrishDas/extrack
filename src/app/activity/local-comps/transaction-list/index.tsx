@@ -81,9 +81,9 @@ export function TransactionList() {
                 {transactions.map((txn, txnIdx) => {
                   const {
                     _id: txnId,
-                    amount,
                     category: { name, icon },
                   } = txn
+                  const amount = txn.amount / 100
 
                   return (
                     <ListBoxItem
@@ -103,7 +103,8 @@ export function TransactionList() {
                         )
                       }
                       id={txnId}
-                      key={txnId}
+                      // biome-ignore lint/suspicious/noArrayIndexKey: during optimistic update, the temporary item shares the same _id as the server-confirmed one — index is the only thing that's actually unique here
+                      key={`${txnId}-${txnIdx}`}
                       onPress={() => {
                         setActiveTxn(txn)
                         setOpen(true)
