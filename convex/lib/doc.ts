@@ -24,7 +24,6 @@ export const getDoc = <TableName extends TableNames>(
 ) => {
   // Single db.get shared across builder methods — no duplicate fetches
   const docPromise = db.get(id).then((doc) => {
-    console.log(`[getDoc] db.get called for id: ${id}`)
     return doc
   })
 
