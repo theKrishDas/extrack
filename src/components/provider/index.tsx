@@ -15,7 +15,9 @@ declare module "react-aria-components" {
   }
 }
 
-const convex = new ConvexReactClient(process.env.NEXT_PUBLIC_CONVEX_URL || "")
+const convex = new ConvexReactClient(process.env.NEXT_PUBLIC_CONVEX_URL || "", {
+  expectAuth: true,
+})
 
 export default function Provider({ children }: { children: ReactNode }) {
   const router = useRouter()
