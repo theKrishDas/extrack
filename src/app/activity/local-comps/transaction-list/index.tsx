@@ -1,6 +1,6 @@
 "use client"
 
-import { usePaginatedQuery } from "convex/react"
+import { usePaginatedQuery } from "convex-helpers/react/cache/hooks"
 import { useState } from "react"
 import {
   Header,
