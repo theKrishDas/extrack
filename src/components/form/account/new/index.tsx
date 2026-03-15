@@ -1,5 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation } from "convex/react"
+import { ConvexError } from "convex/values"
 import {
   Input,
   Label,
@@ -8,33 +9,42 @@ import {
   TextField,
 } from "react-aria-components"
 import { Controller, type UseFormReturn, useForm } from "react-hook-form"
+import { toast } from "sonner"
 import { api } from "#/convex/_generated/api"
+import { limit } from "#lib/constants/constraints"
+import { NO_CONSECUTIVE_SPACES, NO_LEADING_SPACE } from "#lib/regex"
+import { accountSchema, type CreateAccountSchemaType } from "#lib/schema"
+import { vendorAccounts } from "#lib/seed/accounts"
 import { EmojiSelect } from "@/app/settings/local-comps/EmojiSelect"
 import { Button } from "@/components/ui/button/animated-button"
 import { Drawer } from "@/components/ui/drawer/drawer-v2"
 import { Spacer } from "@/components/ui/spacer"
-import { MAX_ACCOUNT_NAME_LENGTH } from "@/lib/constants/defaults"
-import { CURRENCY } from "@/lib/date-utils"
-import {
-  type NewAccountSchemaType,
-  newAccountSchema,
-} from "@/lib/schema/accounts"
-import { cn, sanitizeName } from "@/lib/utils"
+import { currencyFormatOptions } from "@/hooks/useCurrencyFormatter"
+import { cn } from "@/lib/utils"
 
 export function Form({ afterSumbmit }: { afterSumbmit?: () => void }) {
   const create = useMutation(api.account.create)
-  const form = useForm<NewAccountSchemaType>({
+  const form = useForm<CreateAccountSchemaType>({
     defaultValues: {
       name: undefined,
       balance: 0,
-      icon: "🌐",
+      icon: vendorAccounts[0].icon,
     },
-    resolver: zodResolver(newAccountSchema),
+    resolver: zodResolver(accountSchema.create),
   })
 
-  const onSubmit = (data: NewAccountSchemaType) => {
-    create(data)
+  const onSubmit = (data: CreateAccountSchemaType) => {
     afterSumbmit?.()
+    create({
+      name: data.name,
+      balance: data.balance * 100,
+      icon: data.icon,
+    }).catch((err) => {
+      toast.error("Failed to create account", {
+        description:
+          err instanceof ConvexError ? err.data.message : "Unknown err",
+      })
+    })
   }
 
   return (
@@ -60,7 +70,7 @@ export function Form({ afterSumbmit }: { afterSumbmit?: () => void }) {
   )
 }
 
-function NameInput({ form }: { form: UseFormReturn<NewAccountSchemaType> }) {
+function NameInput({ form }: { form: UseFormReturn<CreateAccountSchemaType> }) {
   return (
     <Controller
       control={form.control}
@@ -76,7 +86,13 @@ function NameInput({ form }: { form: UseFormReturn<NewAccountSchemaType> }) {
             isRequired
             name={name}
             onBlur={onBlur}
-            onChange={(v) => onChange(sanitizeName(v, MAX_ACCOUNT_NAME_LENGTH))}
+            onChange={(value) => {
+              onChange(
+                value
+                  .replace(NO_LEADING_SPACE, "") // don't let put space at the beginning
+                  .replace(NO_CONSECUTIVE_SPACES, " ") // don't let put consecutive spaces
+              )
+            }}
             validationBehavior="aria"
             value={value}
           >
@@ -88,8 +104,7 @@ function NameInput({ form }: { form: UseFormReturn<NewAccountSchemaType> }) {
                 "h-12 w-full rounded-xl bg-fill-quaternary pr-8.5 pl-4 text-lg leading-none tracking-[0.01em] placeholder-label-secondary",
                 "outline-none data-focus-visible:rounded data-focus-visible:ring-4 data-focus-visible:ring-ios-blue/(--separator-non-opaque-opacity)"
               )}
-              // TODO: add a max and min length
-              // maxLength={MAX_NOTE_LENGTH}
+              maxLength={limit.name.account.max}
               placeholder="Enter name"
               ref={ref}
             />
@@ -100,7 +115,11 @@ function NameInput({ form }: { form: UseFormReturn<NewAccountSchemaType> }) {
   )
 }
 
-function BalanceInput({ form }: { form: UseFormReturn<NewAccountSchemaType> }) {
+function BalanceInput({
+  form,
+}: {
+  form: UseFormReturn<CreateAccountSchemaType>
+}) {
   return (
     <Controller
       control={form.control}
@@ -111,13 +130,9 @@ function BalanceInput({ form }: { form: UseFormReturn<NewAccountSchemaType> }) {
       }) => (
         <NumberField
           className="w-full px-4"
-          formatOptions={{
-            style: "currency",
-            currency: CURRENCY,
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 2,
-          }}
+          formatOptions={currencyFormatOptions}
           isInvalid={invalid}
+          maxValue={limit.amount.account.startingBalance.max}
           name={name}
           onBlur={onBlur}
           onChange={onChange}
