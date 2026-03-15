@@ -2,17 +2,15 @@
 
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation, useQuery } from "convex/react"
+import { ConvexError } from "convex/values"
 import { useEffect, useState } from "react"
 import { Form as RacForm } from "react-aria-components"
 import { useForm } from "react-hook-form"
+import { toast } from "sonner"
 import { api } from "#/convex/_generated/api"
+import { accountSchema, type UpdateAccountSchemaType } from "#lib/schema"
 import { Spinner } from "@/components/loading/spinner"
 import { Spacer } from "@/components/ui/spacer"
-import {
-  type NewAccountSchemaType,
-  newAccountSchema,
-} from "@/lib/schema/accounts"
-
 import { EditName } from "./EditName"
 import { Header } from "./Header"
 import { IconPicker } from "./IconPicker"
@@ -38,35 +36,34 @@ export default function AccountInfo({ id }: { id: string }) {
 
   const [isEditing, setEditing] = useState(false)
 
-  const form = useForm<NewAccountSchemaType>({
-    defaultValues: {
-      name: undefined,
-      balance: undefined,
-      icon: undefined,
-    },
-    resolver: zodResolver(newAccountSchema),
+  // initialize form with default values
+  const form = useForm<UpdateAccountSchemaType>({
+    defaultValues: { name: undefined, icon: undefined },
+    resolver: zodResolver(accountSchema.update),
   })
+
+  // populate form with account data
+  useEffect(() => {
+    if (!account) return
+    form.reset({ name: account.name, icon: account.icon })
+  }, [form, account])
 
   const {
     formState: { isDirty, defaultValues },
     getValues,
   } = form
 
-  useEffect(() => {
-    if (account)
-      form.reset({
-        name: account.name,
-        balance: account.startingBalance,
-        icon: account.icon,
-      })
-  }, [form, account])
-
-  const onSubmit = (data: NewAccountSchemaType) => {
+  const onSubmit = (data: UpdateAccountSchemaType) => {
     if (!(editable && isEditing && isDirty) || defaultValues === getValues())
       return
 
     const { name, icon } = data
-    update({ id: account._id, name, icon })
+    update({ id: account._id, name, icon }).catch((err) => {
+      toast.error("Failed to update account", {
+        description:
+          err instanceof ConvexError ? err.data.message : "Unknown err",
+      })
+    })
     setEditing(false)
     form.reset()
   }

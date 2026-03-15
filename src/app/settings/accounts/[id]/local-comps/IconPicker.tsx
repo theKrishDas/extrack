@@ -3,13 +3,13 @@ import { motion } from "motion/react"
 import { useState } from "react"
 import { Controller, type UseFormReturn } from "react-hook-form"
 import type { Doc } from "#/convex/_generated/dataModel"
+import type { UpdateAccountSchemaType } from "#lib/schema"
 import { Spinner } from "@/components/loading/spinner"
 import { Button } from "@/components/ui/button/animated-button"
 import { buttonVariants } from "@/components/ui/button/button-variants"
 import { Drawer } from "@/components/ui/drawer/drawer-v2"
 import { Emoji } from "@/components/ui/emoji"
 import { Spacer } from "@/components/ui/spacer"
-import type { NewAccountSchemaType } from "@/lib/schema/accounts"
 import { cn } from "@/lib/utils"
 
 export function IconPicker({
@@ -17,7 +17,7 @@ export function IconPicker({
   isEditing,
   account,
 }: {
-  form: UseFormReturn<NewAccountSchemaType>
+  form: UseFormReturn<UpdateAccountSchemaType>
   isEditing: boolean
   account: Doc<"accounts">
 }) {

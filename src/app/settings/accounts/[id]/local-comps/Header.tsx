@@ -2,9 +2,9 @@ import { AnimatePresence, motion, type Variants } from "motion/react"
 import { useRouter } from "next/navigation"
 import type { Dispatch, SetStateAction } from "react"
 import type { UseFormReturn } from "react-hook-form"
+import type { UpdateAccountSchemaType } from "#lib/schema"
 import { AnimatedContainer } from "@/components/ui/animated-container"
 import { Button } from "@/components/ui/button/animated-button"
-import type { NewAccountSchemaType } from "@/lib/schema/accounts"
 import { cn } from "@/lib/utils"
 
 export function Header({
@@ -17,8 +17,8 @@ export function Header({
   editable: boolean
   isEditing: boolean
   setEditing: Dispatch<SetStateAction<boolean>>
-  form: UseFormReturn<NewAccountSchemaType>
-  onSubmit: (_: NewAccountSchemaType) => void
+  form: UseFormReturn<UpdateAccountSchemaType>
+  onSubmit: (_: UpdateAccountSchemaType) => void
 }) {
   const router = useRouter()
   const href = "/settings/accounts" as const

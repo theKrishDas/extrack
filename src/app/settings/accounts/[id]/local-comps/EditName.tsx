@@ -2,10 +2,10 @@ import { motion } from "motion/react"
 import { Input, Label, TextField } from "react-aria-components"
 import { Controller, type UseFormReturn } from "react-hook-form"
 import type { Doc } from "#/convex/_generated/dataModel"
-
-import { MAX_ACCOUNT_NAME_LENGTH } from "@/lib/constants/defaults"
-import type { NewAccountSchemaType } from "@/lib/schema/accounts"
-import { cn, sanitizeName } from "@/lib/utils"
+import { limit } from "#lib/constants/constraints"
+import { NO_CONSECUTIVE_SPACES, NO_LEADING_SPACE } from "#lib/regex"
+import type { UpdateAccountSchemaType } from "#lib/schema"
+import { cn } from "@/lib/utils"
 
 const MTextField = motion.create(TextField)
 
@@ -14,7 +14,7 @@ export function EditName({
   isEditing,
   account,
 }: {
-  form: UseFormReturn<NewAccountSchemaType>
+  form: UseFormReturn<UpdateAccountSchemaType>
   isEditing: boolean
   account: Doc<"accounts">
 }) {
@@ -37,7 +37,13 @@ export function EditName({
             isRequired
             name={name}
             onBlur={onBlur}
-            onChange={(v) => onChange(sanitizeName(v, MAX_ACCOUNT_NAME_LENGTH))}
+            onChange={(value) => {
+              onChange(
+                value
+                  .replace(NO_LEADING_SPACE, "") // don't let put space at the beginning
+                  .replace(NO_CONSECUTIVE_SPACES, " ") // don't let put consecutive spaces
+              )
+            }}
             transition={{
               repeat: Number.POSITIVE_INFINITY,
               repeatType: "loop",
@@ -63,7 +69,7 @@ export function EditName({
                 "h-12 w-full rounded-xl bg-fill-tertiary px-2 text-center font-bold text-2xl leading-none placeholder-label-secondary placeholder:font-medium",
                 "outline-none data-[focus-visible]:rounded data-[focus-visible]:ring-4 data-[focus-visible]:ring-ios-blue/[var(--separator-non-opaque-opacity)]"
               )}
-              maxLength={MAX_ACCOUNT_NAME_LENGTH}
+              maxLength={limit.name.account.max}
               placeholder="Enter name"
               ref={ref}
             />
