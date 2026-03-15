@@ -35,6 +35,7 @@ export function EditName({
             className="relative mt-2 w-50 md:w-70"
             isInvalid={invalid}
             isRequired
+            maxLength={limit.name.account.max}
             name={name}
             onBlur={onBlur}
             onChange={(value) => {
@@ -69,7 +70,6 @@ export function EditName({
                 "h-12 w-full rounded-xl bg-fill-tertiary px-2 text-center font-bold text-2xl leading-none placeholder-label-secondary placeholder:font-medium",
                 "outline-none data-[focus-visible]:rounded data-[focus-visible]:ring-4 data-[focus-visible]:ring-ios-blue/[var(--separator-non-opaque-opacity)]"
               )}
-              maxLength={limit.name.account.max}
               placeholder="Enter name"
               ref={ref}
             />

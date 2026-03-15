@@ -84,6 +84,7 @@ function NameInput({ form }: { form: UseFormReturn<CreateAccountSchemaType> }) {
             className="w-full px-4"
             isInvalid={invalid}
             isRequired
+            maxLength={limit.name.account.max}
             name={name}
             onBlur={onBlur}
             onChange={(value) => {
@@ -104,7 +105,6 @@ function NameInput({ form }: { form: UseFormReturn<CreateAccountSchemaType> }) {
                 "h-12 w-full rounded-xl bg-fill-quaternary pr-8.5 pl-4 text-lg leading-none tracking-[0.01em] placeholder-label-secondary",
                 "outline-none data-focus-visible:rounded data-focus-visible:ring-4 data-focus-visible:ring-ios-blue/(--separator-non-opaque-opacity)"
               )}
-              maxLength={limit.name.account.max}
               placeholder="Enter name"
               ref={ref}
             />
