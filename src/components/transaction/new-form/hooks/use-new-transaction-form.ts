@@ -1,5 +1,6 @@
-import { insertAtTop, useMutation, useQuery } from "convex/react"
+import { insertAtTop, useMutation } from "convex/react"
 import { ConvexError } from "convex/values"
+import { useQuery } from "convex-helpers/react/cache/hooks"
 import { useEffect } from "react"
 import { toast } from "sonner"
 import { v4 as uuidv4 } from "uuid"

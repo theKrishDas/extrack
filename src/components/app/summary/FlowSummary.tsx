@@ -1,8 +1,8 @@
 "use client"
 
 import NumberFlow from "@number-flow/react"
-import { useQuery } from "convex/react"
 import type { FunctionReturnType } from "convex/server"
+import { useQuery } from "convex-helpers/react/cache/hooks"
 import {
   eachDayOfInterval,
   endOfDay,

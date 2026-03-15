@@ -1,5 +1,5 @@
 import { Icon } from "@iconify/react/dist/iconify.js"
-import { useQuery } from "convex/react"
+import { useQuery } from "convex-helpers/react/cache/hooks"
 import Fuse from "fuse.js"
 import { useDeferredValue, useEffect, useState } from "react"
 import {

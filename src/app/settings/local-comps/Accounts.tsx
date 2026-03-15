@@ -1,5 +1,5 @@
 import NumberFlow from "@number-flow/react"
-import { useQuery } from "convex/react"
+import { useQuery } from "convex-helpers/react/cache/hooks"
 import { type CSSProperties, useState } from "react"
 import { Link, Button as RacButton } from "react-aria-components"
 import { api } from "#/convex/_generated/api"

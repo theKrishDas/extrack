@@ -1,8 +1,9 @@
 "use client"
 
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useMutation, useQuery } from "convex/react"
+import { useMutation } from "convex/react"
 import { ConvexError } from "convex/values"
+import { useQuery } from "convex-helpers/react/cache/hooks"
 import { useEffect, useState } from "react"
 import { Form as RacForm } from "react-aria-components"
 import { useForm } from "react-hook-form"

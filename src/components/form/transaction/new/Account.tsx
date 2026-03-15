@@ -1,5 +1,5 @@
 import { createListCollection, Listbox } from "@ark-ui/react/listbox"
-import { useQuery } from "convex/react"
+import { useQuery } from "convex-helpers/react/cache/hooks"
 import { useEffect } from "react"
 import { Button as RacButton } from "react-aria-components"
 import { Controller } from "react-hook-form"

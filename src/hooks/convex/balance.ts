@@ -1,5 +1,5 @@
-import { useQuery } from "convex/react"
 import type { FunctionArgs } from "convex/server"
+import { useQuery } from "convex-helpers/react/cache/hooks"
 import { endOfToday } from "date-fns"
 import { api } from "#/convex/_generated/api"
 

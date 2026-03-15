@@ -1,7 +1,8 @@
 "use client"
 
 import { ark } from "@ark-ui/react/factory"
-import { useMutation, usePaginatedQuery } from "convex/react"
+import { useMutation } from "convex/react"
+import { usePaginatedQuery } from "convex-helpers/react/cache/hooks"
 import { format, isToday, isYesterday } from "date-fns"
 import { useState } from "react"
 import { Button } from "react-aria-components"
