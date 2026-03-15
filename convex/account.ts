@@ -9,15 +9,16 @@ import {
 } from "#lib/constants/constraints"
 import { transactionTypes } from "#lib/constants/transaction-types"
 import { v as vLib } from "#lib/validators"
-import { internalMutation, mutation, query } from "./_generated/server"
+import { internalMutation } from "./functions"
 import { getDoc } from "./lib/doc"
-import { getCurrentUserOrThrow, zid, zMutation } from "./lib/utils"
+import { userMutation, userQuery, zUserMutation } from "./lib/userFunctions"
+import { zid } from "./lib/utils"
 
 // Uses take() with the known per-user account cap instead of collect()
 // to limit the number of rows read.
-export const list = query({
+export const list = userQuery({
   handler: async (ctx) => {
-    const user = await getCurrentUserOrThrow(ctx)
+    const { user } = ctx
     return await ctx.db
       .query("accounts")
       .withIndex("by_owner", (q) => q.eq("ownerId", user.ownerId))
@@ -25,7 +26,7 @@ export const list = query({
   },
 })
 
-export const get = query({
+export const get = userQuery({
   args: { id: v.id("accounts") },
   handler: async (ctx, { id }) => {
     return await ctx.db.get(id)
@@ -49,7 +50,7 @@ export const get = query({
  * @returns The account document, or `null` if not found.
  * @throws If the provided string is not a valid `Id<"accounts">`.
  */
-export const getByStringId = query({
+export const getByStringId = userQuery({
   args: { id: v.string() },
   handler: async (ctx, { id }) => {
     const normalizedId = ctx.db.normalizeId("accounts", id)
@@ -78,7 +79,7 @@ export const getByStringId = query({
  * @throws If the user has reached the account limit, the name is invalid or duplicate,
  * or the balance is out of the allowed range.
  */
-export const create = zMutation({
+export const create = zUserMutation({
   args: z.object({
     name: vLib.name(ACCOUNT_NAME_MIN_LENGTH, ACCOUNT_NAME_MAX_LENGTH),
     balance: vLib.cents(
@@ -88,7 +89,7 @@ export const create = zMutation({
     icon: vLib.name(1, 10),
   }),
   handler: async (ctx, args) => {
-    const user = await getCurrentUserOrThrow(ctx)
+    const { user } = ctx
 
     const accounts = await ctx.db
       .query("accounts")
@@ -137,14 +138,14 @@ export const create = zMutation({
  * @throws If the account does not exist, does not belong to the authenticated user,
  * the name is empty, or another account with the same name already exists.
  */
-export const update = zMutation({
+export const update = zUserMutation({
   args: z.object({
     id: zid("accounts"),
     name: vLib.name(ACCOUNT_NAME_MIN_LENGTH, ACCOUNT_NAME_MAX_LENGTH),
     icon: vLib.name(1, 10),
   }),
   handler: async (ctx, { id: accountId, name, icon }) => {
-    const user = await getCurrentUserOrThrow(ctx)
+    const { user } = ctx
 
     const account = await getDoc(ctx.db, accountId).mustBeOwnedBy(user.ownerId)
 
@@ -188,10 +189,10 @@ export const update = zMutation({
  * @throws If the account does not exist, does not belong to the authenticated user,
  * or an attempt is made to deactivate the default account.
  */
-export const toggleActive = mutation({
+export const toggleActive = userMutation({
   args: { id: v.id("accounts") },
   handler: async (ctx, { id: accountId }) => {
-    const user = await getCurrentUserOrThrow(ctx)
+    const { user } = ctx
 
     const account = await getDoc(ctx.db, accountId).mustBeOwnedBy(user.ownerId)
 
@@ -209,10 +210,8 @@ export const toggleActive = mutation({
   },
 })
 
-export const getDefault = query({
-  handler: async (ctx) => {
-    return (await getCurrentUserOrThrow(ctx)).defaultAccount
-  },
+export const getDefault = userQuery({
+  handler: (ctx) => ctx.user.defaultAccount,
 })
 
 /**
@@ -224,10 +223,10 @@ export const getDefault = query({
  * @returns The account ID.
  * @throws If the account is not found or does not belong to the authenticated user.
  */
-export const setDefault = mutation({
+export const setDefault = userMutation({
   args: { id: v.id("accounts") },
   handler: async (ctx, { id: accountId }) => {
-    const user = await getCurrentUserOrThrow(ctx)
+    const { user } = ctx
 
     if (user.defaultAccount === accountId)
       // Already the default — no write needed.
@@ -297,10 +296,10 @@ export const applyTransactionFlow = internalMutation({
  * @param id - The account to delete.
  * @throws If the account is the user's current default account.
  */
-const deleteAccount = mutation({
+const deleteAccount = userMutation({
   args: { id: v.id("accounts") },
   handler: async (ctx, { id: accountId }) => {
-    const user = await getCurrentUserOrThrow(ctx)
+    const { user } = ctx
 
     if (user.defaultAccount === accountId) {
       // The app requires a default account to operate.
@@ -337,7 +336,7 @@ const deleteAccount = mutation({
  * @returns The updated account ID.
  * @throws If the account is not found or does not belong to the authenticated user.
  */
-export const setStartingBalance = zMutation({
+export const setStartingBalance = zUserMutation({
   args: z.object({
     id: zid("accounts"),
     balance: vLib.cents(
@@ -346,7 +345,7 @@ export const setStartingBalance = zMutation({
     ),
   }),
   handler: async (ctx, { id: accountId, balance: newBalance }) => {
-    const user = await getCurrentUserOrThrow(ctx)
+    const { user } = ctx
 
     await getDoc(ctx.db, accountId).mustBeOwnedBy(user.ownerId)
 
@@ -411,10 +410,10 @@ export const recomputeNetFlow = internalMutation({
  * @returns The balance as a number.
  * @throws If the account is not found or does not belong to the authenticated user.
  */
-export const getBalance = query({
+export const getBalance = userQuery({
   args: { account: v.union(v.literal("*"), v.id("accounts")) },
   handler: async (ctx, { account: accountId }) => {
-    const user = await getCurrentUserOrThrow(ctx)
+    const { user } = ctx
 
     if (accountId === "*") {
       // Sum balances across all accounts for this user.

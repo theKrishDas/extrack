@@ -10,14 +10,14 @@ import {
 import { transactionTypes } from "#lib/constants/transaction-types"
 import { v as vLib } from "#lib/validators"
 import { internal } from "./_generated/api"
-import { mutation, query } from "./_generated/server"
 import { getDoc } from "./lib/doc"
-import { getCurrentUserOrThrow, zid, zMutation } from "./lib/utils"
+import { userMutation, userQuery, zUserMutation } from "./lib/userFunctions"
+import { zid } from "./lib/utils"
 import schema from "./schema"
 
-export const list = query({
+export const list = userQuery({
   handler: async (ctx) => {
-    const user = await getCurrentUserOrThrow(ctx)
+    const { user } = ctx
 
     return await ctx.db
       .query("transactions")
@@ -27,12 +27,12 @@ export const list = query({
   },
 })
 
-export const get = query({
+export const get = userQuery({
   args: { id: v.id("transactions") },
   handler: async (ctx, { id }) => await ctx.db.get(id),
 })
 
-export const create = zMutation({
+export const create = zUserMutation({
   args: z.object({
     amount: vLib.cents(TRANSACTION_AMOUNT_MIN, TRANSACTION_AMOUNT_MAX),
     note: z.string().max(TRANSACTION_NOTE_MAX_LENGTH).optional(),
@@ -42,7 +42,7 @@ export const create = zMutation({
     date: z.number(),
   }),
   handler: async (ctx, args) => {
-    const user = await getCurrentUserOrThrow(ctx)
+    const { user } = ctx
     const [account, category] = await Promise.all([
       getDoc(ctx.db, args.account).mustBeOwnedBy(user.ownerId),
       getDoc(ctx.db, args.category).mustBeOwnedBy(user.ownerId),
@@ -75,10 +75,10 @@ export const create = zMutation({
   },
 })
 
-const deleteTransaction = mutation({
+const deleteTransaction = userMutation({
   args: { id: v.id("transactions") },
   handler: async (ctx, { id }) => {
-    const user = await getCurrentUserOrThrow(ctx)
+    const { user } = ctx
     const transaction = await getDoc(ctx.db, id).mustBeOwnedBy(user.ownerId)
     const account = await getDoc(ctx.db, transaction.account).mustBeOwnedBy(
       user.ownerId
@@ -99,10 +99,10 @@ const deleteTransaction = mutation({
   },
 })
 
-export const listByTimeframe = query({
+export const listByTimeframe = userQuery({
   args: { start: v.number(), end: v.number() },
   handler: async (ctx, { start, end }) => {
-    const user = await getCurrentUserOrThrow(ctx)
+    const { user } = ctx
     return await ctx.db
       .query("transactions")
       .withIndex("by_date", (q) =>
@@ -113,10 +113,10 @@ export const listByTimeframe = query({
   },
 })
 
-export const listPaginatedDetailed = query({
+export const listPaginatedDetailed = userQuery({
   args: { paginationOpts: paginationOptsValidator },
-  handler: async (ctx, { paginationOpts }) => {
-    const user = await getCurrentUserOrThrow(ctx)
+  handler: (ctx, { paginationOpts }) => {
+    const { user } = ctx
 
     const transactionStream = stream(ctx.db, schema)
       .query("transactions")
@@ -138,10 +138,10 @@ export const listPaginatedDetailed = query({
   },
 })
 
-export const getCreateContext = query({
+export const getCreateContext = userQuery({
   args: { type: v.union(...transactionTypes.map((t) => v.literal(t))) },
   handler: async (ctx, { type }) => {
-    const user = await getCurrentUserOrThrow(ctx)
+    const { user } = ctx
 
     const accounts = await ctx.db
       .query("accounts")

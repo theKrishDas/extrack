@@ -7,14 +7,14 @@ import {
 } from "#lib/constants/constraints"
 import { transactionTypes } from "#lib/constants/transaction-types"
 import { v as vLib } from "#lib/validators"
-import { mutation, query } from "./_generated/server"
 import { getDoc } from "./lib/doc"
-import { getCurrentUserOrThrow, zid, zMutation } from "./lib/utils"
+import { userMutation, userQuery, zUserMutation } from "./lib/userFunctions"
+import { zid } from "./lib/utils"
 
-export const list = query({
+export const list = userQuery({
   args: {},
   handler: async (ctx) => {
-    const user = await getCurrentUserOrThrow(ctx)
+    const { user } = ctx
     return await ctx.db
       .query("categories")
       .withIndex("by_owner", (q) => q.eq("ownerId", user.ownerId))
@@ -22,7 +22,7 @@ export const list = query({
   },
 })
 
-export const get = query({
+export const get = userQuery({
   args: { id: v.id("categories") },
   handler: async (ctx, { id }) => {
     return await ctx.db
@@ -32,10 +32,10 @@ export const get = query({
   },
 })
 
-export const listByType = query({
+export const listByType = userQuery({
   args: { type: v.union(...transactionTypes.map((t) => v.literal(t))) },
   handler: async (ctx, { type }) => {
-    const user = await getCurrentUserOrThrow(ctx)
+    const { user } = ctx
     return await ctx.db
       .query("categories")
       .withIndex("by_type_name", (q) =>
@@ -45,7 +45,7 @@ export const listByType = query({
   },
 })
 
-export const create = zMutation({
+export const create = zUserMutation({
   args: z.object({
     name: vLib.name(CATEGORY_NAME_MIN_LENGTH, CATEGORY_NAME_MAX_LENGTH),
     color: z.enum(colors),
@@ -53,7 +53,7 @@ export const create = zMutation({
     icon: vLib.name(1, 10).optional(),
   }),
   handler: async (ctx, { name, type, color, icon: argIcon }) => {
-    const user = await getCurrentUserOrThrow(ctx)
+    const { user } = ctx
     const existing = await ctx.db
       .query("categories")
       .withIndex("by_type_name", (q) =>
@@ -83,7 +83,7 @@ export const create = zMutation({
   },
 })
 
-export const update = zMutation({
+export const update = zUserMutation({
   args: z.object({
     id: zid("categories"),
     name: vLib.name(CATEGORY_NAME_MIN_LENGTH, CATEGORY_NAME_MAX_LENGTH),
@@ -95,10 +95,10 @@ export const update = zMutation({
   },
 })
 
-const deleteCategory = mutation({
+const deleteCategory = userMutation({
   args: { id: v.id("categories") },
   handler: async (ctx, { id: categoryId }) => {
-    const user = await getCurrentUserOrThrow(ctx)
+    const { user } = ctx
     const category = await getDoc(ctx.db, categoryId).mustBeOwnedBy(
       user.ownerId
     )

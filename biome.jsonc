@@ -49,7 +49,19 @@
       "style": {
         "useBlockStatements": "off",
         "useFilenamingConvention": "off",
-        "useConsistentTypeDefinitions": "off"
+        "useConsistentTypeDefinitions": "off",
+        "noRestrictedImports": {
+          "level": "error",
+          "options": {
+            "patterns": [
+              {
+                "group": ["*/_generated/server"],
+                "importNamePattern": "(query|mutation|action)",
+                "message": "Use functions.ts for query, mutation, or action"
+              }
+            ]
+          }
+        }
       }
     },
     "domains": {

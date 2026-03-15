@@ -1,9 +1,9 @@
 import { v } from "convex/values"
 
-import { query } from "./_generated/server"
-import { formatTransactionSummary, getCurrentUserOrThrow } from "./lib/utils"
+import { userQuery } from "./lib/userFunctions"
+import { formatTransactionSummary } from "./lib/utils"
 
-export const getFlowSummary = query({
+export const getFlowSummary = userQuery({
   args: {
     accounts: v.array(v.id("accounts")),
     timeframes: v.union(
@@ -11,7 +11,7 @@ export const getFlowSummary = query({
     ),
   },
   handler: async (ctx, { accounts, timeframes }) => {
-    const user = await getCurrentUserOrThrow(ctx)
+    const { user } = ctx
     /*
      * DB Query to get the transactions by each timeframe
      */
