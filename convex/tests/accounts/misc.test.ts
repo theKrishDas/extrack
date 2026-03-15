@@ -97,7 +97,7 @@ describe("account.get", () => {
     const t = convexTest(schema)
 
     await expect(t.query(api.account.list)).rejects.toThrowError(
-      JSON.stringify({ code: "UNAUTHENTICATED" })
+      "Authentication required"
     )
   })
 
@@ -106,7 +106,7 @@ describe("account.get", () => {
 
     await expect(
       t.withIdentity(identity).query(api.account.list)
-    ).rejects.toThrowError(JSON.stringify({ code: "USER_NOT_STORED" }))
+    ).rejects.toThrowError("User not found.")
   })
 })
 
