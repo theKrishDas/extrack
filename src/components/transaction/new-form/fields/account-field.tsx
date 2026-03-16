@@ -49,13 +49,14 @@ export function AccountField({
               selectionMode="single"
               shouldFocusWrap
             >
-              {(cat) => (
+              {(acc) => (
                 <ListBoxItem
                   className={({ isFocusVisible }) =>
                     cn(
                       "group/ListBoxItem ListBoxItem relative flex h-12 w-full select-none items-center bg-fill-quaternary px-4 outline-none",
                       "supports-[corner-shape:squircle]:corner-squircle",
                       "data-hovered:bg-fill-tertiary data-pressed:bg-fill-secondary",
+                      "data-disabled:text-label-quaternary",
                       isFocusVisible === true &&
                         "rounded-sm! ring-3 ring-ios-blue",
 
@@ -63,15 +64,16 @@ export function AccountField({
                       "after:absolute after:top-1/2 after:right-4 after:-translate-y-1/2 after:scale-80 after:text-ios-blue after:text-xl after:opacity-0 after:transition-all after:duration-250 after:content-['􀆅'] data-selected:after:block data-selected:after:scale-100 data-selected:after:opacity-100"
                     )
                   }
-                  id={cat._id}
+                  id={acc._id}
+                  isDisabled={!acc.is_active}
                 >
                   <Emoji
                     aria-hidden={true}
                     className="mr-3 flex items-center gap-3"
                   >
-                    {cat.icon}
+                    {acc.icon}
                   </Emoji>
-                  <span className="font-medium">{cat.name}</span>
+                  <span className="font-medium">{acc.name}</span>
                 </ListBoxItem>
               )}
             </ListBox>
