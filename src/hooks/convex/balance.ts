@@ -18,11 +18,13 @@ export const getDateRange = (date: number, end?: number) => {
 }
 
 /**
- * Custom hook to fetch the balance on a specific date for a given account.
- * Uses convex query internally
+ * Fetches the balance at a given date and the current balance for an account.
+ * Used by the Balance summary to compute month-over-month delta: call with start of
+ * current month and start of previous month, then derive flow this month, flow
+ * previous month, and delta = flowThisMonth - flowPrevMonth.
  *
  * @param date - The timestamp (in milliseconds) representing the desired date.
- * @param account - The account ID or "all" to fetch the balance for all accounts.
+ * @param account - The account ID or "*" to fetch the balance for all accounts.
  * @returns An object containing the balance on the specified date and the current balance.
  */
 export const useBalanceOn = ({
@@ -49,7 +51,7 @@ export const useBalanceOn = ({
   }
 
   const relevantTransactions =
-    account === "all"
+    account === "*"
       ? transactionsBetween
       : transactionsBetween.filter((t) => t.account === account)
 
