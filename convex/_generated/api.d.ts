@@ -11,7 +11,9 @@
 import type * as account from "../account.js";
 import type * as analytics from "../analytics.js";
 import type * as category from "../category.js";
+import type * as functions from "../functions.js";
 import type * as lib_doc from "../lib/doc.js";
+import type * as lib_userFunctions from "../lib/userFunctions.js";
 import type * as lib_utils from "../lib/utils.js";
 import type * as tests_helpers from "../tests/helpers.js";
 import type * as transaction from "../transaction.js";
@@ -28,7 +30,9 @@ declare const fullApi: ApiFromModules<{
   account: typeof account;
   analytics: typeof analytics;
   category: typeof category;
+  functions: typeof functions;
   "lib/doc": typeof lib_doc;
+  "lib/userFunctions": typeof lib_userFunctions;
   "lib/utils": typeof lib_utils;
   "tests/helpers": typeof tests_helpers;
   transaction: typeof transaction;
