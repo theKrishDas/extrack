@@ -26,9 +26,7 @@ export default function Provider({ children }: { children: ReactNode }) {
   return (
     <ClerkProvider>
       <ConvexProviderWithClerk client={convex} useAuth={useAuth}>
-        <ConvexQueryCacheProvider
-          debug={process.env.NODE_ENV === "development"}
-        >
+        <ConvexQueryCacheProvider>
           <RouterProvider navigate={router.push}>{children}</RouterProvider>
         </ConvexQueryCacheProvider>
       </ConvexProviderWithClerk>
