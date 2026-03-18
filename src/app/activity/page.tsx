@@ -1,16 +1,16 @@
 import { Container } from "@/components/layout/container"
-import { TransactionList } from "./local-comps/transaction-list"
+import { TransactionContainer } from "./_comp/TransactionContainer"
 
 export default function Page() {
   return (
-    <Container as="section" className="flex flex-col gap-0.5">
-      <div className="px-4">
+    <main className="flex-1 px-4 md:px-0">
+      <Container as="section" className="flex flex-col">
         <h3 className="mt-4 mb-4.5 font-semibold text-3xl tracking-tight">
           Activities
         </h3>
 
-        <TransactionList />
-      </div>
-    </Container>
+        <TransactionContainer />
+      </Container>
+    </main>
   )
 }
