@@ -1,16 +1,16 @@
 import type { ReactNode } from "react"
-import { FloatingNav } from "@/components/app/floating-nav"
 import Header from "@/components/app/header"
+import { FloatingNav } from "@/components/navigation"
 import { Spacer } from "@/components/ui/spacer"
 
 export default function Layout({ children }: { children: ReactNode }) {
   return (
     <>
       <Header />
-      <FloatingNav />
 
       {children}
 
+      <FloatingNav />
       <Spacer className="h-24 w-full min-w-1" />
     </>
   )

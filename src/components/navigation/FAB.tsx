@@ -40,9 +40,6 @@ const popupVariants: Variants = {
   },
 }
 
-/**
- * @deprecated Use `FAB` from `@/components/navigation` instead.
- */
 export function FAB() {
   const [popoverOpen, setPopoverOpen] = useState(false)
   const [drawerOpen, setDrawerOpen] = useState(false)

@@ -64,4 +64,8 @@ function Item({
     </Tabs.Tab>
   )
 }
+
+/**
+ * @deprecated Use `Navigation` from `@/components/navigation` instead.
+ */
 export const Navigation = { Root, Item }
