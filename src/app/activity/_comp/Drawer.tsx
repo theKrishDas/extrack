@@ -40,7 +40,7 @@ function Comp({
   const data: DataType = {
     header: ["Key", "value"],
     body: [
-      ["Amount", formatter.format(amount)],
+      ["Amount", formatter.format(amount / 100)],
       ["Date", format(date, "dd MMM 'at' hh:mm a")],
       ["Category", catName],
       ["Account", accName],
