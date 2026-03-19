@@ -1,19 +1,20 @@
 "use client"
 
 import { motion } from "motion/react"
-import Link from "next/link"
 import { usePathname } from "next/navigation"
+import { Link, Toolbar } from "react-aria-components"
 import { Material } from "../material/material"
 import { buttonVariants } from "../ui/button"
 
 function Root({ children }: { children: React.ReactNode }) {
   return (
     <Material
+      asChild
       className="inline-flex h-fit w-fit gap-0.5 rounded-full p-1"
       thickness="thick"
       withBorder
     >
-      {children}
+      <Toolbar aria-label="Navigation">{children}</Toolbar>
     </Material>
   )
 }
