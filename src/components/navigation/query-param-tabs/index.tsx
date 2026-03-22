@@ -1,21 +1,25 @@
 "use client"
 
+import Link from "next/link"
 import { usePathname, useSearchParams } from "next/navigation"
 import type { ReactNode } from "react"
-import { Link, Tab, TabList, TabPanel, Tabs } from "react-aria-components"
+import { Tab, TabList, TabPanel, Tabs } from "react-aria-components"
+import {
+  buildQueryParamHref,
+  type QueryParamTabValueItem,
+} from "@/lib/query-param-tabs"
 import { cn } from "@/lib/utils"
 
-export type QueryParamTabItem = {
-  id: string
+export type QueryParamTabItem = QueryParamTabValueItem & {
   label: string
-  /** `null` removes the query param from the URL. */
-  value: string | null
 }
 
 export type QueryParamTabsProps = {
   param: string
   items: QueryParamTabItem[]
-  children: ReactNode
+  /** Controlled selection — compute with `resolveQueryParamTabId` / `useQueryParamTabSelection` in the caller. */
+  selectedKey: string
+  children?: ReactNode
   "aria-label"?: string
   className?: string
   tabListClassName?: string
@@ -23,46 +27,10 @@ export type QueryParamTabsProps = {
   tabPanelClassName?: string
 }
 
-/**
- * Maps the current URL to a tab `id` using only `param` + `items` (no function props — safe across RSC boundaries).
- * - Missing, empty, `*`, or unknown values → first item with `value: null` (fallback: first item).
- * - Otherwise → item whose `value` equals the raw query string.
- */
-export function resolveQueryParamSelectedKey(
-  searchParams: URLSearchParams,
-  param: string,
-  items: QueryParamTabItem[]
-): string {
-  const raw = searchParams.get(param)?.trim() ?? ""
-  if (raw === "" || raw === "*") {
-    return items.find((i) => i.value === null)?.id ?? items[0].id
-  }
-  const match = items.find((i) => i.value === raw)
-  if (match) {
-    return match.id
-  }
-  return items.find((i) => i.value === null)?.id ?? items[0].id
-}
-
-export function buildQueryParamHref(
-  pathname: string,
-  searchParams: URLSearchParams,
-  param: string,
-  value: string | null
-): string {
-  const next = new URLSearchParams(searchParams.toString())
-  if (value === null) {
-    next.delete(param)
-  } else {
-    next.set(param, value)
-  }
-  const qs = next.toString()
-  return qs ? `${pathname}?${qs}` : pathname
-}
-
 export function QueryParamTabs({
   param,
   items,
+  selectedKey,
   children,
   "aria-label": ariaLabel = "Filter",
   className,
@@ -72,7 +40,6 @@ export function QueryParamTabs({
 }: QueryParamTabsProps) {
   const pathname = usePathname()
   const searchParams = useSearchParams()
-  const selectedKey = resolveQueryParamSelectedKey(searchParams, param, items)
 
   return (
     <Tabs className={cn("flex flex-col", className)} selectedKey={selectedKey}>
