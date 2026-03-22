@@ -4,11 +4,8 @@ import Link from "next/link"
 import { usePathname, useSearchParams } from "next/navigation"
 import type { ReactNode } from "react"
 import { Tab, TabList, TabPanel, Tabs } from "react-aria-components"
-import {
-  buildQueryParamHref,
-  type QueryParamTabValueItem,
-} from "@/lib/query-param-tabs"
 import { cn } from "@/lib/utils"
+import { buildQueryParamHref, type QueryParamTabValueItem } from "./helpers"
 
 export type QueryParamTabItem = QueryParamTabValueItem & {
   label: string

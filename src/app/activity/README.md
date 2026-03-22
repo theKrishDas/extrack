@@ -1,32 +1,56 @@
 # Activity transactions UI
 
+The Activity route combines a **URL-driven filter tab bar** (All / Expense / Income) with an **infinite, virtualized transaction list** backed by Convex.
+
+---
+
 ## Component hierarchy
 
 ```mermaid
 graph TD
-    P["activity/page.tsx"]
+    P["activity/page.tsx · Server"]
+    S["Suspense + Spinner"]
+    ATT["ActivityTransactionTypeTabs · Client"]
+    QPT["QueryParamTabs"]
     TC["TransactionContainer"]
     TL["TransactionList"]
     WV["WindowVirtualizer"]
 
-    P --> TC
-    TC -->|"paginated Convex query result"| TL
+    P --> S
+    S --> ATT
+    ATT --> QPT
+    QPT --> TC
+    TC -->|"paginated Convex query"| TL
     TL --> WV
-
-    TC -->|"usePaginatedQuery · listPaginatedDetailed"| CVX["Convex"]
 ```
 
-| Component                  | Role                                                                                                                                                                                                                                                                                                                      |
-| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **`TransactionContainer`** | Client boundary. Calls Convex via `usePaginatedQuery` (`api.transaction.listPaginatedDetailed`). Shows a spinner until the first page is ready, then passes the **entire** paginated handle to `TransactionList`.                                                                                                         |
-| **`TransactionList`**      | Receives `results`, `loadMore`, `isLoading`, and `status` from that handle. Groups rows by date (`createCollection` + `flattenCollection`), renders them with **`WindowVirtualizer`**, and wires **infinite scroll** so more pages load as the user scrolls toward the end. Also owns drawer state (`activeTxn`, `open`). |
-| **`WindowVirtualizer`**    | Shared UI primitive (`@/components/ui/virtualizer/window-virtualizer`). Uses `@tanstack/react-virtual`’s **window** virtualizer, optional **section headers**, and an **infinite** mode that appends a loader row and calls `onLoadMore` when the viewport nears the end.                                                 |
+| Component                         | Role                                                                                                                                                                                                                                  |
+| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **`page.tsx`**                    | Server Component: `sr-only` page title, `Container`, **`Suspense`** around the client subtree that calls `useSearchParams` (required by [Next.js](https://nextjs.org/docs/app/api-reference/functions/use-search-params)).            |
+| **`ActivityTransactionTypeTabs`** | Feature wrapper: defines `type` query tabs (All omits `type`; Expense/Income set `type=expense                                                                                                                                        | income`), calls **`useQueryParamTabSelection`** with `defaultAliases: ["*"]`, renders **`QueryParamTabs`** and passes **`TransactionContainer`\*\* as children. |
+| **`QueryParamTabs`**              | Generic UI from [`@/components/navigation/query-param-tabs`](../../components/navigation/query-param-tabs/README.md) — presentation only; `selectedKey` comes from the hook.                                                          |
+| **`TransactionContainer`**        | Client boundary: reads `type` via `useSearchParams`, **`parseTransactionTypeParam`** ([`transaction-type-param.ts`](../transaction-type-param.ts)), passes args to **`usePaginatedQuery`** (`api.transaction.listPaginatedDetailed`). |
+| **`TransactionList`**             | Groups rows by date, **`WindowVirtualizer`**, infinite scroll, drawer state.                                                                                                                                                          |
+| **`WindowVirtualizer`**           | Shared primitive (`@/components/ui/virtualizer/window-virtualizer`).                                                                                                                                                                  |
+
+---
+
+## URL filter vs Convex args
+
+| Concern                      | Mechanism                                                                                                                                                                                                                                                            |
+| ---------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Which tab is highlighted** | `useQueryParamTabSelection("type", ITEMS, { defaultAliases: ["*"] })` — same rules as [`resolveQueryParamTabId`](../../components/navigation/query-param-tabs/README.md#resolvequeryparamtabid): missing/empty/`*` → “All” tab; `expense` / `income` → matching tab. |
+| **What the list queries**    | **`parseTransactionTypeParam(searchParams.get("type"))`** → logical `TransactionTypeParam`: `"*"` means no Convex `type` filter; `"expense"` / `"income"` maps to `{ type }` on `listPaginatedDetailed`.                                                             |
+
+Keep these two in step when you change tab items or URL semantics: **tab selection** uses the generic resolver; **data** uses the activity-specific parser next to this route.
+
+---
 
 ## Data flow (Convex → list → virtualizer)
 
-1. **`TransactionContainer`** runs `usePaginatedQuery` with `initialNumItems` from `limit.pagination.transactions.perPage`.
+1. **`TransactionContainer`** runs `usePaginatedQuery` with `initialNumItems` from `limit.pagination.transactions.perPage` and query args derived from **`parseTransactionTypeParam`** (`{}` for all types, or `{ type: "expense" | "income" }`).
 2. While `status === "LoadingFirstPage"`, only a loading spinner is shown.
-3. **`TransactionList`** gets the full return value as a prop named `transactions` and passes the relevant fields into `WindowVirtualizer`:
+3. **`TransactionList`** receives the paginated handle as `transactions` and passes the relevant fields into **`WindowVirtualizer`**:
    - **`infinite.hasMore`** — `status === "CanLoadMore"`
    - **`infinite.isLoading`** — Convex `isLoading` while fetching the next page
    - **`infinite.onLoadMore`** — `loadMore(limit.pagination.transactions.perPage)`

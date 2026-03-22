@@ -6,7 +6,7 @@ import {
   type QueryParamTabValueItem,
   type ResolveQueryParamTabIdOptions,
   resolveQueryParamTabId,
-} from "@/lib/query-param-tabs"
+} from "./helpers"
 
 export function useQueryParamTabSelection(
   param: string,

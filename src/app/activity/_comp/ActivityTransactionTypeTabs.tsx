@@ -5,7 +5,7 @@ import {
   type QueryParamTabItem,
   QueryParamTabs,
 } from "@/components/navigation/query-param-tabs"
-import { useQueryParamTabSelection } from "@/hooks/use-query-param-tab-selection"
+import { useQueryParamTabSelection } from "@/components/navigation/query-param-tabs/hooks"
 
 const ITEMS: QueryParamTabItem[] = [
   { id: "all", label: "All", value: null },
