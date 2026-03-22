@@ -5,6 +5,7 @@ import { ConvexReactClient } from "convex/react"
 import { ConvexProviderWithClerk } from "convex/react-clerk"
 import { ConvexQueryCacheProvider } from "convex-helpers/react/cache"
 import { useRouter } from "next/navigation"
+import { ThemeProvider } from "next-themes"
 import type { ReactNode } from "react"
 import { RouterProvider } from "react-aria-components"
 
@@ -24,12 +25,14 @@ export default function Provider({ children }: { children: ReactNode }) {
   const router = useRouter()
 
   return (
-    <ClerkProvider>
-      <ConvexProviderWithClerk client={convex} useAuth={useAuth}>
-        <ConvexQueryCacheProvider>
-          <RouterProvider navigate={router.push}>{children}</RouterProvider>
-        </ConvexQueryCacheProvider>
-      </ConvexProviderWithClerk>
-    </ClerkProvider>
+    <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+      <ClerkProvider>
+        <ConvexProviderWithClerk client={convex} useAuth={useAuth}>
+          <ConvexQueryCacheProvider>
+            <RouterProvider navigate={router.push}>{children}</RouterProvider>
+          </ConvexQueryCacheProvider>
+        </ConvexProviderWithClerk>
+      </ClerkProvider>
+    </ThemeProvider>
   )
 }

@@ -84,6 +84,44 @@ export default function Page() {
 
         <List.Root>
           <List.Header>
+            <List.Text level="heading">Appearance</List.Text>
+          </List.Header>
+          <List.Wrapper>
+            <List.Item asChild>
+              <Link
+                className="cursor-auto data-pressed:bg-fill-tertiary"
+                href="/settings/appearance"
+                style={
+                  {
+                    WebkitUserDrag: "none",
+                    userDrag: "none",
+                    WebkitTouchCallout: "none",
+                  } as CSSProperties
+                }
+              >
+                <List.Image color="indigo">
+                  <Icon>􀆸</Icon>
+                </List.Image>
+                <List.Content className="pointer-events-none">
+                  <List.Trailing>
+                    <List.Title>
+                      <List.Text>Theme</List.Text>
+                    </List.Title>
+
+                    <List.Accessories>
+                      <Button className="inline-flex h-full items-center justify-end gap-1 font-semibold text-label-secondary">
+                        􀆊
+                      </Button>
+                    </List.Accessories>
+                  </List.Trailing>
+                </List.Content>
+              </Link>
+            </List.Item>
+          </List.Wrapper>
+        </List.Root>
+
+        <List.Root>
+          <List.Header>
             <List.Text level="heading">{"Data & Backup"}</List.Text>
           </List.Header>
           <List.Wrapper>

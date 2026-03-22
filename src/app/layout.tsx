@@ -39,6 +39,7 @@ export default function RootLayout({
     <html
       className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} ${rnxRounded.variable}`}
       lang="en"
+      suppressHydrationWarning
     >
       <body className="flex min-h-dvh flex-col">
         <Provider>{children}</Provider>
