@@ -15,6 +15,7 @@ export default defineSchema({
   })
     .index("by_owner", ["ownerId"])
     .index("by_date", ["ownerId", "date"])
+    .index("by_owner_type_date", ["ownerId", "type", "date"])
     .index("by_type", ["ownerId", "type"])
     .index("by_account", ["ownerId", "account"])
     .index("by_category", ["ownerId", "category"]),

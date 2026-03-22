@@ -10,6 +10,7 @@ import {
 import { transactionTypes } from "#lib/constants/transaction-types"
 import { v as vLib } from "#lib/validators"
 import { internal } from "./_generated/api"
+import type { Doc } from "./_generated/dataModel"
 import { getDoc } from "./lib/doc"
 import { userMutation, userQuery, zUserMutation } from "./lib/userFunctions"
 import { zid } from "./lib/utils"
@@ -114,22 +115,33 @@ export const listByTimeframe = userQuery({
 })
 
 export const listPaginatedDetailed = userQuery({
-  args: { paginationOpts: paginationOptsValidator },
-  handler: (ctx, { paginationOpts }) => {
+  args: {
+    paginationOpts: paginationOptsValidator,
+    type: v.optional(v.union(...transactionTypes.map((t) => v.literal(t)))),
+  },
+  handler: (ctx, { paginationOpts, type }) => {
     const { user } = ctx
 
-    const transactionStream = stream(ctx.db, schema)
-      .query("transactions")
-      .withIndex("by_date", (q) => q.eq("ownerId", user.ownerId))
-      .order("desc")
-      .map(async (transaction) => {
-        const [category, account] = await Promise.all([
-          getDoc(ctx.db, transaction.category).mustExist(),
-          getDoc(ctx.db, transaction.account).mustExist(),
-        ])
+    const enrich = async (transaction: Doc<"transactions">) => {
+      const [category, account] = await Promise.all([
+        getDoc(ctx.db, transaction.category).mustExist(),
+        getDoc(ctx.db, transaction.account).mustExist(),
+      ])
+      return { ...transaction, category, account }
+    }
 
-        return { ...transaction, category, account }
-      })
+    const base = stream(ctx.db, schema).query("transactions")
+    const transactionStream = type
+      ? base
+          .withIndex("by_owner_type_date", (q) =>
+            q.eq("ownerId", user.ownerId).eq("type", type)
+          )
+          .order("desc")
+          .map(enrich)
+      : base
+          .withIndex("by_date", (q) => q.eq("ownerId", user.ownerId))
+          .order("desc")
+          .map(enrich)
 
     return transactionStream.paginate({
       ...paginationOpts,
