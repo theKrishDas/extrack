@@ -12,6 +12,7 @@
     "doctor": "ultracite doctor",
     "convex:dev": "convex dev",
     "convex:sync": "convex dev --until-success",
+    "convex:codegen": "convex codegen",
     "convex:init": "convex dev --configure --until-success",
     "clean:dev": "bun x rimraf .next && next dev --turbopack",
     "clean:build": "bun x rimraf .next && next build",

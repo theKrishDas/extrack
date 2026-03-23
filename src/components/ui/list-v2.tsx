@@ -49,16 +49,10 @@ function Image({
     <ark.div
       className={cn(
         "ListImage",
-        "inline-flex h-full items-center pr-2 text-lg",
+        "inline-flex h-full items-center pr-2 text-(--list-image-color) text-lg",
         className
       )}
-      style={
-        {
-          "--list-image-color": colorVariable,
-          color: colorVariable,
-          ...style,
-        } as CSSProperties
-      }
+      style={{ "--list-image-color": colorVariable, ...style } as CSSProperties}
       {...rest}
     />
   )
