@@ -10,9 +10,8 @@ export default function Page() {
       <Container as="section" className="flex flex-col">
         <h1 className="sr-only">Activities</h1>
         <Suspense fallback={<Spinner className="mt-4" />}>
-          <ActivityTransactionTypeTabs>
-            <TransactionContainer />
-          </ActivityTransactionTypeTabs>
+          <ActivityTransactionTypeTabs />
+          <TransactionContainer />
         </Suspense>
       </Container>
     </main>
