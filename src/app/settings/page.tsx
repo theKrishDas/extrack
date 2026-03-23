@@ -119,52 +119,6 @@ export default function Page() {
             </List.Item>
           </List.Wrapper>
         </List.Root>
-
-        <List.Root>
-          <List.Header>
-            <List.Text level="heading">{"Data & Backup"}</List.Text>
-          </List.Header>
-          <List.Wrapper>
-            <List.Item>
-              <List.Image color="green">
-                <Icon>􀌖</Icon>
-              </List.Image>
-              <List.Content>
-                <List.Trailing>
-                  <List.Title>
-                    <List.Text>Import data</List.Text>
-                  </List.Title>
-                </List.Trailing>
-              </List.Content>
-            </List.Item>
-
-            <List.Item>
-              <List.Image color="blue">
-                <Icon>􀌘</Icon>
-              </List.Image>
-              <List.Content>
-                <List.Trailing>
-                  <List.Title>
-                    <List.Text>Export data</List.Text>
-                  </List.Title>
-                </List.Trailing>
-              </List.Content>
-            </List.Item>
-
-            <List.Item>
-              <List.Image color="yellow">
-                <Icon>􀙸</Icon>
-              </List.Image>
-              <List.Content>
-                <List.Trailing>
-                  <List.Title>
-                    <List.Text>Backup your data</List.Text>
-                  </List.Title>
-                </List.Trailing>
-              </List.Content>
-            </List.Item>
-          </List.Wrapper>
-        </List.Root>
       </Container>
     </main>
   )
