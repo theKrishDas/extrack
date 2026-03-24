@@ -146,4 +146,8 @@ function Footer({
 }
 
 const List = { Root, Item, Content, Icon, Text, Heading, Footer }
+
+/**
+ * @deprecated Use `InsetList` from `@/components/ui/inset-list` instead.
+ */
 export { List }

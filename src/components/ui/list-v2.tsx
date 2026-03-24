@@ -6,6 +6,9 @@ import { cn } from "@/lib/utils"
 
 import { Separator } from "./separator"
 
+/**
+ * @deprecated Use `InsetList` from `@/components/ui/inset-list` instead.
+ */
 function Root({ className, ...rest }: ComponentProps<typeof ark.div>) {
   return <ark.div className={cn("ListRoot", className)} {...rest} />
 }
@@ -179,4 +182,8 @@ const List = {
   Header,
   Footer,
 }
+
+/**
+ * @deprecated Use `InsetList` from `@/components/ui/inset-list` instead.
+ */
 export { List }
