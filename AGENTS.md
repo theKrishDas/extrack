@@ -1,124 +1,117 @@
-# Ultracite Code Standards
+# Agent Notes
 
-This project uses **Ultracite**, a zero-config preset that enforces strict code quality standards through automated formatting and linting.
+Stack: Next.js + Convex. Formatting and linting: Ultracite (Biome).
 
-## Quick Reference
+## Goals
 
-- **Format code**: `bun x ultracite fix`
-- **Check for issues**: `bun x ultracite check`
-- **Diagnose setup**: `bun x ultracite doctor`
-- **Convex helpers**: use `userQuery`/`userMutation` and import Convex helpers from `convex/functions.ts`
+Write code that is accessible, fast, type-safe, and easy to maintain. Prefer clear intent over clever tricks.
 
-Biome (the underlying engine) provides robust linting and formatting. Most issues are automatically fixable.
+## Commands (bun only)
 
----
+- Use `bun` and `bunx` for scripts and CLIs.
+- Do not use `npm`, `npx`, `pnpm`, or `yarn` in docs, scripts, or instructions.
+- Ultracite
+  - `bun x ultracite fix`
+  - `bun x ultracite check`
+  - `bun x ultracite doctor`
 
-## Core Principles
+## Styling and colors (Tailwind v4 + CSS variables)
 
-Write code that is **accessible, performant, type-safe, and maintainable**. Focus on clarity and explicit intent over brevity.
+- Tokens must come from `src/css/colors/colors.css`.
+- Prefer token-based Tailwind utilities (example `text-ios-blue`). Use `var(--ios-blue)` when needed.
+- Do not use Tailwind palette classes like `text-blue-500` or `bg-slate-900`.
+- Do not import `tailwindcss/colors`.
 
-### Type Safety & Explicitness
+## Convex
 
-- Use explicit types for function parameters and return values when they enhance clarity
-- Prefer `unknown` over `any` when the type is genuinely unknown
-- Use const assertions (`as const`) for immutable values and literal types
-- Leverage TypeScript's type narrowing instead of type assertions
-- Use meaningful variable names instead of magic numbers - extract constants with descriptive names
+- Prefer `userQuery` and `userMutation`.
+- Import helpers from `convex/functions.ts`.
 
-### Modern JavaScript/TypeScript
+## TypeScript
 
-- Use arrow functions for callbacks and short functions
-- Prefer `for...of` loops over `.forEach()` and indexed `for` loops
-- Use optional chaining (`?.`) and nullish coalescing (`??`) for safer property access
-- Prefer template literals over string concatenation
-- Use destructuring for object and array assignments
-- Use `const` by default, `let` only when reassignment is needed, never `var`
+- Add explicit types when they make intent clearer.
+- Use `unknown` instead of `any` when the type is not known.
+- Use `as const` for immutable values and literal types.
+- Prefer narrowing over type assertions.
+- Avoid magic numbers. Use named constants.
 
-### Async & Promises
+## JavaScript
 
-- Always `await` promises in async functions - don't forget to use the return value
-- Use `async/await` syntax instead of promise chains for better readability
-- Handle errors appropriately in async code with try-catch blocks
-- Don't use async functions as Promise executors
+- Prefer arrow functions for callbacks and small helpers.
+- Prefer `for...of` over `.forEach()` and indexed `for`.
+- Use `?.` and `??` for safer access and defaults.
+- Prefer template literals over string concat.
+- Prefer destructuring.
+- Default to `const`. Use `let` only when needed. Never use `var`.
 
-### React & JSX
+## Async
 
-- Use function components over class components
-- Call hooks at the top level only, never conditionally
-- Specify all dependencies in hook dependency arrays correctly
-- Use the `key` prop for elements in iterables (prefer unique IDs over array indices)
-- Nest children between opening and closing tags instead of passing as props
-- Don't define components inside other components
-- Use semantic HTML and ARIA attributes for accessibility:
-  - Provide meaningful alt text for images
-  - Use proper heading hierarchy
-  - Add labels for form inputs
-  - Include keyboard event handlers alongside mouse events
-  - Use semantic elements (`<button>`, `<nav>`, etc.) instead of divs with roles
+- Always `await` promises when you need their result.
+- Prefer `async/await` over promise chains.
+- Handle errors with real `try/catch` blocks when needed.
+- Do not use `async` functions as `new Promise` executors.
 
-### Error Handling & Debugging
+## React
 
-- Remove `console.log`, `debugger`, and `alert` statements from production code
-- Throw `Error` objects with descriptive messages, not strings or other values
-- Use `try-catch` blocks meaningfully - don't catch errors just to rethrow them
-- Prefer early returns over nested conditionals for error cases
+- Use function components.
+- Call hooks only at the top level.
+- Keep hook deps correct.
+- Use stable keys. Prefer IDs over array indexes.
+- Put children between tags, not in props.
+- Do not define components inside other components.
+- Use semantic HTML and ARIA
+  - Meaningful image alt text
+  - Correct heading order
+  - Labels for inputs
+  - Keyboard support for interactive UI
+  - Use `<button>`, `<nav>`, etc, not `div` with roles
 
-### Code Organization
+## Errors
 
-- Keep functions focused and under reasonable cognitive complexity limits
-- Extract complex conditions into well-named boolean variables
-- Use early returns to reduce nesting
-- Prefer simple conditionals over nested ternary operators
-- Group related code together and separate concerns
+- Remove `console.log`, `debugger`, and `alert`.
+- Throw `Error` objects with helpful messages.
+- Do not catch just to rethrow.
+- Prefer early returns over deep nesting.
 
-### Security
+## Structure
 
-- Add `rel="noopener"` when using `target="_blank"` on links
-- Avoid `dangerouslySetInnerHTML` unless absolutely necessary
-- Don't use `eval()` or assign directly to `document.cookie`
-- Validate and sanitize user input
+- Keep functions small and focused.
+- Extract complex conditions into named booleans.
+- Avoid nested ternaries.
+- Group related code. Separate concerns.
 
-### Performance
+## Security
 
-- Avoid spread syntax in accumulators within loops
-- Use top-level regex literals instead of creating them in loops
-- Prefer specific imports over namespace imports
-- Avoid barrel files (index files that re-export everything)
-- Use proper image components (e.g., Next.js `<Image>`) over `<img>` tags
+- Add `rel="noopener"` on `target="_blank"` links.
+- Avoid `dangerouslySetInnerHTML` unless required.
+- Do not use `eval()` or write `document.cookie` directly.
+- Validate and sanitize input.
 
-### Framework-Specific Guidance
+## Performance
 
-**Next.js:**
-- Use Next.js `<Image>` component for images
-- Use `next/head` or App Router metadata API for head elements
-- Use Server Components for async data fetching instead of async Client Components
+- Avoid spread in accumulators in loops.
+- Use regex literals, not regex created inside loops.
+- Prefer specific imports over namespace imports.
+- Avoid barrel files that re-export everything.
+- Use Next.js `<Image>` instead of `<img>`.
 
-**React 19+:**
-- Use ref as a prop instead of `React.forwardRef`
+## Next.js
 
-**Solid/Svelte/Vue/Qwik:**
-- Use `class` and `for` attributes (not `className` or `htmlFor`)
+- Use `<Image>` for images.
+- Use `next/head` or App Router metadata for head tags.
+- Prefer Server Components for async data fetching.
 
----
+## React 19+
+
+- Pass `ref` as a prop. Do not use `React.forwardRef`.
 
 ## Testing
 
-- Write assertions inside `it()` or `test()` blocks
-- Avoid done callbacks in async tests - use async/await instead
-- Don't use `.only` or `.skip` in committed code
-- Keep test suites reasonably flat - avoid excessive `describe` nesting
+- Put assertions inside `it()` or `test()`.
+- Avoid `done`. Use async tests.
+- Do not commit `.only` or `.skip`.
+- Keep suites flat. Avoid deep `describe` nesting.
 
-## When Biome Can't Help
+## Notes
 
-Biome's linter will catch most issues automatically. Focus your attention on:
-
-1. **Business logic correctness** - Biome can't validate your algorithms
-2. **Meaningful naming** - Use descriptive names for functions, variables, and types
-3. **Architecture decisions** - Component structure, data flow, and API design
-4. **Edge cases** - Handle boundary conditions and error states
-5. **User experience** - Accessibility, performance, and usability considerations
-6. **Documentation** - Add comments for complex logic, but prefer self-documenting code
-
----
-
-Most formatting and common issues are automatically fixed by Biome. Run `bun x ultracite fix` before committing to ensure compliance.
+Ultracite fixes most formatting and lint issues. Run `bun x ultracite fix` before you commit.
