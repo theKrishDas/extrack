@@ -21,10 +21,10 @@ const itemVariants = cva(
     "supports-[corner-shape:squircle]:corner-squircle",
     "[&:not(.InsetListItem~.InsetListItem)]:rounded-t-[1rem] supports-[corner-shape:squircle]:[&:not(.InsetListItem~.InsetListItem)]:rounded-t-[1.625rem]",
     "[&:not(:has(+.InsetListItem))]:rounded-b-[1rem] supports-[corner-shape:squircle]:[&:not(:has(+.InsetListItem))]:rounded-b-[1.625rem]",
-    "[&_.InsetListItemContent]:after:border-b-separator-non-opaque",
+    "[&_.InsetListItemContent]:after:border-b-separator-list-color",
     "[&[data-separator='auto']:not(:has(+.InsetListItem))_.InsetListItemContent]:after:border-b-transparent",
     "[&[data-separator='false']_.InsetListItemContent]:after:border-b-transparent",
-    "[&[data-separator='true']_.InsetListItemContent]:after:border-b-separator-non-opaque",
+    "[&[data-separator='true']_.InsetListItemContent]:after:border-b-separator-list-color",
     "[&[data-separator='true']:not(:has(+.InsetListItem))_.InsetListItemContent]:after:border-b-transparent",
   ],
   {
@@ -60,6 +60,9 @@ const itemContentVariants = cva([
   "after:border-b-transparent",
   "after:border-b",
   "after:content-['']",
+  "after:mix-blend-plus-lighter",
+  // TODO: Make the cards/items lighter that background
+  // TODO: use this blending mode: `"after:mix-blend-plus-darker dark:after:mix-blend-plus-lighter"`
 ])
 
 const itemMediaVariants = cva(

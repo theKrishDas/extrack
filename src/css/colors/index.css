@@ -43,4 +43,5 @@
   --color-fill-opaque: var(--fill-opaque);
   --color-separator-opaque: var(--separator-opaque);
   --color-separator-non-opaque: var(--separator-non-opaque);
+  --color-separator-list-color: var(--separator-list-color);
 }

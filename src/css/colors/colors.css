@@ -38,6 +38,8 @@
   --label-tertiary-opacity: 30%;
   --label-quaternary-opacity: 18%;
 
+  --separator-list-color: oklch(92.49% 0 0);
+
   --separator-opaque-color: oklch(82.71% 0.0028 286.34);
   --separator-non-opaque-color: oklch(44.66% 0.0032 286.27);
   --separator-non-opaque-opacity: 34%;
@@ -150,6 +152,8 @@
   --label-secondary-opacity: 60%;
   --label-tertiary-opacity: 30%;
   --label-quaternary-opacity: 16%;
+
+  --separator-list-color: oklch(21.78% 0 0);
 
   --separator-opaque-color: oklch(34.14% 0.0034 286.22);
   --separator-non-opaque-color: oklch(44.66% 0.0032 286.27);
