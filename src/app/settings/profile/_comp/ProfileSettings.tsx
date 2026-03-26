@@ -3,10 +3,10 @@
 import { useClerk, useUser } from "@clerk/nextjs"
 import Image from "next/image"
 import { useState } from "react"
-import { Button as RacButton } from "react-aria-components"
 import { toast } from "sonner"
+import { Spinner } from "@/components/loading/spinner"
 import { Button } from "@/components/ui/button"
-import { InsetList } from "@/components/ui/inset-list"
+import { ProfileDetail } from "./ProfileDetail"
 
 const PROFILE_IMAGE_SIZE = 104
 const WHITESPACE_REGEX = /\s+/
@@ -31,13 +31,7 @@ export function ProfileSettings() {
   const { signOut } = useClerk()
   const [isSigningOut, setIsSigningOut] = useState(false)
 
-  if (!isLoaded) {
-    return (
-      <div className="px-4 py-10 text-center text-label-tertiary text-sm">
-        Loading profile…
-      </div>
-    )
-  }
+  if (!isLoaded) return <Spinner />
 
   if (!(isSignedIn && user)) {
     return (
@@ -56,7 +50,7 @@ export function ProfileSettings() {
       await navigator.clipboard.writeText(user.id)
       toast.success("Copied Clerk user ID")
     } catch {
-      toast.error("Could not copy Clerk user ID")
+      toast.error("Could not copy User ID")
     }
   }
 
@@ -74,17 +68,17 @@ export function ProfileSettings() {
     <div className="flex flex-col gap-7">
       <section
         aria-label="Profile overview"
-        className="relative overflow-hidden rounded-[2rem] bg-background-primary-elevated px-6 pt-7 pb-6 shadow-[0_12px_40px_color-mix(in_oklab,var(--foreground)_8%,transparent)]"
+        className="relative overflow-hidden rounded-4xl bg-background-primary-elevated px-6 pt-7 pb-6 shadow-[0_12px_40px_color-mix(in_oklab,var(--foreground)_8%,transparent)]"
       >
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-[radial-gradient(circle_at_top,oklch(from_var(--ios-blue)_l_c_h_/_0.2),transparent_68%)]" />
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-[radial-gradient(circle_at_top,oklch(from_var(--ios-blue)_l_c_h/0.2),transparent_68%)]" />
         <div className="pointer-events-none absolute -top-10 right-0 size-28 rounded-full bg-[color-mix(in_oklab,var(--ios-cyan)_22%,transparent)] blur-3xl" />
 
         <div className="relative flex flex-col items-center text-center">
-          <div className="relative mb-4 overflow-hidden rounded-[2rem] ring-1 ring-black/5">
+          <div className="relative mb-4 overflow-hidden rounded-4xl ring-1 ring-black/5">
             {user.imageUrl ? (
               <Image
                 alt={`${displayName} profile photo`}
-                className="size-[104px] object-cover"
+                className="size-26 object-cover"
                 height={PROFILE_IMAGE_SIZE}
                 loader={({ src }) => src}
                 src={user.imageUrl}
@@ -92,7 +86,7 @@ export function ProfileSettings() {
                 width={PROFILE_IMAGE_SIZE}
               />
             ) : (
-              <div className="inline-grid size-[104px] place-content-center bg-[color-mix(in_oklab,var(--ios-blue)_16%,var(--fill-tertiary))] font-semibold text-3xl text-label-primary">
+              <div className="inline-grid size-26 place-content-center bg-[color-mix(in_oklab,var(--ios-blue)_16%,var(--fill-tertiary))] font-semibold text-3xl text-label-primary">
                 {initials}
               </div>
             )}
@@ -107,99 +101,21 @@ export function ProfileSettings() {
         </div>
       </section>
 
-      <InsetList.Root>
-        <InsetList.Section asChild>
-          <section>
-            <InsetList.SectionHeader>
-              <InsetList.SectionTitle>Profile</InsetList.SectionTitle>
-              <InsetList.SectionDescription>
-                Clerk is the source of truth for this signed-in user.
-              </InsetList.SectionDescription>
-            </InsetList.SectionHeader>
-
-            <ul className="InsetListSectionItems">
-              <InsetList.Item>
-                <InsetList.ItemLeading>
-                  <InsetList.ItemMedia
-                    className="bg-[color-mix(in_oklab,var(--ios-blue)_18%,transparent)] text-ios-blue"
-                    variant="rounded"
-                  >
-                    􀉩
-                  </InsetList.ItemMedia>
-                </InsetList.ItemLeading>
-
-                <InsetList.ItemBody>
-                  <InsetList.ItemTitle>Name</InsetList.ItemTitle>
-                  <InsetList.ItemSubtitle>{displayName}</InsetList.ItemSubtitle>
-                </InsetList.ItemBody>
-              </InsetList.Item>
-
-              <InsetList.Item>
-                <InsetList.ItemLeading>
-                  <InsetList.ItemMedia
-                    className="bg-[color-mix(in_oklab,var(--ios-cyan)_18%,transparent)] text-ios-cyan"
-                    variant="rounded"
-                  >
-                    􀍕
-                  </InsetList.ItemMedia>
-                </InsetList.ItemLeading>
-
-                <InsetList.ItemBody>
-                  <InsetList.ItemTitle>Email</InsetList.ItemTitle>
-                  <InsetList.ItemSubtitle className="break-all">
-                    {email}
-                  </InsetList.ItemSubtitle>
-                </InsetList.ItemBody>
-              </InsetList.Item>
-            </ul>
-          </section>
-        </InsetList.Section>
-
-        <InsetList.Section asChild>
-          <section>
-            <InsetList.SectionHeader>
-              <InsetList.SectionTitle>Developer</InsetList.SectionTitle>
-            </InsetList.SectionHeader>
-
-            <ul className="InsetListSectionItems">
-              <InsetList.Item align="start">
-                <InsetList.ItemLeading>
-                  <InsetList.ItemMedia
-                    className="bg-[color-mix(in_oklab,var(--ios-indigo)_18%,transparent)] text-ios-indigo"
-                    variant="rounded"
-                  >
-                    􀤆
-                  </InsetList.ItemMedia>
-                </InsetList.ItemLeading>
-
-                <InsetList.ItemBody>
-                  <InsetList.ItemTitle>Clerk User ID</InsetList.ItemTitle>
-                  <InsetList.ItemSubtitle className="break-all font-mono text-[0.92rem]">
-                    {user.id}
-                  </InsetList.ItemSubtitle>
-                </InsetList.ItemBody>
-
-                <InsetList.ItemTrailing className="flex min-h-13 items-center">
-                  <RacButton
-                    className="rounded-full bg-fill-secondary px-3 py-1 font-medium text-ios-blue text-sm outline-none transition-colors data-pressed:bg-fill-primary"
-                    onPress={copyUserId}
-                  >
-                    Copy
-                  </RacButton>
-                </InsetList.ItemTrailing>
-              </InsetList.Item>
-            </ul>
-          </section>
-        </InsetList.Section>
-      </InsetList.Root>
+      <ProfileDetail
+        displayName={displayName}
+        email={email}
+        onCopyUserId={copyUserId}
+        userId={user.id}
+      />
 
       <div className="px-1">
         <Button
-          className="h-14 w-full rounded-[1.75rem] text-base"
+          className="h-14"
           color="red"
+          fullWidth
           isDisabled={isSigningOut}
           onPress={handleSignOut}
-          variant="tinted"
+          variant="gray"
         >
           {isSigningOut ? "Signing Out…" : "Sign Out"}
         </Button>
