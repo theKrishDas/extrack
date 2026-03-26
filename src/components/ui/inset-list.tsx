@@ -1,7 +1,6 @@
 import { Slot } from "@radix-ui/react-slot"
 import { cva } from "class-variance-authority"
 import type { ComponentPropsWithoutRef, JSX } from "react"
-
 import { cn } from "@/lib/utils"
 
 type SlottableProps<T extends keyof JSX.IntrinsicElements> =
@@ -14,7 +13,7 @@ const itemVariants = cva(
     "InsetListItem",
     "flex",
     "w-full",
-    "gap-3", // px-4 + -ml-1
+    "gap-3", // px-4 + -ml-1 (leading-content)
     "rounded-none",
     "bg-fill-tertiary",
     "px-4",
@@ -79,8 +78,8 @@ const itemMediaVariants = cva(
   {
     variants: {
       size: {
-        regular: "size-7",
-        tall: "h-12 w-9",
+        regular: "",
+        tall: "",
       },
       variant: {
         fill: "bg-[image:repeating-conic-gradient(var(--fill-secondary)_0%_25%,transparent_0%_50%)] bg-[length:8px_8px] text-label-primary",
@@ -204,25 +203,12 @@ const SectionDescription = ({
 }
 
 const Section = ({
-  children,
   className,
   asChild = false,
   ...rest
 }: SlottableProps<"section">) => {
-  if (asChild) {
-    return (
-      <Slot className={cn("InsetListSection", className)} {...rest}>
-        {children}
-      </Slot>
-    )
-  }
-
-  return (
-    // Wrapper needed to span the separator
-    <section className={cn("InsetListSection", className)} {...rest}>
-      <div className="InsetListSectionItems">{children}</div>
-    </section>
-  )
+  const Comp = asChild ? Slot : "div"
+  return <Comp className={cn("InsetListSection", className)} {...rest} />
 }
 
 const Item = ({
