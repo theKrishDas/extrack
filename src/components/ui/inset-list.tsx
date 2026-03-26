@@ -1,12 +1,6 @@
 import { Slot } from "@radix-ui/react-slot"
 import { cva } from "class-variance-authority"
-import {
-  Children,
-  type ComponentPropsWithoutRef,
-  isValidElement,
-  type JSX,
-  type ReactNode,
-} from "react"
+import type { ComponentPropsWithoutRef, JSX } from "react"
 
 import { cn } from "@/lib/utils"
 
@@ -23,15 +17,16 @@ const itemVariants = cva(
     "flex",
     "w-full",
     "gap-3",
-    "bg-fill-opaque",
+    "rounded-none",
+    "bg-fill-tertiary",
     "px-4",
-    "first:rounded-t-[1.625rem]",
-    "last:rounded-b-[1.625rem]",
+    "[&:not(.InsetListItem~.InsetListItem)]:rounded-t-[1.625rem]",
+    "[&:not(:has(+.InsetListItem))]:rounded-b-[1.625rem]",
     "after:pointer-events-none after:absolute after:right-4 after:bottom-0 after:left-[calc(theme(spacing.4)+theme(spacing.7)+theme(spacing.3))] after:border-separator-non-opaque after:border-b after:content-['']",
-    "[&[data-separator='auto']:last-child]:after:border-b-transparent",
+    "[&[data-separator='auto']:not(:has(+.InsetListItem))]:after:border-b-transparent",
     "[&[data-separator='false']]:after:border-b-transparent",
     "[&[data-separator='true']]:after:border-b-separator-non-opaque",
-    "[&[data-separator='true']:last-child]:after:border-b-separator-non-opaque",
+    "[&[data-separator='true']:not(:has(+.InsetListItem))]:after:border-b-transparent",
   ],
   {
     variants: {
@@ -165,31 +160,6 @@ const SectionDescription = ({
   )
 }
 
-const partitionSectionChildren = (children: ReactNode) => {
-  const headerChildren: ReactNode[] = []
-  const footerChildren: ReactNode[] = []
-  const itemChildren: ReactNode[] = []
-
-  for (const child of Children.toArray(children)) {
-    if (
-      isValidElement(child) &&
-      (child.type === SectionHeader || child.type === SectionFooter)
-    ) {
-      if (child.type === SectionHeader) {
-        headerChildren.push(child)
-        continue
-      }
-
-      footerChildren.push(child)
-      continue
-    }
-
-    itemChildren.push(child)
-  }
-
-  return { footerChildren, headerChildren, itemChildren }
-}
-
 const Section = ({
   children,
   className,
@@ -204,16 +174,9 @@ const Section = ({
     )
   }
 
-  const { footerChildren, headerChildren, itemChildren } =
-    partitionSectionChildren(children)
-
   return (
     <section className={cn("InsetListSection", className)} {...rest}>
-      {headerChildren}
-      <ul className="InsetListSectionItems rounded-[1.625rem] bg-fill-tertiary">
-        {itemChildren}
-      </ul>
-      {footerChildren}
+      <ul className="InsetListSectionItems">{children}</ul>
     </section>
   )
 }
