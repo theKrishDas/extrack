@@ -218,8 +218,9 @@ const Section = ({
   }
 
   return (
+    // Wrapper needed to span the separator
     <section className={cn("InsetListSection", className)} {...rest}>
-      <ul className="InsetListSectionItems">{children}</ul>
+      <div className="InsetListSectionItems">{children}</div>
     </section>
   )
 }
@@ -230,11 +231,11 @@ const Item = ({
   align,
   showSeparator,
   ...rest
-}: SlottableProps<"li"> & {
+}: SlottableProps<"div"> & {
   align?: "center" | "end" | "start"
   showSeparator?: boolean
 }) => {
-  const Comp = asChild ? Slot : "li"
+  const Comp = asChild ? Slot : "div"
   const separatorState =
     showSeparator === undefined ? "auto" : `${showSeparator}`
 
