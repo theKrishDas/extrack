@@ -12,8 +12,6 @@ type SlottableProps<T extends keyof JSX.IntrinsicElements> =
 const itemVariants = cva(
   [
     "InsetListItem",
-    "group/item",
-    "relative",
     "flex",
     "w-full",
     "gap-3",
@@ -22,11 +20,11 @@ const itemVariants = cva(
     "px-4",
     "[&:not(.InsetListItem~.InsetListItem)]:rounded-t-[1.625rem]",
     "[&:not(:has(+.InsetListItem))]:rounded-b-[1.625rem]",
-    "after:pointer-events-none after:absolute after:right-4 after:bottom-0 after:left-[calc(theme(spacing.4)+theme(spacing.7)+theme(spacing.3))] after:border-separator-non-opaque after:border-b after:content-['']",
-    "[&[data-separator='auto']:not(:has(+.InsetListItem))]:after:border-b-transparent",
-    "[&[data-separator='false']]:after:border-b-transparent",
-    "[&[data-separator='true']]:after:border-b-separator-non-opaque",
-    "[&[data-separator='true']:not(:has(+.InsetListItem))]:after:border-b-transparent",
+    "[&_.InsetListItemContent]:after:border-b-separator-non-opaque",
+    "[&[data-separator='auto']:not(:has(+.InsetListItem))_.InsetListItemContent]:after:border-b-transparent",
+    "[&[data-separator='false']_.InsetListItemContent]:after:border-b-transparent",
+    "[&[data-separator='true']_.InsetListItemContent]:after:border-b-separator-non-opaque",
+    "[&[data-separator='true']:not(:has(+.InsetListItem))_.InsetListItemContent]:after:border-b-transparent",
   ],
   {
     variants: {
@@ -41,6 +39,26 @@ const itemVariants = cva(
     },
   }
 )
+
+const itemContentVariants = cva([
+  "InsetListItemContent",
+  "relative",
+  "flex",
+  "min-h-13",
+  "w-full",
+  "flex-1",
+  "items-stretch",
+  "gap-2",
+  "after:pointer-events-none",
+  "after:absolute",
+  "after:right-0",
+  "after:bottom-0",
+  "after:translate-y-1/2",
+  "after:left-0",
+  "after:border-b-transparent",
+  "after:border-b",
+  "after:content-['']",
+])
 
 const itemMediaVariants = cva(
   [
@@ -219,11 +237,18 @@ const ItemLeading = ({
   )
 }
 
+const ItemContent = ({
+  className,
+  ...rest
+}: ComponentPropsWithoutRef<"div">) => {
+  return <div className={cn(itemContentVariants(), className)} {...rest} />
+}
+
 const ItemBody = ({ className, ...rest }: ComponentPropsWithoutRef<"div">) => {
   return (
     <div
       className={cn(
-        "InsetListItemBody flex min-h-13 w-full flex-1 flex-col justify-center gap-0.5 py-3",
+        "InsetListItemBody flex w-full flex-1 flex-col justify-center gap-0.5 py-3",
         className
       )}
       {...rest}
@@ -299,6 +324,7 @@ const InsetList = {
   SectionFooter,
   Item,
   ItemLeading,
+  ItemContent,
   ItemBody,
   ItemTitle,
   ItemSubtitle,

@@ -16,24 +16,30 @@ import { InsetList } from "@/components/ui/inset-list"
 
 ```tsx
 <InsetList.Root>
-  <InsetList.Section>
-    <InsetList.SectionHeader>
-      <InsetList.SectionTitle />
-      <InsetList.SectionDescription />
-    </InsetList.SectionHeader>
+  <InsetList.Section asChild>
+    <section>
+      <InsetList.SectionHeader>
+        <InsetList.SectionTitle />
+        <InsetList.SectionDescription />
+      </InsetList.SectionHeader>
 
-    <InsetList.Item>
-      <InsetList.ItemLeading />
-      <InsetList.ItemBody>
-        <InsetList.ItemTitle />
-        <InsetList.ItemSubtitle />
-      </InsetList.ItemBody>
-      <InsetList.ItemTrailing />
-    </InsetList.Item>
+      <ul className="InsetListSectionItems">
+        <InsetList.Item>
+          <InsetList.ItemLeading />
+          <InsetList.ItemContent>
+            <InsetList.ItemBody>
+              <InsetList.ItemTitle />
+              <InsetList.ItemSubtitle />
+            </InsetList.ItemBody>
+            <InsetList.ItemTrailing />
+          </InsetList.ItemContent>
+        </InsetList.Item>
+      </ul>
 
-    <InsetList.SectionFooter>
-      <InsetList.SectionDescription />
-    </InsetList.SectionFooter>
+      <InsetList.SectionFooter>
+        <InsetList.SectionDescription />
+      </InsetList.SectionFooter>
+    </section>
   </InsetList.Section>
 </InsetList.Root>
 ```
@@ -43,13 +49,14 @@ import { InsetList } from "@/components/ui/inset-list"
 | Component | Purpose |
 | --- | --- |
 | `Root` | Top-level list container. |
-| `Section` | Groups rows and renders semantic `section > ul` by default. |
+| `Section` | Groups rows and renders semantic `section > ul` by default. Use `asChild` when you need custom siblings around the list. |
 | `SectionHeader` | Optional section heading wrapper. Supports `visuallyHidden`. |
 | `SectionTitle` | Heading text for a section. |
 | `SectionDescription` | Secondary section text. Can be used in header or footer. |
 | `SectionFooter` | Optional helper text area below a section. |
 | `Item` | A single row. Supports `align`, `showSeparator`, and `asChild`. |
 | `ItemLeading` | Leading slot. Separator does not render under this area. |
+| `ItemContent` | Wrapper for `ItemBody` and `ItemTrailing`. Owns the separator. |
 | `ItemBody` | Main content slot. |
 | `ItemTitle` | Primary row text. |
 | `ItemSubtitle` | Secondary in-row text. |
@@ -77,6 +84,10 @@ import { InsetList } from "@/components/ui/inset-list"
 - `align?: "start" | "center" | "end"`
 - `showSeparator?: boolean`
 
+#### `InsetList.ItemContent`
+
+- standard `div` props
+
 #### `InsetList.ItemMedia`
 
 - `size?: "regular" | "tall"`
@@ -91,35 +102,41 @@ import { InsetList } from "@/components/ui/inset-list"
 export function SettingsList() {
   return (
     <InsetList.Root>
-      <InsetList.Section>
-        <InsetList.SectionHeader>
-          <InsetList.SectionTitle>Appearance</InsetList.SectionTitle>
-        </InsetList.SectionHeader>
+      <InsetList.Section asChild>
+        <section>
+          <InsetList.SectionHeader>
+            <InsetList.SectionTitle>Appearance</InsetList.SectionTitle>
+          </InsetList.SectionHeader>
 
-        <InsetList.Item asChild>
-          <Link className="data-pressed:bg-fill-tertiary" href="/settings/theme">
-            <InsetList.ItemLeading>
-              <InsetList.ItemMedia className="bg-indigo-500" variant="rounded">
-                <span className="text-white">􀆸</span>
-              </InsetList.ItemMedia>
-            </InsetList.ItemLeading>
+          <ul className="InsetListSectionItems">
+            <InsetList.Item asChild>
+              <Link className="data-pressed:bg-fill-tertiary" href="/settings/theme">
+                <InsetList.ItemLeading>
+                  <InsetList.ItemMedia className="bg-indigo-500" variant="rounded">
+                    <span className="text-white">􀆸</span>
+                  </InsetList.ItemMedia>
+                </InsetList.ItemLeading>
 
-            <InsetList.ItemBody>
-              <InsetList.ItemTitle>Theme</InsetList.ItemTitle>
-              <InsetList.ItemSubtitle>System</InsetList.ItemSubtitle>
-            </InsetList.ItemBody>
+                <InsetList.ItemContent>
+                  <InsetList.ItemBody>
+                    <InsetList.ItemTitle>Theme</InsetList.ItemTitle>
+                    <InsetList.ItemSubtitle>System</InsetList.ItemSubtitle>
+                  </InsetList.ItemBody>
 
-            <InsetList.ItemTrailing>
-              <span className="text-label-secondary">􀆊</span>
-            </InsetList.ItemTrailing>
-          </Link>
-        </InsetList.Item>
+                  <InsetList.ItemTrailing>
+                    <span className="text-label-secondary">􀆊</span>
+                  </InsetList.ItemTrailing>
+                </InsetList.ItemContent>
+              </Link>
+            </InsetList.Item>
+          </ul>
 
-        <InsetList.SectionFooter>
-          <InsetList.SectionDescription>
-            Controls the app appearance.
-          </InsetList.SectionDescription>
-        </InsetList.SectionFooter>
+          <InsetList.SectionFooter>
+            <InsetList.SectionDescription>
+              Controls the app appearance.
+            </InsetList.SectionDescription>
+          </InsetList.SectionFooter>
+        </section>
       </InsetList.Section>
     </InsetList.Root>
   )
@@ -156,12 +173,14 @@ export function AccountListBox() {
                 <InsetList.ItemLeading>
                   <InsetList.ItemMedia variant="symbol">􀉉</InsetList.ItemMedia>
                 </InsetList.ItemLeading>
-                <InsetList.ItemBody>
-                  <InsetList.ItemTitle>Checking</InsetList.ItemTitle>
-                </InsetList.ItemBody>
-                <InsetList.ItemTrailing>
-                  <span className="text-label-secondary">$1,240</span>
-                </InsetList.ItemTrailing>
+                <InsetList.ItemContent>
+                  <InsetList.ItemBody>
+                    <InsetList.ItemTitle>Checking</InsetList.ItemTitle>
+                  </InsetList.ItemBody>
+                  <InsetList.ItemTrailing>
+                    <span className="text-label-secondary">$1,240</span>
+                  </InsetList.ItemTrailing>
+                </InsetList.ItemContent>
               </ListBoxItem>
             </InsetList.Item>
           </ListBoxSection>
@@ -175,6 +194,7 @@ export function AccountListBox() {
 ## Notes
 
 - `showSeparator` always overrides automatic separator behavior.
+- `ItemContent` should wrap `ItemBody` and `ItemTrailing`.
 - The separator renders under `ItemBody` and `ItemTrailing`, but not `ItemLeading`.
 - `ItemMedia` can be used in either leading or trailing slots.
 - When composing with `ListBoxItem`, do not place interactive children inside the row.
