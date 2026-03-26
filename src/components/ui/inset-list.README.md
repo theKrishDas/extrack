@@ -7,7 +7,7 @@ Use it for settings-style sections, selectable rows, and light wrappers around `
 ## Import
 
 ```tsx
-import { InsetList } from "@/components/ui/inset-list"
+import { InsetList } from "@/components/ui/inset-list";
 ```
 
 ## API
@@ -16,30 +16,29 @@ import { InsetList } from "@/components/ui/inset-list"
 
 ```tsx
 <InsetList.Root>
-  <InsetList.Section asChild>
-    <section>
-      <InsetList.SectionHeader>
-        <InsetList.SectionTitle />
-        <InsetList.SectionDescription />
-      </InsetList.SectionHeader>
+  <InsetList.Section>
+    <InsetList.SectionHeader>
+      <InsetList.SectionTitle />
+      <InsetList.SectionDescription />
+    </InsetList.SectionHeader>
 
-      <ul className="InsetListSectionItems">
-        <InsetList.Item>
-          <InsetList.ItemLeading />
-          <InsetList.ItemContent>
-            <InsetList.ItemBody>
-              <InsetList.ItemTitle />
-              <InsetList.ItemSubtitle />
-            </InsetList.ItemBody>
-            <InsetList.ItemTrailing />
-          </InsetList.ItemContent>
-        </InsetList.Item>
-      </ul>
+    <InsetList.Item>
+      <InsetList.ItemLeading>
+        <InsetList.ItemMedia />
+      </InsetList.ItemLeading>
 
-      <InsetList.SectionFooter>
-        <InsetList.SectionDescription />
-      </InsetList.SectionFooter>
-    </section>
+      <InsetList.ItemContent>
+        <InsetList.ItemBody>
+          <InsetList.ItemTitle />
+          <InsetList.ItemSubtitle />
+        </InsetList.ItemBody>
+        <InsetList.ItemTrailing />
+      </InsetList.ItemContent>
+    </InsetList.Item>
+
+    <InsetList.SectionFooter>
+      <InsetList.SectionDescription />
+    </InsetList.SectionFooter>
   </InsetList.Section>
 </InsetList.Root>
 ```
@@ -96,8 +95,8 @@ import { InsetList } from "@/components/ui/inset-list"
 ## Example
 
 ```tsx
-import { Link } from "react-aria-components"
-import { InsetList } from "@/components/ui/inset-list"
+import { Link } from "react-aria-components";
+import { InsetList } from "@/components/ui/inset-list";
 
 export function SettingsList() {
   return (
@@ -108,28 +107,32 @@ export function SettingsList() {
             <InsetList.SectionTitle>Appearance</InsetList.SectionTitle>
           </InsetList.SectionHeader>
 
-          <ul className="InsetListSectionItems">
-            <InsetList.Item asChild>
-              <Link className="data-pressed:bg-fill-tertiary" href="/settings/theme">
-                <InsetList.ItemLeading>
-                  <InsetList.ItemMedia className="bg-indigo-500" variant="rounded">
-                    <span className="text-white">􀆸</span>
-                  </InsetList.ItemMedia>
-                </InsetList.ItemLeading>
+          <InsetList.Item asChild>
+            <Link
+              className="data-pressed:bg-fill-tertiary"
+              href="/settings/theme"
+            >
+              <InsetList.ItemLeading>
+                <InsetList.ItemMedia
+                  className="bg-indigo-500"
+                  variant="rounded"
+                >
+                  <span className="text-white">􀆸</span>
+                </InsetList.ItemMedia>
+              </InsetList.ItemLeading>
 
-                <InsetList.ItemContent>
-                  <InsetList.ItemBody>
-                    <InsetList.ItemTitle>Theme</InsetList.ItemTitle>
-                    <InsetList.ItemSubtitle>System</InsetList.ItemSubtitle>
-                  </InsetList.ItemBody>
+              <InsetList.ItemContent>
+                <InsetList.ItemBody>
+                  <InsetList.ItemTitle>Theme</InsetList.ItemTitle>
+                  <InsetList.ItemSubtitle>System</InsetList.ItemSubtitle>
+                </InsetList.ItemBody>
 
-                  <InsetList.ItemTrailing>
-                    <span className="text-label-secondary">􀆊</span>
-                  </InsetList.ItemTrailing>
-                </InsetList.ItemContent>
-              </Link>
-            </InsetList.Item>
-          </ul>
+                <InsetList.ItemTrailing>
+                  <span className="text-label-secondary">􀆊</span>
+                </InsetList.ItemTrailing>
+              </InsetList.ItemContent>
+            </Link>
+          </InsetList.Item>
 
           <InsetList.SectionFooter>
             <InsetList.SectionDescription>
@@ -139,7 +142,7 @@ export function SettingsList() {
         </section>
       </InsetList.Section>
     </InsetList.Root>
-  )
+  );
 }
 ```
 
@@ -153,8 +156,8 @@ import {
   ListBox,
   ListBoxItem,
   ListBoxSection,
-} from "react-aria-components"
-import { InsetList } from "@/components/ui/inset-list"
+} from "react-aria-components";
+import { InsetList } from "@/components/ui/inset-list";
 
 export function AccountListBox() {
   return (
@@ -187,7 +190,7 @@ export function AccountListBox() {
         </InsetList.Section>
       </ListBox>
     </InsetList.Root>
-  )
+  );
 }
 ```
 
