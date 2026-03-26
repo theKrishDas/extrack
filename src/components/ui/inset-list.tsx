@@ -14,12 +14,13 @@ const itemVariants = cva(
     "InsetListItem",
     "flex",
     "w-full",
-    "gap-3",
+    "gap-3", // px-4 + -ml-1
     "rounded-none",
     "bg-fill-tertiary",
     "px-4",
-    "[&:not(.InsetListItem~.InsetListItem)]:rounded-t-[1.625rem]",
-    "[&:not(:has(+.InsetListItem))]:rounded-b-[1.625rem]",
+    "supports-[corner-shape:squircle]:corner-squircle",
+    "[&:not(.InsetListItem~.InsetListItem)]:rounded-t-[1rem] supports-[corner-shape:squircle]:[&:not(.InsetListItem~.InsetListItem)]:rounded-t-[1.625rem]",
+    "[&:not(:has(+.InsetListItem))]:rounded-b-[1rem] supports-[corner-shape:squircle]:[&:not(:has(+.InsetListItem))]:rounded-b-[1.625rem]",
     "[&_.InsetListItemContent]:after:border-b-separator-non-opaque",
     "[&[data-separator='auto']:not(:has(+.InsetListItem))_.InsetListItemContent]:after:border-b-transparent",
     "[&[data-separator='false']_.InsetListItemContent]:after:border-b-transparent",
@@ -45,6 +46,7 @@ const itemContentVariants = cva([
   "relative",
   "flex",
   "min-h-13",
+  "self-stretch",
   "w-full",
   "flex-1",
   "items-stretch",
@@ -65,9 +67,11 @@ const itemMediaVariants = cva(
     "InsetListItemMedia",
     "inline-flex",
     "shrink-0",
+    "-ml-1",
     "items-center",
     "justify-center",
     "overflow-hidden",
+    "leading-none",
   ],
   {
     variants: {
@@ -76,16 +80,34 @@ const itemMediaVariants = cva(
         tall: "h-12 w-9",
       },
       variant: {
-        fill: "bg-fill-secondary text-label-primary",
-        rounded: "rounded-[0.7rem] bg-fill-secondary text-label-primary",
-        symbol: "text-label-secondary",
+        fill: "bg-[image:repeating-conic-gradient(var(--fill-secondary)_0%_25%,transparent_0%_50%)] bg-[length:8px_8px] text-label-primary",
+        rounded:
+          "supports-[corner-shape:squircle]:corner-squircle rounded-lg bg-fill-secondary text-label-primary",
+        symbol: "h-5 w-7",
       },
     },
     compoundVariants: [
       {
         size: "tall",
         variant: "rounded",
-        className: "rounded-[0.9rem]",
+        className:
+          "size-11 rounded-xl supports-[corner-shape:squircle]:rounded-2xl",
+      },
+      {
+        size: "regular",
+        variant: "rounded",
+        className:
+          "size-7.5 rounded-lg supports-[corner-shape:squircle]:rounded-xl",
+      },
+      {
+        size: "regular",
+        variant: "fill",
+        className: "size-13",
+      },
+      {
+        size: "tall",
+        variant: "fill",
+        className: "size-17",
       },
     ],
     defaultVariants: {
@@ -155,7 +177,7 @@ const SectionTitle = ({
   return (
     <h4
       className={cn(
-        "InsetListSectionTitle font-medium text-label-secondary text-sm uppercase",
+        "InsetListSectionTitle font-semibold text-base text-label-secondary",
         className
       )}
       {...rest}
@@ -170,7 +192,7 @@ const SectionDescription = ({
   return (
     <p
       className={cn(
-        "InsetListSectionDescription text-label-tertiary text-sm leading-snug tracking-[0.015em]",
+        "InsetListSectionDescription text-label-secondary text-sm leading-snug tracking-[0.015em]",
         className
       )}
       {...rest}
@@ -275,7 +297,7 @@ const ItemSubtitle = ({
   return (
     <p
       className={cn(
-        "InsetListItemSubtitle font-medium text-label-secondary tracking-[0.01em]",
+        "InsetListItemSubtitle font-medium text-label-secondary/80 tracking-[0.01em]",
         className
       )}
       {...rest}
