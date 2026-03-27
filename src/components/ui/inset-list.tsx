@@ -47,6 +47,7 @@ const itemContentVariants = cva([
   "min-h-13",
   "self-stretch",
   "w-full",
+  "min-w-0",
   "flex-1",
   "items-stretch",
   "gap-2",
@@ -260,7 +261,7 @@ const ItemBody = ({ className, ...rest }: ComponentPropsWithoutRef<"div">) => {
   return (
     <div
       className={cn(
-        "InsetListItemBody flex w-full flex-1 flex-col justify-center gap-0.5 py-3",
+        "InsetListItemBody flex w-full min-w-0 flex-1 flex-col justify-center gap-0.5 py-3",
         className
       )}
       {...rest}
@@ -272,7 +273,7 @@ const ItemTitle = ({ className, ...rest }: ComponentPropsWithoutRef<"p">) => {
   return (
     <p
       className={cn(
-        "InsetListItemTitle font-semibold text-base text-label-primary tracking-[0.01em]",
+        "InsetListItemTitle font-medium text-base text-label-primary leading-tight tracking-[0.01em]",
         className
       )}
       {...rest}
@@ -287,7 +288,7 @@ const ItemSubtitle = ({
   return (
     <p
       className={cn(
-        "InsetListItemSubtitle font-medium text-label-secondary/80 tracking-[0.01em]",
+        "InsetListItemSubtitle text-[0.9rem] text-label-secondary/80 leading-tight tracking-[0.01em]",
         className
       )}
       {...rest}
