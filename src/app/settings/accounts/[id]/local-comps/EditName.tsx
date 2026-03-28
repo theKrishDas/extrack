@@ -3,7 +3,7 @@ import { Input, Label, TextField } from "react-aria-components"
 import { Controller, type UseFormReturn } from "react-hook-form"
 import type { Doc } from "#/convex/_generated/dataModel"
 import { limit } from "#lib/constants/constraints"
-import { NO_CONSECUTIVE_SPACES, NO_LEADING_SPACE } from "#lib/regex"
+import { CONSECUTIVE_SPACES, LEADING_WHITESPACE } from "#lib/regex"
 import type { UpdateAccountSchemaType } from "#lib/schema"
 import { cn } from "@/lib/utils"
 
@@ -41,8 +41,8 @@ export function EditName({
             onChange={(value) => {
               onChange(
                 value
-                  .replace(NO_LEADING_SPACE, "") // don't let put space at the beginning
-                  .replace(NO_CONSECUTIVE_SPACES, " ") // don't let put consecutive spaces
+                  .replace(LEADING_WHITESPACE, "") // don't let put space at the beginning
+                  .replace(CONSECUTIVE_SPACES, " ") // don't let put consecutive spaces
               )
             }}
             transition={{

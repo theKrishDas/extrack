@@ -1,5 +1,5 @@
 import { z } from "zod"
-import { NO_CONSECUTIVE_SPACES, NO_LEADING_SPACE } from "../regex"
+import { CONSECUTIVE_SPACES, LEADING_WHITESPACE } from "../regex"
 
 /** Builds a `ZodNumber` monetary schema with optional int constraint, bounds, and a min/max sanity check. */
 export function monetary(int: boolean, min?: number, max?: number) {
@@ -61,12 +61,9 @@ export const v = {
       .min(min)
       .max(max)
       .transform((val) => val.trim())
+      .refine((val) => !CONSECUTIVE_SPACES.test(val), "No consecutive spaces")
       .refine(
-        (val) => !NO_CONSECUTIVE_SPACES.test(val),
-        "No consecutive spaces"
-      )
-      .refine(
-        (val) => !NO_LEADING_SPACE.test(val),
+        (val) => !LEADING_WHITESPACE.test(val),
         "Must not start with a space"
       ),
 }

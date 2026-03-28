@@ -1,2 +1,3 @@
-export const NO_LEADING_SPACE = /^\s/
-export const NO_CONSECUTIVE_SPACES = / {2,}/
+export const LEADING_WHITESPACE = /^\s/
+export const CONSECUTIVE_SPACES = / {2,}/
+export const WHITESPACE = /\s+/

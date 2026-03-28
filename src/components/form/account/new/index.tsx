@@ -12,7 +12,7 @@ import { Controller, type UseFormReturn, useForm } from "react-hook-form"
 import { toast } from "sonner"
 import { api } from "#/convex/_generated/api"
 import { limit } from "#lib/constants/constraints"
-import { NO_CONSECUTIVE_SPACES, NO_LEADING_SPACE } from "#lib/regex"
+import { CONSECUTIVE_SPACES, LEADING_WHITESPACE } from "#lib/regex"
 import { accountSchema, type CreateAccountSchemaType } from "#lib/schema"
 import { vendorAccounts } from "#lib/seed/accounts"
 import { EmojiSelect } from "@/app/settings/local-comps/EmojiSelect"
@@ -90,8 +90,8 @@ function NameInput({ form }: { form: UseFormReturn<CreateAccountSchemaType> }) {
             onChange={(value) => {
               onChange(
                 value
-                  .replace(NO_LEADING_SPACE, "") // don't let put space at the beginning
-                  .replace(NO_CONSECUTIVE_SPACES, " ") // don't let put consecutive spaces
+                  .replace(LEADING_WHITESPACE, "") // don't let put space at the beginning
+                  .replace(CONSECUTIVE_SPACES, " ") // don't let put consecutive spaces
               )
             }}
             validationBehavior="aria"
