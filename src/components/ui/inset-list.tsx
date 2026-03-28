@@ -140,8 +140,8 @@ const SectionHeader = ({
   asChild = false,
   visuallyHidden = false,
   ...rest
-}: SlottableProps<"div"> & { visuallyHidden?: boolean }) => {
-  const Comp = asChild ? Slot : "div"
+}: SlottableProps<"header"> & { visuallyHidden?: boolean }) => {
+  const Comp = asChild ? Slot : "header"
 
   return (
     <Comp
@@ -176,9 +176,9 @@ const SectionFooter = ({
 const SectionTitle = ({
   className,
   ...rest
-}: ComponentPropsWithoutRef<"h4">) => {
+}: ComponentPropsWithoutRef<"span">) => {
   return (
-    <h4
+    <span
       className={cn(
         "InsetListSectionTitle font-semibold text-base text-label-secondary",
         className
@@ -208,7 +208,7 @@ const Section = ({
   asChild = false,
   ...rest
 }: SlottableProps<"section">) => {
-  const Comp = asChild ? Slot : "div"
+  const Comp = asChild ? Slot : "section"
   return <Comp className={cn("InsetListSection", className)} {...rest} />
 }
 
