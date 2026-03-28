@@ -13,6 +13,9 @@ export interface HeaderProps {
   href?: string
 }
 
+/**
+ * @deprecated Use `PageHeader` from `@/components/navigation/page-header` instead.
+ */
 export function Header({ title, srOnly = false, href = "" }: HeaderProps) {
   const router = useRouter()
 
