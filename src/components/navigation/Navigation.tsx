@@ -35,9 +35,21 @@ function Item({
       className={buttonVariants({
         variant: "ghost",
         className:
-          "h-12.5 flex-col items-center justify-center gap-2.25 font-semibold text-[0.625rem] text-label-primary sm:h-12.5 sm:w-20 sm:text-[0.625rem]",
+          "h-12.5 cursor-default select-none flex-col items-center justify-center gap-2.25 font-semibold text-[0.625rem] text-label-primary sm:h-12.5 sm:w-20 sm:text-[0.625rem]",
       })}
       href={href}
+      style={
+        {
+          WebkitUserDrag: "none",
+          userDrag: "none",
+          WebkitTouchCallout: "none",
+          cursor: "default",
+          userSelect: "none",
+          msUserSelect: "none",
+          WebkitUserSelect: "none",
+          MozUserSelect: "none",
+        } as React.CSSProperties
+      }
     >
       <span
         aria-hidden={true}
