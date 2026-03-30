@@ -1,7 +1,7 @@
 import { ConvexError } from "convex/values"
 import { convexTest } from "convex-test"
 import { describe, expect, it } from "vitest"
-import { CATEGORIES_PER_USER_MAX } from "#lib/constants/constraints"
+import { limit } from "#lib/constants/constraints"
 import { vendorCategories } from "#lib/seed"
 import { api, internal } from "../../_generated/api"
 import schema from "../../schema"
@@ -38,7 +38,7 @@ describe("category.create limits", () => {
       userId: identity.subject,
     })
 
-    for (let i = 0; i < CATEGORIES_PER_USER_MAX; i++) {
+    for (let i = 0; i < limit.count.categories.perUserMax; i++) {
       await asUser.mutation(api.category.create, {
         name: `UCat${i}`,
         type: "expense",
@@ -56,7 +56,9 @@ describe("category.create limits", () => {
     const userOwnedExpenseCategories = categories.filter(
       (category) => category.is_vendor === false && category.type === "expense"
     )
-    expect(userOwnedExpenseCategories).toHaveLength(CATEGORIES_PER_USER_MAX)
+    expect(userOwnedExpenseCategories).toHaveLength(
+      limit.count.categories.perUserMax
+    )
 
     await expect(
       asUser.mutation(api.category.create, {
@@ -67,7 +69,7 @@ describe("category.create limits", () => {
     ).resolves.toBeDefined()
 
     expect(categories.length + 1).toBe(
-      vendorCategories.length + CATEGORIES_PER_USER_MAX + 1
+      vendorCategories.length + limit.count.categories.perUserMax + 1
     )
   })
 
@@ -79,7 +81,7 @@ describe("category.create limits", () => {
       userId: identity.subject,
     })
 
-    for (let i = 0; i < CATEGORIES_PER_USER_MAX; i++) {
+    for (let i = 0; i < limit.count.categories.perUserMax; i++) {
       await asUser.mutation(api.category.create, {
         name: `Cap${i}`,
         type: "income",
@@ -112,7 +114,7 @@ describe("category.create limits", () => {
 
       expect(payload).toMatchObject({
         code: "CATEGORY_LIMIT_REACHED",
-        limit: CATEGORIES_PER_USER_MAX,
+        limit: limit.count.categories.perUserMax,
       })
     }
   })
@@ -139,7 +141,7 @@ describe("category.create limits", () => {
         type: "expense",
         color: "purple",
       })
-    ).rejects.toThrowError("CATEGORY_NAME_TAKEN")
+    ).rejects.toThrow("CATEGORY_NAME_TAKEN")
   })
 
   it("allows same category name across different types", async () => {
