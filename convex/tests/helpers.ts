@@ -51,6 +51,7 @@ export function seedTransaction(
     categoryId: Id<"categories">
     amount: number
     type: "income" | "expense"
+    date?: number
   }
 ) {
   return t.run((ctx) =>
@@ -60,7 +61,7 @@ export function seedTransaction(
       amount: opts.amount,
       type: opts.type,
       category: opts.categoryId,
-      date: Date.now(),
+      date: opts.date ?? Date.now(),
     })
   )
 }
