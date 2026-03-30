@@ -22,7 +22,7 @@ export function TransactionList({
 }: {
   transactions: TransactionPaginatedResult
 }) {
-  const hasMore = status === "CanLoadMore"
+  const hasMore = status === "CanLoadMore" || status === "LoadingMore"
 
   const flattened = useMemo(() => {
     const collection = createCollection(transactions, "_id", formatDateGroup)
