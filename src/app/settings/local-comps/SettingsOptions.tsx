@@ -10,9 +10,9 @@ import {
   ListBoxItem,
   ListBoxSection,
 } from "react-aria-components"
-import { WHITESPACE } from "#lib/regex"
 import { InsetList } from "@/components/ui/inset-list"
 import { Skeleton } from "@/components/ui/loading/skeleton"
+import { getInitials } from "@/components/user/helpers"
 import { type SettingsOption, settingsConfig } from "./config"
 
 type ListBoxItemRenderProps = Parameters<
@@ -52,17 +52,6 @@ function getTrailingIcon(
   }
   const trailingIcon = trailing ? trailingIcons[trailing] : null
   return trailingIcon
-}
-
-const getInitials = (fullName: string | null | undefined) => {
-  if (!fullName) return "U"
-  const [first = "", second = ""] = fullName
-    .split(WHITESPACE)
-    .slice(0, 2)
-    .map((n) => n[0])
-    .join("")
-    .toUpperCase()
-  return `${first.charAt(0)}${second.charAt(0)}`.toUpperCase() || "U"
 }
 
 function renderInsetSection({
