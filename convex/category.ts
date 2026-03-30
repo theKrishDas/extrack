@@ -2,6 +2,7 @@ import { ConvexError, v } from "convex/values"
 import z from "zod/v3"
 import { colors } from "#lib/constants/colors"
 import {
+  CATEGORIES_PER_USER_MAX,
   CATEGORY_NAME_MAX_LENGTH,
   CATEGORY_NAME_MIN_LENGTH,
 } from "#lib/constants/constraints"
@@ -54,6 +55,23 @@ export const create = zUserMutation({
   }),
   handler: async (ctx, { name, type, color, icon: argIcon }) => {
     const { user } = ctx
+
+    const categories = await ctx.db
+      .query("categories")
+      .withIndex("by_owner", (q) => q.eq("ownerId", user.ownerId))
+      .collect()
+    const userOwnedCategoryCount = categories.filter(
+      (category) => category.is_vendor === false
+    ).length
+
+    if (userOwnedCategoryCount >= CATEGORIES_PER_USER_MAX) {
+      throw new ConvexError({
+        code: "CATEGORY_LIMIT_REACHED",
+        message: `You can create up to ${CATEGORIES_PER_USER_MAX} categories.`,
+        limit: CATEGORIES_PER_USER_MAX,
+      })
+    }
+
     const existing = await ctx.db
       .query("categories")
       .withIndex("by_type_name", (q) =>
