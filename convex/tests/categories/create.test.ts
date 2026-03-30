@@ -30,7 +30,7 @@ describe("category.create limits", () => {
     ).resolves.toBeDefined()
   })
 
-  it("ignores seeded vendor categories and caps only non-vendor categories", async () => {
+  it("ignores seeded vendor categories and caps only non-vendor categories per type", async () => {
     const t = convexTest(schema)
     const asUser = t.withIdentity(identity)
 
@@ -53,12 +53,21 @@ describe("category.create limits", () => {
         .collect()
     )
 
-    const userOwnedCategories = categories.filter(
-      (category) => category.is_vendor === false
+    const userOwnedExpenseCategories = categories.filter(
+      (category) => category.is_vendor === false && category.type === "expense"
     )
-    expect(userOwnedCategories).toHaveLength(CATEGORIES_PER_USER_MAX)
-    expect(categories).toHaveLength(
-      vendorCategories.length + CATEGORIES_PER_USER_MAX
+    expect(userOwnedExpenseCategories).toHaveLength(CATEGORIES_PER_USER_MAX)
+
+    await expect(
+      asUser.mutation(api.category.create, {
+        name: "IncOnly",
+        type: "income",
+        color: "green",
+      })
+    ).resolves.toBeDefined()
+
+    expect(categories.length + 1).toBe(
+      vendorCategories.length + CATEGORIES_PER_USER_MAX + 1
     )
   })
 
@@ -106,5 +115,55 @@ describe("category.create limits", () => {
         limit: CATEGORIES_PER_USER_MAX,
       })
     }
+  })
+
+  it("rejects duplicate category names within the same type (case-insensitive)", async () => {
+    const t = convexTest(schema)
+    const asUser = t.withIdentity(identity)
+
+    await asUser.mutation(internal.userOnboarding.onboardUser, {
+      userId: identity.subject,
+    })
+
+    await expect(
+      asUser.mutation(api.category.create, {
+        name: "Tea",
+        type: "expense",
+        color: "orange",
+      })
+    ).resolves.toBeDefined()
+
+    await expect(
+      asUser.mutation(api.category.create, {
+        name: "tEa",
+        type: "expense",
+        color: "purple",
+      })
+    ).rejects.toThrowError("CATEGORY_NAME_TAKEN")
+  })
+
+  it("allows same category name across different types", async () => {
+    const t = convexTest(schema)
+    const asUser = t.withIdentity(identity)
+
+    await asUser.mutation(internal.userOnboarding.onboardUser, {
+      userId: identity.subject,
+    })
+
+    await expect(
+      asUser.mutation(api.category.create, {
+        name: "Transfer",
+        type: "expense",
+        color: "orange",
+      })
+    ).resolves.toBeDefined()
+
+    await expect(
+      asUser.mutation(api.category.create, {
+        name: "Transfer",
+        type: "income",
+        color: "purple",
+      })
+    ).resolves.toBeDefined()
   })
 })

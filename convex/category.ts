@@ -56,28 +56,28 @@ export const create = zUserMutation({
   handler: async (ctx, { name, type, color, icon: argIcon }) => {
     const { user } = ctx
 
-    const categories = await ctx.db
+    const categoriesForType = await ctx.db
       .query("categories")
-      .withIndex("by_owner", (q) => q.eq("ownerId", user.ownerId))
+      .withIndex("by_type_name", (q) =>
+        q.eq("ownerId", user.ownerId).eq("type", type)
+      )
       .collect()
-    const userOwnedCategoryCount = categories.filter(
+    const userOwnedCategoryCountForType = categoriesForType.filter(
       (category) => category.is_vendor === false
     ).length
 
-    if (userOwnedCategoryCount >= CATEGORIES_PER_USER_MAX) {
+    if (userOwnedCategoryCountForType >= CATEGORIES_PER_USER_MAX) {
       throw new ConvexError({
         code: "CATEGORY_LIMIT_REACHED",
-        message: `You can create up to ${CATEGORIES_PER_USER_MAX} categories.`,
+        message: `You can create up to ${CATEGORIES_PER_USER_MAX} ${type} categories.`,
         limit: CATEGORIES_PER_USER_MAX,
       })
     }
 
-    const existing = await ctx.db
-      .query("categories")
-      .withIndex("by_type_name", (q) =>
-        q.eq("ownerId", user.ownerId).eq("type", type).eq("name", name)
-      )
-      .unique()
+    const normalizedName = name.toLowerCase()
+    const existing = categoriesForType.find(
+      (category) => category.name.toLowerCase() === normalizedName
+    )
 
     if (existing) {
       throw new ConvexError({
