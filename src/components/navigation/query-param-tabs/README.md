@@ -2,7 +2,7 @@
 
 Tabs that sync with the URL: each tab is a **link** whose `href` sets (or clears) a single query parameter. Selection is derived from the current search string so the address bar and the highlighted tab stay aligned.
 
-Built with [React Aria Components](https://react-aria.adobe.com/) (`Tabs`, `TabList`, `Tab`, `TabPanel`) and the Next.js App Router (`usePathname`, `useSearchParams`). The root layout should wrap the app with React Aria’s [`RouterProvider`](https://react-aria.adobe.com/routing.html) (this project does that in the root provider) so in-app navigation uses the Next.js router.
+Built with [React Aria Components](https://react-aria.adobe.com/) (`Tabs`, `TabList`, `Tab`) and the Next.js App Router (`usePathname`, `useSearchParams`). The root layout should wrap the app with React Aria’s [`RouterProvider`](https://react-aria.adobe.com/routing.html) (this project does that in the root provider) so in-app navigation uses the Next.js router.
 
 ---
 
@@ -25,7 +25,7 @@ Domain-specific rules (which query values mean “all”, how they map to Convex
 | [`buildQueryParamHref`](#buildqueryparamhref)             | Pure helper: build a URL for “set or remove this query key” while keeping other params. |
 | [`resolveQueryParamTabId`](#resolvequeryparamtabid)       | Pure helper: map `URLSearchParams` + tab config → which tab `id` is active.             |
 | [`useQueryParamTabSelection`](#usequeryparamtabselection) | Client hook: `useSearchParams()` + `resolveQueryParamTabId` (memoized).                 |
-| [`QueryParamTabs`](#queryparamtabs)                       | Client UI: renders tabs + panel; **controlled** via `selectedKey`.                      |
+| [`QueryParamTabs`](#queryparamtabs)                       | Client UI: renders a URL-synced tab bar (links) and **does not** render tab-panel content. |
 
 Selection logic stays **outside** `QueryParamTabs` so the same UI stays reusable and you never pass **functions** from a Server Component into a Client Component (not serializable in the App Router).
 
@@ -42,7 +42,7 @@ Selection logic stays **outside** `QueryParamTabs` so the same UI stays reusable
   - `value: string` — tab sets `?param=value`.
   - `value: null` — tab **removes** that key from the URL (common “All / default” tab).
 - **`selectedKey`** — Must equal one of the `id` values; usually from `useQueryParamTabSelection` or `resolveQueryParamTabId`.
-- **`children`** — Rendered inside `TabPanel` (your page content for that route state).
+- **`children`** — Not rendered by `QueryParamTabs`. This component is intended to be the tab-bar only; render your route-specific content next to it based on the current URL param.
 - **`aria-label`** — Passed to `TabList` for accessibility.
 
 Tabs use **`next/link`** in the Tab `render` prop so prefetch and client navigation match the rest of the app.
@@ -68,14 +68,15 @@ export function MyFilterTabs({ children }: { children: React.ReactNode }) {
   const selectedKey = useQueryParamTabSelection("filter", ITEMS);
 
   return (
-    <QueryParamTabs
-      aria-label="Filter"
-      items={ITEMS}
-      param="filter"
-      selectedKey={selectedKey}
-    >
+    <>
+      <QueryParamTabs
+        aria-label="Filter"
+        items={ITEMS}
+        param="filter"
+        selectedKey={selectedKey}
+      />
       {children}
-    </QueryParamTabs>
+    </>
   );
 }
 ```

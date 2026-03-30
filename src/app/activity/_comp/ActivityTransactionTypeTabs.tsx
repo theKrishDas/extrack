@@ -12,12 +12,12 @@ const ITEMS: QueryParamTabItem[] = [
   { id: "income", label: "Income", value: "income" },
 ]
 
-const TYPE_TAB_RESOLVE: { defaultAliases: readonly string[] } = {
+const TAB_OPTIONS: { defaultAliases: readonly string[] } = {
   defaultAliases: ["*"],
 }
 
 export function ActivityTransactionTypeTabs() {
-  const selectedKey = useQueryParamTabSelection("type", ITEMS, TYPE_TAB_RESOLVE)
+  const selectedKey = useQueryParamTabSelection("type", ITEMS, TAB_OPTIONS)
 
   return (
     <QueryParamTabs

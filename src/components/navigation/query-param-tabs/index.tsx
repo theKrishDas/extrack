@@ -3,7 +3,6 @@
 import { motion } from "motion/react"
 import Link from "next/link"
 import { usePathname, useSearchParams } from "next/navigation"
-import type { ReactNode } from "react"
 import { Tab, TabList, Tabs } from "react-aria-components"
 import { cn } from "@/lib/utils"
 import { buildQueryParamHref, type QueryParamTabValueItem } from "./helpers"
@@ -17,12 +16,10 @@ export type QueryParamTabsProps = {
   items: QueryParamTabItem[]
   /** Controlled selection — compute with `resolveQueryParamTabId` / `useQueryParamTabSelection` in the caller. */
   selectedKey: string
-  children?: ReactNode
   "aria-label"?: string
   className?: string
   tabListClassName?: string
   tabClassName?: string
-  tabPanelClassName?: string
 }
 
 export function QueryParamTabs({
