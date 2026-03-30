@@ -200,7 +200,7 @@ export const getCreateContext = userQuery({
 
     const latestTxn = await ctx.db
       .query("transactions")
-      .withIndex("by_type", (q) =>
+      .withIndex("by_owner_type_date", (q) =>
         q.eq("ownerId", user.ownerId).eq("type", type)
       )
       .order("desc")
