@@ -5,4 +5,9 @@ function getBaseURL(): string {
   return url
 }
 
+export const BUILD_METADATA = {
+  version: process.env.NEXT_PUBLIC_APP_VERSION || "0.0.0",
+  commitHash: process.env.NEXT_PUBLIC_COMMIT_HASH || "unknown",
+}
+
 export const baseURL = getBaseURL()

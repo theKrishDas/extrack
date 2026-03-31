@@ -1,4 +1,5 @@
 import type { Colors } from "#lib/constants/colors"
+import { BUILD_METADATA } from "@/lib/runtime"
 
 export type SettingsOption = {
   name: string
@@ -65,6 +66,22 @@ export const settingsConfig: SettingsGroup[] = [
         icon: "􀉪",
         iconColor: "blue",
         trailing: "chevron",
+      },
+    ],
+  },
+  {
+    label: "About",
+    name: "about",
+    options: [
+      {
+        name: "version",
+        label: "Version",
+        icon: "􀐬",
+        iconColor: "gray",
+        href: "https://github.com/thekrishdas/extrack/releases",
+        trailing: "external-link",
+        external: true,
+        trailingDetail: BUILD_METADATA.version,
       },
     ],
   },
