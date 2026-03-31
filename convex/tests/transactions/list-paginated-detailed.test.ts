@@ -379,61 +379,62 @@ describe("transaction.listPaginatedDetailed", () => {
         expectedAmounts: [400, 100],
         expectedTypes: ["expense", "expense"],
       },
-    ])(
-      "returns the exact expected transactions when type is $label",
-      async ({ args, expectedAmounts, expectedTypes }) => {
-        const t = convexTest(schema)
-        const asUser = await onboardUser(t)
+    ])("returns the exact expected transactions when type is $label", async ({
+      args,
+      expectedAmounts,
+      expectedTypes,
+    }) => {
+      const t = convexTest(schema)
+      const asUser = await onboardUser(t)
 
-        const accountId = await seedAccount(t)
-        const expenseCat = await seedCategory(t, {
-          type: "expense",
-          name: "Bills",
-        })
-        const incomeCat = await seedCategory(t, {
-          type: "income",
-          name: "Salary",
-        })
-        const base = Date.now()
+      const accountId = await seedAccount(t)
+      const expenseCat = await seedCategory(t, {
+        type: "expense",
+        name: "Bills",
+      })
+      const incomeCat = await seedCategory(t, {
+        type: "income",
+        name: "Salary",
+      })
+      const base = Date.now()
 
-        await seedTransaction(t, {
-          accountId,
-          categoryId: expenseCat,
-          amount: 100,
-          type: "expense",
-          date: base + 1000,
-        })
-        await seedTransaction(t, {
-          accountId,
-          categoryId: incomeCat,
-          amount: 200,
-          type: "income",
-          date: base + 2000,
-        })
-        await seedTransaction(t, {
-          accountId,
-          categoryId: incomeCat,
-          amount: 300,
-          type: "income",
-          date: base + 3000,
-        })
-        await seedTransaction(t, {
-          accountId,
-          categoryId: expenseCat,
-          amount: 400,
-          type: "expense",
-          date: base + 4000,
-        })
+      await seedTransaction(t, {
+        accountId,
+        categoryId: expenseCat,
+        amount: 100,
+        type: "expense",
+        date: base + 1000,
+      })
+      await seedTransaction(t, {
+        accountId,
+        categoryId: incomeCat,
+        amount: 200,
+        type: "income",
+        date: base + 2000,
+      })
+      await seedTransaction(t, {
+        accountId,
+        categoryId: incomeCat,
+        amount: 300,
+        type: "income",
+        date: base + 3000,
+      })
+      await seedTransaction(t, {
+        accountId,
+        categoryId: expenseCat,
+        amount: 400,
+        type: "expense",
+        date: base + 4000,
+      })
 
-        const result = await asUser.query(
-          api.transaction.listPaginatedDetailed,
-          args
-        )
+      const result = await asUser.query(
+        api.transaction.listPaginatedDetailed,
+        args
+      )
 
-        expect(result.page.map((tx) => tx.amount)).toEqual(expectedAmounts)
-        expect(result.page.map((tx) => tx.type)).toEqual(expectedTypes)
-      }
-    )
+      expect(result.page.map((tx) => tx.amount)).toEqual(expectedAmounts)
+      expect(result.page.map((tx) => tx.type)).toEqual(expectedTypes)
+    })
   })
 
   // ---------------------------------------------------------------------------
@@ -566,79 +567,77 @@ describe("transaction.listPaginatedDetailed", () => {
         expectedPage1: [500, 300],
         expectedPage2: [100],
       },
-    ])(
-      "paginates consistently when type is $label",
-      async ({ initialArgs, expectedPage1, expectedPage2 }) => {
-        const t = convexTest(schema)
-        const asUser = await onboardUser(t)
+    ])("paginates consistently when type is $label", async ({
+      initialArgs,
+      expectedPage1,
+      expectedPage2,
+    }) => {
+      const t = convexTest(schema)
+      const asUser = await onboardUser(t)
 
-        const accountId = await seedAccount(t)
-        const expenseCat = await seedCategory(t, { type: "expense" })
-        const incomeCat = await seedCategory(t, { type: "income" })
-        const base = Date.now()
+      const accountId = await seedAccount(t)
+      const expenseCat = await seedCategory(t, { type: "expense" })
+      const incomeCat = await seedCategory(t, { type: "income" })
+      const base = Date.now()
 
-        const fixtures = [
-          {
-            amount: 100,
-            type: "expense" as const,
-            categoryId: expenseCat,
-            date: base + 1000,
-          },
-          {
-            amount: 200,
-            type: "income" as const,
-            categoryId: incomeCat,
-            date: base + 2000,
-          },
-          {
-            amount: 300,
-            type: "expense" as const,
-            categoryId: expenseCat,
-            date: base + 3000,
-          },
-          {
-            amount: 400,
-            type: "income" as const,
-            categoryId: incomeCat,
-            date: base + 4000,
-          },
-          {
-            amount: 500,
-            type: "expense" as const,
-            categoryId: expenseCat,
-            date: base + 5000,
-          },
-        ]
+      const fixtures = [
+        {
+          amount: 100,
+          type: "expense" as const,
+          categoryId: expenseCat,
+          date: base + 1000,
+        },
+        {
+          amount: 200,
+          type: "income" as const,
+          categoryId: incomeCat,
+          date: base + 2000,
+        },
+        {
+          amount: 300,
+          type: "expense" as const,
+          categoryId: expenseCat,
+          date: base + 3000,
+        },
+        {
+          amount: 400,
+          type: "income" as const,
+          categoryId: incomeCat,
+          date: base + 4000,
+        },
+        {
+          amount: 500,
+          type: "expense" as const,
+          categoryId: expenseCat,
+          date: base + 5000,
+        },
+      ]
 
-        for (const fixture of fixtures) {
-          await seedTransaction(t, {
-            accountId,
-            categoryId: fixture.categoryId,
-            amount: fixture.amount,
-            type: fixture.type,
-            date: fixture.date,
-          })
-        }
-
-        const page1 = await asUser.query(
-          api.transaction.listPaginatedDetailed,
-          initialArgs
-        )
-        const page2 = await asUser.query(
-          api.transaction.listPaginatedDetailed,
-          {
-            ...initialArgs,
-            paginationOpts: {
-              numItems: 2,
-              cursor: page1.continueCursor,
-            },
-          }
-        )
-
-        expect(page1.page.map((tx) => tx.amount)).toEqual(expectedPage1)
-        expect(page2.page.map((tx) => tx.amount)).toEqual(expectedPage2)
+      for (const fixture of fixtures) {
+        await seedTransaction(t, {
+          accountId,
+          categoryId: fixture.categoryId,
+          amount: fixture.amount,
+          type: fixture.type,
+          date: fixture.date,
+        })
       }
-    )
+
+      const page1 = await asUser.query(
+        api.transaction.listPaginatedDetailed,
+        initialArgs
+      )
+      const page2 = await asUser.query(api.transaction.listPaginatedDetailed, {
+        ...initialArgs,
+        paginationOpts: {
+          numItems: 2,
+          cursor: page1.continueCursor,
+        },
+      })
+
+      expect(page1.page.map((tx) => tx.amount)).toEqual(expectedPage1)
+      expect(page2.page.map((tx) => tx.amount)).toEqual(expectedPage2)
+    })
   })
 
   // ---------------------------------------------------------------------------
