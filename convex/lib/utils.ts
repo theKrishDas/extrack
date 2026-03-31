@@ -103,4 +103,14 @@ function formatTransactionSummary(args: FormatTransactionSummaryType[]) {
   return { breakdown, byFrames: breakdownsForEachFrame }
 }
 
+// Convex server-side logging relies on the built-in `console` API.
+// All console output is captured and displayed in the Convex dashboard
+// and CLI (`npx convex logs`). This is the intended logging mechanism
+// for Convex functions — no alternative logging sink is available in
+// the default Convex runtime.
+export function log(message: string, data?: object) {
+  // biome-ignore lint/suspicious/noConsole: Convex requires console for server-side logging — it's the only supported mechanism.
+  console.log(JSON.stringify({ message, ...data }))
+}
+
 export { formatTransactionSummary, type FormatTransactionSummaryType }

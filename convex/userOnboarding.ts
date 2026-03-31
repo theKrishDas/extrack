@@ -1,6 +1,7 @@
 import { v } from "convex/values"
 import { vendorAccounts, vendorCategories } from "#lib/seed"
 import { internalMutation } from "./_generated/server"
+import { log } from "./lib/utils"
 
 /**
  * Onboards a new user by creating default accounts and vendor categories.
@@ -22,11 +23,11 @@ export const onboardUser = internalMutation({
       .first()
 
     if (existingAccount) {
-      console.log(`User ${userId} already onboarded, skipping`)
+      log(`User ${userId} already onboarded, skipping`)
       return { success: false, reason: "already_onboarded" }
     }
 
-    console.log(`Starting onboarding for user: ${userId}`)
+    log(`Starting onboarding for user: ${userId}`)
 
     // Create accounts from vendor data
     const accountPromises = vendorAccounts.map((account) =>
@@ -69,7 +70,7 @@ export const onboardUser = internalMutation({
 
     const results = [...accountIds, ...categoryIds]
 
-    console.log(
+    log(
       `User ${userId} onboarded successfully: ${vendorAccounts.length} accounts, ${vendorCategories.length} categories created`
     )
 
