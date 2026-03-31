@@ -239,7 +239,8 @@ function renderSettingsItem(option: SettingsOption) {
         </InsetList.ItemBody>
 
         <InsetList.ItemTrailing className="text-label-tertiary">
-          {getTrailingIcon(option.trailing)}
+          {option.trailingDetail && <span>{option.trailingDetail}</span>}
+          <span>{getTrailingIcon(option.trailing)}</span>
         </InsetList.ItemTrailing>
       </InsetList.ItemContent>
     </ListBoxItem>
