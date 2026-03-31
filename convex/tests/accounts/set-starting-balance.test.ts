@@ -1,10 +1,7 @@
 import { ConvexError } from "convex/values"
 import { convexTest } from "convex-test"
 import { describe, expect, test } from "vitest"
-import {
-  ACCOUNT_STARTING_BALANCE_MAX,
-  ACCOUNT_STARTING_BALANCE_MIN,
-} from "#lib/constants/constraints"
+import { limit } from "#lib/constants/constraints"
 import { AppError } from "#lib/errors"
 import { api, internal } from "../../_generated/api"
 import schema from "../../schema"
@@ -128,7 +125,7 @@ describe("accounts.setStartingBalance", () => {
       await expect(
         asUser.mutation(api.account.setStartingBalance, {
           id: accountId,
-          balance: ACCOUNT_STARTING_BALANCE_MIN - 1,
+          balance: limit.amount.account.startingBalance.min - 1,
         })
       ).rejects.toBeInstanceOf(ConvexError)
     })
@@ -144,7 +141,7 @@ describe("accounts.setStartingBalance", () => {
       await expect(
         asUser.mutation(api.account.setStartingBalance, {
           id: accountId,
-          balance: ACCOUNT_STARTING_BALANCE_MAX + 1,
+          balance: limit.amount.account.startingBalance.max + 1,
         })
       ).rejects.toBeInstanceOf(ConvexError)
     })
@@ -175,7 +172,7 @@ describe("accounts.setStartingBalance", () => {
 
       const result = await asUser.mutation(api.account.setStartingBalance, {
         id: accountId,
-        balance: ACCOUNT_STARTING_BALANCE_MIN,
+        balance: limit.amount.account.startingBalance.min,
       })
 
       expect(result).toBe(accountId)
@@ -191,7 +188,7 @@ describe("accounts.setStartingBalance", () => {
 
       const result = await asUser.mutation(api.account.setStartingBalance, {
         id: accountId,
-        balance: ACCOUNT_STARTING_BALANCE_MAX,
+        balance: limit.amount.account.startingBalance.max,
       })
 
       expect(result).toBe(accountId)

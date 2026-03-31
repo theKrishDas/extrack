@@ -1,5 +1,6 @@
 import { useMutation } from "convex/react"
 import { useQuery } from "convex-helpers/react/cache/hooks"
+import { format } from "date-fns"
 import type { Dispatch, SetStateAction } from "react"
 import { api } from "#/convex/_generated/api"
 import type { Doc } from "#/convex/_generated/dataModel"
@@ -14,7 +15,6 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from "@/components/ui/drawer"
-import { formatDate } from "@/lib/utils"
 import { DataTable, type DataType } from "./DataTable"
 
 export default function ExpantionDrawer({
@@ -42,7 +42,7 @@ export default function ExpantionDrawer({
     header: ["Key", "value"],
     body: [
       ["Amount", amount],
-      ["Date", formatDate(_creationTime)],
+      ["Date", format(_creationTime, "dd MMM 'at' hh:mm a")],
       ["Category", category?.name],
       ["Account", account?.name],
       ["Note", note],

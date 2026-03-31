@@ -1,12 +1,6 @@
 import { ConvexError, v } from "convex/values"
 import z from "zod/v3"
-import {
-  ACCOUNT_NAME_MAX_LENGTH,
-  ACCOUNT_NAME_MIN_LENGTH,
-  ACCOUNT_STARTING_BALANCE_MAX,
-  ACCOUNT_STARTING_BALANCE_MIN,
-  ACCOUNTS_PER_USER_MAX,
-} from "#lib/constants/constraints"
+import { limit } from "#lib/constants/constraints"
 import { transactionTypes } from "#lib/constants/transaction-types"
 import { v as vLib } from "#lib/validators"
 import { internalMutation } from "./functions"
@@ -22,7 +16,7 @@ export const list = userQuery({
     return await ctx.db
       .query("accounts")
       .withIndex("by_owner", (q) => q.eq("ownerId", user.ownerId))
-      .take(ACCOUNTS_PER_USER_MAX)
+      .take(limit.count.accounts.perUserMax)
   },
 })
 
@@ -81,10 +75,10 @@ export const getByStringId = userQuery({
  */
 export const create = zUserMutation({
   args: z.object({
-    name: vLib.name(ACCOUNT_NAME_MIN_LENGTH, ACCOUNT_NAME_MAX_LENGTH),
+    name: vLib.name(limit.name.account.min, limit.name.account.max),
     balance: vLib.cents(
-      ACCOUNT_STARTING_BALANCE_MIN,
-      ACCOUNT_STARTING_BALANCE_MAX
+      limit.amount.account.startingBalance.min,
+      limit.amount.account.startingBalance.max
     ),
     icon: vLib.name(1, 10),
   }),
@@ -94,13 +88,13 @@ export const create = zUserMutation({
     const accounts = await ctx.db
       .query("accounts")
       .withIndex("by_owner", (q) => q.eq("ownerId", user.ownerId))
-      .take(ACCOUNTS_PER_USER_MAX)
+      .take(limit.count.accounts.perUserMax)
 
-    if (accounts.length >= ACCOUNTS_PER_USER_MAX)
+    if (accounts.length >= limit.count.accounts.perUserMax)
       throw new ConvexError({
         code: "ACCOUNT_LIMIT_REACHED",
-        message: `You've reached the maximum number of accounts (${ACCOUNTS_PER_USER_MAX}). Delete one before adding another.`,
-        limit: ACCOUNTS_PER_USER_MAX,
+        message: `You've reached the maximum number of accounts (${limit.count.accounts.perUserMax}). Delete one before adding another.`,
+        limit: limit.count.accounts.perUserMax,
       })
 
     const accountName = args.name.trim()
@@ -141,7 +135,7 @@ export const create = zUserMutation({
 export const update = zUserMutation({
   args: z.object({
     id: zid("accounts"),
-    name: vLib.name(ACCOUNT_NAME_MIN_LENGTH, ACCOUNT_NAME_MAX_LENGTH),
+    name: vLib.name(limit.name.account.min, limit.name.account.max),
     icon: vLib.name(1, 10),
   }),
   handler: async (ctx, { id: accountId, name, icon }) => {
@@ -340,8 +334,8 @@ export const setStartingBalance = zUserMutation({
   args: z.object({
     id: zid("accounts"),
     balance: vLib.cents(
-      ACCOUNT_STARTING_BALANCE_MIN,
-      ACCOUNT_STARTING_BALANCE_MAX
+      limit.amount.account.startingBalance.min,
+      limit.amount.account.startingBalance.max
     ),
   }),
   handler: async (ctx, { id: accountId, balance: newBalance }) => {
@@ -422,7 +416,7 @@ export const getBalance = userQuery({
       const accounts = await ctx.db
         .query("accounts")
         .withIndex("by_owner", (q) => q.eq("ownerId", user.ownerId))
-        .take(ACCOUNTS_PER_USER_MAX)
+        .take(limit.count.accounts.perUserMax)
 
       if (!accounts.length) {
         console.error(

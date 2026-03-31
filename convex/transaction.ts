@@ -2,11 +2,7 @@ import { paginationOptsValidator } from "convex/server"
 import { ConvexError, v } from "convex/values"
 import { stream } from "convex-helpers/server/stream"
 import z from "zod/v3"
-import {
-  TRANSACTION_AMOUNT_MAX,
-  TRANSACTION_AMOUNT_MIN,
-  TRANSACTION_NOTE_MAX_LENGTH,
-} from "#lib/constants/constraints"
+import { limit } from "#lib/constants/constraints"
 import { transactionTypes } from "#lib/constants/transaction-types"
 import { v as vLib } from "#lib/validators"
 import { internal } from "./_generated/api"
@@ -35,8 +31,11 @@ export const get = userQuery({
 
 export const create = zUserMutation({
   args: z.object({
-    amount: vLib.cents(TRANSACTION_AMOUNT_MIN, TRANSACTION_AMOUNT_MAX),
-    note: z.string().max(TRANSACTION_NOTE_MAX_LENGTH).optional(),
+    amount: vLib.cents(
+      limit.amount.transaction.min,
+      limit.amount.transaction.max
+    ),
+    note: z.string().max(limit.note.transaction.maxLength).optional(),
     type: z.enum(transactionTypes),
     category: zid("categories"),
     account: zid("accounts"),

@@ -13,19 +13,6 @@ export function wait(milliseconds: number) {
   })
 }
 
-export function formatDate(creationTime: number) {
-  const date = new Date(creationTime)
-  return date
-    .toLocaleDateString("en-GB", {
-      day: "numeric",
-      month: "short",
-      hour: "numeric",
-      minute: "2-digit",
-      hour12: true,
-    })
-    .replace(",", " at")
-}
-
 export type Prettify<T> = {
   [K in keyof T]: T[K]
 } & {}

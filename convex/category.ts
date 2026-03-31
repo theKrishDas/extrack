@@ -1,11 +1,7 @@
 import { ConvexError, v } from "convex/values"
 import z from "zod/v3"
 import { colors } from "#lib/constants/colors"
-import {
-  CATEGORIES_PER_USER_MAX,
-  CATEGORY_NAME_MAX_LENGTH,
-  CATEGORY_NAME_MIN_LENGTH,
-} from "#lib/constants/constraints"
+import { limit } from "#lib/constants/constraints"
 import { transactionTypes } from "#lib/constants/transaction-types"
 import { v as vLib } from "#lib/validators"
 import { getDoc } from "./lib/doc"
@@ -48,7 +44,7 @@ export const listByType = userQuery({
 
 export const create = zUserMutation({
   args: z.object({
-    name: vLib.name(CATEGORY_NAME_MIN_LENGTH, CATEGORY_NAME_MAX_LENGTH),
+    name: vLib.name(limit.name.category.min, limit.name.category.max),
     color: z.enum(colors),
     type: z.enum(transactionTypes),
     icon: vLib.name(1, 10).optional(),
@@ -66,11 +62,11 @@ export const create = zUserMutation({
       (category) => category.is_vendor === false
     ).length
 
-    if (userOwnedCategoryCountForType >= CATEGORIES_PER_USER_MAX) {
+    if (userOwnedCategoryCountForType >= limit.count.categories.perUserMax) {
       throw new ConvexError({
         code: "CATEGORY_LIMIT_REACHED",
-        message: `You can create up to ${CATEGORIES_PER_USER_MAX} ${type} categories.`,
-        limit: CATEGORIES_PER_USER_MAX,
+        message: `You can create up to ${limit.count.categories.perUserMax} ${type} categories.`,
+        limit: limit.count.categories.perUserMax,
       })
     }
 
@@ -104,7 +100,7 @@ export const create = zUserMutation({
 export const update = zUserMutation({
   args: z.object({
     id: zid("categories"),
-    name: vLib.name(CATEGORY_NAME_MIN_LENGTH, CATEGORY_NAME_MAX_LENGTH),
+    name: vLib.name(limit.name.category.min, limit.name.category.max),
     color: z.enum(colors),
     icon: vLib.name(1, 10).optional(),
   }),

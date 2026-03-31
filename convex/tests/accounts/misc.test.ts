@@ -1,12 +1,7 @@
 import { ConvexError } from "convex/values"
 import { convexTest } from "convex-test"
 import { describe, expect, it } from "vitest"
-import {
-  ACCOUNT_NAME_MAX_LENGTH,
-  ACCOUNT_STARTING_BALANCE_MAX,
-  ACCOUNT_STARTING_BALANCE_MIN,
-  ACCOUNTS_PER_USER_MAX,
-} from "#lib/constants/constraints"
+import { limit } from "#lib/constants/constraints"
 import { vendorAccounts } from "#lib/seed"
 import { api, internal } from "../../_generated/api"
 import schema from "../../schema"
@@ -159,7 +154,7 @@ describe("account.create", () => {
     })
 
     const mutation = asUser.mutation(api.account.create, {
-      name: "a".repeat(ACCOUNT_NAME_MAX_LENGTH + 1),
+      name: "a".repeat(limit.name.account.max + 1),
       balance: 0,
       icon: "🌏",
     })
@@ -200,14 +195,14 @@ describe("account.create", () => {
 
     const mutation1 = asUser.mutation(api.account.create, {
       name: "My Wallet",
-      balance: ACCOUNT_STARTING_BALANCE_MIN - 1,
+      balance: limit.amount.account.startingBalance.min - 1,
       icon: "🌏",
     })
     await expect(mutation1).rejects.toBeInstanceOf(ConvexError)
 
     const mutation2 = asUser.mutation(api.account.create, {
       name: "My Second Wallet",
-      balance: ACCOUNT_STARTING_BALANCE_MAX + 1,
+      balance: limit.amount.account.startingBalance.max + 1,
       icon: "🌏",
     })
     await expect(mutation2).rejects.toBeInstanceOf(ConvexError)
@@ -273,7 +268,7 @@ describe("account.create", () => {
         .collect()
     )
     // makes sure account limit is reached
-    expect(accounts).lengthOf(ACCOUNTS_PER_USER_MAX)
+    expect(accounts).lengthOf(limit.count.accounts.perUserMax)
 
     // attempt to create a new account
     await expect(
@@ -358,7 +353,7 @@ describe("account.list", () => {
     })
 
     const newAccountNames = Array.from(
-      { length: ACCOUNTS_PER_USER_MAX - vendorAccounts.length },
+      { length: limit.count.accounts.perUserMax - vendorAccounts.length },
       (_, idx) => `ACC-${idx}`
     )
 
