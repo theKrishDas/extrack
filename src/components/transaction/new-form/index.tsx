@@ -1,10 +1,10 @@
 /** biome-ignore-all lint/correctness/noChildrenProp: TanStack Form docs use children prop pattern */
 "use client"
 import { Toolbar } from "react-aria-components"
+import type { TransactionTypes } from "#lib/constants/transaction-types"
 import { Button } from "@/components/ui/button"
 import { Spacer } from "@/components/ui/spacer"
 import { useCurrencyFormatter } from "@/hooks/useCurrencyFormatter"
-import type { TransactionTypes } from "@/lib/constants/transaction-types"
 import { useNewTransactionForm } from "./hooks/use-new-transaction-form"
 import type { NewTransactionSchemaType } from "./schema"
 

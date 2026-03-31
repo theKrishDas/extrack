@@ -1,7 +1,7 @@
 import { createListCollection } from "@ark-ui/react/collection"
 import { type ClassValue, clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
-import { LEADING_SPACES_REGEX } from "./regex"
+import { LEADING_WHITESPACE } from "#lib/regex"
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -49,7 +49,7 @@ export function createCollection<T>(
 export function sanitizeName(raw: string, max?: number): string {
   let s = raw
   // Remove leading spaces
-  s = s.replace(LEADING_SPACES_REGEX, "")
+  s = s.replace(LEADING_WHITESPACE, "")
 
   // Strip any char that is not [A-Za-z0-9_@\-\ ]
   // Disabled as it only supports english

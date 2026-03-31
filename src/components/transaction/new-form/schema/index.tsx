@@ -1,7 +1,7 @@
 import z from "zod/v3"
 import { limit } from "#lib/constants/constraints"
+import { transactionTypes } from "#lib/constants/transaction-types"
 import { v } from "#lib/validators"
-import { transactionTypes } from "@/lib/constants/transaction-types"
 
 export const newTransactionSchema = z.object({
   amount: v.dollars(

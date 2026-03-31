@@ -1,10 +1,5 @@
 import { z } from "zod"
-
-import {
-  MAX_NOTE_LENGTH,
-  MAXIMUM_TRANSACTION_AMOUNT,
-  MINIMUM_TRANSACTION_AMOUNT,
-} from "../constants/defaults"
+import { limit } from "#lib/constants/constraints"
 
 export type TTransactionType = "income" | "expense"
 
@@ -13,16 +8,16 @@ export const newTransactionSchema = z.object({
     .number({
       required_error: "Amount is required.",
     })
-    .min(MINIMUM_TRANSACTION_AMOUNT, {
-      message: `Amount must be at least ${MINIMUM_TRANSACTION_AMOUNT}.`,
+    .min(limit.amount.transaction.min / 100, {
+      message: `Amount must be at least ${limit.amount.transaction.min / 100}.`,
     })
-    .max(MAXIMUM_TRANSACTION_AMOUNT, {
-      message: `Amount must not exceed ${MAXIMUM_TRANSACTION_AMOUNT}.`,
+    .max(limit.amount.transaction.max / 100, {
+      message: `Amount must not exceed ${limit.amount.transaction.max / 100}.`,
     }),
   note: z
     .string()
-    .max(MAX_NOTE_LENGTH, {
-      message: `Note must be within ${MAX_NOTE_LENGTH} characters`,
+    .max(limit.note.transaction.maxLength, {
+      message: `Note must be within ${limit.note.transaction.maxLength} characters`,
     })
     .transform((val) => val?.trim() || undefined)
     .optional(),

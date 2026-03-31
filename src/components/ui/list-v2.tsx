@@ -1,7 +1,7 @@
 import { ark } from "@ark-ui/react/factory"
 import type { ComponentProps, CSSProperties } from "react"
 
-import type { Colors } from "@/lib/constants/colors"
+import type { Colors } from "#lib/constants/colors"
 import { cn } from "@/lib/utils"
 
 import { Separator } from "./separator"

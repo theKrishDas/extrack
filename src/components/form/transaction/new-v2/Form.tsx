@@ -14,6 +14,7 @@ import {
 import { Controller } from "react-hook-form"
 import { api } from "#/convex/_generated/api"
 import type { Doc } from "#/convex/_generated/dataModel"
+import { limit } from "#lib/constants/constraints"
 import { buttonVariants } from "@/components/ui/button"
 import { Button } from "@/components/ui/button/animated-button"
 import { Drawer } from "@/components/ui/drawer/drawer-v2"
@@ -21,11 +22,6 @@ import { Emoji } from "@/components/ui/emoji"
 import { ListBox } from "@/components/ui/list-box"
 import { Skeleton } from "@/components/ui/loading/skeleton"
 import { Spacer } from "@/components/ui/spacer"
-import {
-  MAX_NOTE_LENGTH,
-  MAXIMUM_TRANSACTION_AMOUNT,
-  MINIMUM_TRANSACTION_AMOUNT,
-} from "@/lib/constants/defaults"
 import { CURRENCY } from "@/lib/date-utils"
 import { cn } from "@/lib/utils"
 
@@ -89,8 +85,8 @@ function AmountInput() {
           }}
           isInvalid={invalid}
           isRequired
-          maxValue={MAXIMUM_TRANSACTION_AMOUNT}
-          minValue={MINIMUM_TRANSACTION_AMOUNT}
+          maxValue={limit.amount.transaction.max / 100}
+          minValue={limit.amount.transaction.min / 100}
           name={name}
           onBlur={onBlur}
           onChange={onChange}
@@ -111,7 +107,7 @@ function AmountInput() {
                 ref={ref}
               />
               <Text className="sr-only" slot="description">
-                {`Amount must be within ${MINIMUM_TRANSACTION_AMOUNT} and ${MAXIMUM_TRANSACTION_AMOUNT}`}
+                {`Amount must be within ${limit.amount.transaction.min / 100} and ${limit.amount.transaction.max / 100}`}
               </Text>
             </>
           )}
@@ -148,7 +144,7 @@ function NoteInput() {
                 "w-full truncate text-center text-label-secondary text-xl leading-none tracking-[0.015em] placeholder-label-tertiary",
                 "outline-none data-[focus-visible]:rounded data-[focus-visible]:ring-4 data-[focus-visible]:ring-ios-blue/[var(--separator-non-opaque-opacity)]"
               )}
-              maxLength={MAX_NOTE_LENGTH}
+              maxLength={limit.note.transaction.maxLength}
               placeholder="Tap here to add a note"
               ref={ref}
             />

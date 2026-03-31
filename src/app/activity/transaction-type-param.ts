@@ -1,4 +1,4 @@
-import type { TransactionTypes } from "@/lib/constants/transaction-types"
+import type { TransactionTypes } from "#lib/constants/transaction-types"
 
 /** Logical filter after reading the `type` query param; `"*"` means both types. */
 export type TransactionTypeParam = "*" | TransactionTypes

@@ -1,22 +1,17 @@
 import z from "zod"
-
-import {
-  MAX_ACCOUNT_BALANCE,
-  MAX_ACCOUNT_NAME_LENGTH,
-  MIN_ACCOUNT_NAME_LENGTH,
-} from "../constants/defaults"
+import { limit } from "#lib/constants/constraints"
 
 export const newAccountSchema = z.object({
   name: z
     .string()
-    .min(MIN_ACCOUNT_NAME_LENGTH, {
-      message: `Name must be atleast ${MIN_ACCOUNT_NAME_LENGTH} characters`,
+    .min(limit.name.account.min, {
+      message: `Name must be atleast ${limit.name.account.min} characters`,
     })
-    .max(MAX_ACCOUNT_NAME_LENGTH, {
-      message: `Name must be within ${MAX_ACCOUNT_NAME_LENGTH} characters`,
+    .max(limit.name.account.max, {
+      message: `Name must be within ${limit.name.account.max} characters`,
     }),
-  balance: z.number().max(MAX_ACCOUNT_BALANCE, {
-    message: `Balance must be within ${MAX_ACCOUNT_BALANCE}`,
+  balance: z.number().max(limit.amount.account.startingBalance.max / 100, {
+    message: `Balance must be within ${limit.amount.account.startingBalance.max / 100}`,
   }),
   icon: z.string().min(1),
 })

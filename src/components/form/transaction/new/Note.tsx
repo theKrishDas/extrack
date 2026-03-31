@@ -1,7 +1,7 @@
 import { Label, TextArea, TextField } from "react-aria-components"
 import { Controller } from "react-hook-form"
 
-import { MAX_NOTE_LENGTH } from "@/lib/constants/defaults"
+import { limit } from "#lib/constants/constraints"
 import { cn } from "@/lib/utils"
 
 import { useNewTransaction } from "./provider"
@@ -38,7 +38,7 @@ export default function Note() {
                 "h-20 resize-none rounded-2xl bg-fill-quaternary p-4",
                 "outline-none data-[focus-visible]:rounded-xl data-[focus-visible]:ring-4 data-[focus-visible]:ring-ios-blue/[var(--separator-non-opaque-opacity)]"
               )}
-              maxLength={MAX_NOTE_LENGTH}
+              maxLength={limit.note.transaction.maxLength}
               placeholder="Add a note (optional)"
               ref={ref}
             />

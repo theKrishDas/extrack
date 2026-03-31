@@ -14,17 +14,14 @@ import {
 import { Controller, type UseFormReturn, useForm } from "react-hook-form"
 import { api } from "#/convex/_generated/api"
 import type { Doc } from "#/convex/_generated/dataModel"
+import { type Colors, colors } from "#lib/constants/colors"
+import { limit } from "#lib/constants/constraints"
 import { Spinner } from "@/components/loading/spinner"
 import { Button } from "@/components/ui/button/animated-button"
 import { ActionDrawer, DrawerV2 as Drawer } from "@/components/ui/drawer"
 import { Emoji } from "@/components/ui/emoji"
 import { List } from "@/components/ui/list-v2"
 import { Spacer } from "@/components/ui/spacer"
-import { colors } from "@/lib/constants/colors"
-import {
-  MAX_CATEGORY_NAME_LENGTH,
-  MIN_CATEGORY_NAME_LENGTH,
-} from "@/lib/constants/defaults"
 import {
   type NewCategorySchemaType,
   newCategorySchema,
@@ -304,6 +301,9 @@ function DeleteCategory({
   // )
 }
 
+const colorOptions: Array<{ color: Colors }> = colors.map((color) => ({
+  color,
+}))
 function SelectColor({ form }: { form: UseFormReturn<NewCategorySchemaType> }) {
   return (
     <Controller
@@ -314,9 +314,9 @@ function SelectColor({ form }: { form: UseFormReturn<NewCategorySchemaType> }) {
           aria-label="colors"
           className="flex w-full items-center justify-center gap-0.5 px-0.5 sm:gap-2"
           disallowEmptySelection
-          items={colors.map((color) => ({ color }))}
+          items={colorOptions}
           onBlur={onBlur}
-          onSelectionChange={([key]) => onChange(key)}
+          onSelectionChange={([key]) => onChange(key as Colors)}
           orientation="horizontal"
           ref={ref}
           selectedKeys={[value]}
@@ -361,13 +361,11 @@ function NameInput({ form }: { form: UseFormReturn<NewCategorySchemaType> }) {
             className="w-full"
             isInvalid={invalid}
             isRequired
-            maxLength={MAX_CATEGORY_NAME_LENGTH}
-            minLength={MIN_CATEGORY_NAME_LENGTH}
+            maxLength={limit.name.category.max}
+            minLength={limit.name.category.min}
             name={name}
             onBlur={onBlur}
-            onChange={(v) =>
-              onChange(sanitizeName(v, MAX_CATEGORY_NAME_LENGTH))
-            }
+            onChange={(v) => onChange(sanitizeName(v, limit.name.category.max))}
             validationBehavior="aria"
             value={value}
           >

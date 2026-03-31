@@ -7,7 +7,7 @@ import { v4 as uuidv4 } from "uuid"
 import type z from "zod/v3"
 import { api } from "#/convex/_generated/api"
 import type { Id } from "#/convex/_generated/dataModel"
-import type { TransactionTypes } from "@/lib/constants/transaction-types"
+import type { TransactionTypes } from "#lib/constants/transaction-types"
 import { type NewTransactionSchemaType, newTransactionSchema } from "../schema"
 import { useAppForm } from "./form-context"
 
@@ -73,13 +73,14 @@ export function useNewTransactionForm(
       type,
     } as unknown as z.input<typeof newTransactionSchema>,
     onSubmit: ({ value: data }) => {
+      const parsedData = data as NewTransactionSchemaType
       createTransaction({
-        amount: data.amount * 100, // dollars to cents
-        category: data.category as Id<"categories">,
-        account: data.account as Id<"accounts">,
-        date: data.date,
-        type: data.type,
-        note: data.note,
+        amount: parsedData.amount * 100, // dollars to cents
+        category: parsedData.category as Id<"categories">,
+        account: parsedData.account as Id<"accounts">,
+        date: parsedData.date,
+        type: parsedData.type,
+        note: parsedData.note,
       }).catch((err) => {
         toast.error("Failed to add transaction", {
           description:
@@ -87,7 +88,7 @@ export function useNewTransactionForm(
         })
       })
 
-      afterSubmit?.(data)
+      afterSubmit?.(parsedData)
     },
   })
 

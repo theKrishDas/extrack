@@ -1,10 +1,7 @@
 import { Input, Label, NumberField, Text } from "react-aria-components"
 import { Controller } from "react-hook-form"
 
-import {
-  MAXIMUM_TRANSACTION_AMOUNT,
-  MINIMUM_TRANSACTION_AMOUNT,
-} from "@/lib/constants/defaults"
+import { limit } from "#lib/constants/constraints"
 import { cn } from "@/lib/utils"
 
 import { useNewTransaction } from "./provider"
@@ -26,8 +23,8 @@ export default function AmountInput() {
           className="relative"
           isInvalid={invalid}
           isRequired
-          maxValue={MAXIMUM_TRANSACTION_AMOUNT}
-          minValue={MINIMUM_TRANSACTION_AMOUNT}
+          maxValue={limit.amount.transaction.max / 100}
+          minValue={limit.amount.transaction.min / 100}
           name={name}
           onBlur={onBlur}
           onChange={onChange}

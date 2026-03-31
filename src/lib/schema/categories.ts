@@ -1,19 +1,15 @@
 import z from "zod"
-
-import { colors } from "../constants/colors"
-import {
-  MAX_CATEGORY_NAME_LENGTH,
-  MIN_CATEGORY_NAME_LENGTH,
-} from "../constants/defaults"
+import { colors } from "#lib/constants/colors"
+import { limit } from "#lib/constants/constraints"
 
 export const newCategorySchema = z.object({
   name: z
     .string()
-    .min(MIN_CATEGORY_NAME_LENGTH, {
-      message: `Category name must be at least ${MIN_CATEGORY_NAME_LENGTH} character long.`,
+    .min(limit.name.category.min, {
+      message: `Category name must be at least ${limit.name.category.min} character long.`,
     })
-    .max(MAX_CATEGORY_NAME_LENGTH, {
-      message: `Category name must be within ${MAX_CATEGORY_NAME_LENGTH} characters.`,
+    .max(limit.name.category.max, {
+      message: `Category name must be within ${limit.name.category.max} characters.`,
     }),
   color: z.enum(colors, {
     message: `Color must be one of: ${colors.join(", ")}`,
