@@ -2,6 +2,15 @@
 
 import React from "react"
 import { Legend, ResponsiveContainer, Tooltip } from "recharts"
+import type {
+  LegendPayload,
+  VerticalAlignmentType,
+} from "recharts/types/component/DefaultLegendContent"
+import type {
+  NameType,
+  Payload,
+  ValueType,
+} from "recharts/types/component/DefaultTooltipContent"
 import { cn } from "@/lib/utils"
 import { Material } from "../material/material"
 
@@ -101,6 +110,7 @@ const ChartStyle = ({ id, config }: { id: string; config: ChartConfig }) => {
 }
 
 const ChartTooltip = Tooltip
+type TooltipPayloadItem = Payload<ValueType, NameType>
 
 function ChartTooltipContent({
   active,
@@ -118,8 +128,7 @@ function ChartTooltipContent({
   labelKey,
 }: React.ComponentProps<typeof Tooltip> &
   React.ComponentProps<"div"> & {
-    // biome-ignore lint/suspicious/noExplicitAny: says in the docs
-    payload?: any[]
+    payload?: readonly TooltipPayloadItem[]
     label?: string
     hideLabel?: boolean
     hideIndicator?: boolean
@@ -185,6 +194,7 @@ function ChartTooltipContent({
             const key = `${nameKey || item.name || item.dataKey || "value"}`
             const itemConfig = getPayloadConfigFromPayload(config, item, key)
             const indicatorColor = color || item.payload.fill || item.color
+            const tooltipItemKey = `${item.dataKey ?? item.name ?? index}`
 
             return (
               <div
@@ -192,7 +202,7 @@ function ChartTooltipContent({
                   "flex w-full flex-wrap items-stretch gap-2 [&>svg]:h-3 [&>svg]:w-3 [&>svg]:text-label-secondary",
                   indicator === "dot" && "items-center"
                 )}
-                key={item.dataKey}
+                key={tooltipItemKey}
               >
                 {formatter && item?.value !== undefined && item.name ? (
                   formatter(item.value, item.name, item, index, item.payload)
@@ -234,7 +244,7 @@ function ChartTooltipContent({
                           {itemConfig?.label || item.name}
                         </span>
                       </div>
-                      {item.value && (
+                      {item.value !== undefined && item.value !== null && (
                         <span className="font-geist-mono font-medium text-label-primary tabular-nums">
                           {item.value.toLocaleString()}
                         </span>
@@ -259,12 +269,12 @@ function ChartLegendContent({
   payload,
   verticalAlign = "bottom",
   nameKey,
-}: React.ComponentProps<"div"> &
-  // @ts-expect-error: Error from ShadCN
-  Pick<RechartsPrimitive.LegendProps, "payload" | "verticalAlign"> & {
-    hideIcon?: boolean
-    nameKey?: string
-  }) {
+}: React.ComponentProps<"div"> & {
+  payload?: readonly LegendPayload[]
+  verticalAlign?: VerticalAlignmentType
+  hideIcon?: boolean
+  nameKey?: string
+}) {
   const { config } = useChart()
 
   if (!payload?.length) {
@@ -279,17 +289,17 @@ function ChartLegendContent({
         className
       )}
     >
-      {/* @ts-expect-error: Error from ShadCN */}
-      {payload.map((item) => {
+      {payload.map((item, index) => {
         const key = `${nameKey || item.dataKey || "value"}`
         const itemConfig = getPayloadConfigFromPayload(config, item, key)
+        const legendItemKey = `${item.dataKey ?? item.value ?? index}`
 
         return (
           <div
             className={cn(
               "flex items-center gap-1.5 [&>svg]:h-3.5 [&>svg]:w-3.5 [&>svg]:text-label-secondary"
             )}
-            key={item.value}
+            key={legendItemKey}
           >
             {itemConfig?.icon && !hideIcon ? (
               <itemConfig.icon />
