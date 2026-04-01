@@ -1,45 +1,45 @@
-# Nextkit - A nextjs starter kit (DEVELOPEMENT)
+# Extrack
 
-Accelerate NextJS development with Nextkit: a pre-configured Next.js,
-TypeScript, and Tailwind boilerplate.
+Extrack is a personal finance tracker built with Next.js, TypeScript, Tailwind,
+and Convex.
 
 ## Cloning:
 
-### Clone in Nextkit:
+### Clone Extrack:
 
 ```sh
-git clone -b next@15 https://github.com/Krish-Das/nextkit.git
+git clone https://github.com/thekrishdas/extrack.git
 ```
 
 ### or Clone in current directory:
 
 ```sh
-git clone -b next@15 https://github.com/Krish-Das/nextkit.git .
+git clone https://github.com/thekrishdas/extrack.git .
 ```
 
 ### or Clone single branch in current directory:
 
 ```sh
-git clone -b next@15 --single-branch https://github.com/Krish-Das/nextkit.git .
+git clone --single-branch https://github.com/thekrishdas/extrack.git .
 ```
 
-### or Clone in a pre-existing repository (detached HEAD):  
+### or Clone in a pre-existing repository (detached HEAD):
 
-1. Fetch the remote branch:  
+1. Fetch the remote branch:
    ```sh
-   git fetch https://github.com/Krish-Das/nextkit.git next@15
-   ```  
-2. Create and checkout a new branch:  
+   git fetch https://github.com/thekrishdas/extrack.git main
+   ```
+2. Create and checkout a new branch:
    ```sh
-   git checkout -b next@15 FETCH_HEAD
-   ```  
+   git checkout -b extrack-main FETCH_HEAD
+   ```
 
 ---
 
 ## Running locally
 
 ```sh
-npm run dev
+bun run dev
 ```
 
 ### Notes:

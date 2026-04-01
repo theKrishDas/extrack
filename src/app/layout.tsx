@@ -25,9 +25,9 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-  title: "Nextkit - A nextjs starter kit",
+  title: "Extrack - Personal finance tracker",
   description:
-    "Accelerate web development with Nextkit: a pre-configured Next.js, TypeScript, and Tailwind boilerplate.",
+    "Track spending, manage accounts, and stay on top of your personal finances with Extrack.",
 }
 
 export default function RootLayout({
