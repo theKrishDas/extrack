@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation } from "convex/react"
 import { ConvexError } from "convex/values"
 import { useQuery } from "convex-helpers/react/cache/hooks"
+import { useParams } from "next/navigation"
 import { useEffect, useState } from "react"
 import { Form as RacForm } from "react-aria-components"
 import { useForm } from "react-hook-form"
@@ -17,8 +18,9 @@ import { Header } from "./Header"
 import { IconPicker } from "./IconPicker"
 import { OtherSettings } from "./OtherSettings"
 
-export default function AccountInfo({ id }: { id: string }) {
-  const account = useQuery(api.account.getByStringId, { id })
+export default function AccountInfo() {
+  const { id } = useParams<{ id: string }>()
+  const account = useQuery(api.account.getByStringId, id ? { id } : "skip")
   const editable = !!account
 
   const update = useMutation(api.account.update).withOptimisticUpdate(
