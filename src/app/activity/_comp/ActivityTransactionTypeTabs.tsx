@@ -1,30 +1,26 @@
 "use client"
 
-import {
-  type QueryParamTabItem,
-  QueryParamTabs,
-} from "@/components/navigation/query-param-tabs"
+import { QueryParamTabs } from "@/components/navigation/query-param-tabs"
 import { useQueryParamTabSelection } from "@/components/navigation/query-param-tabs/hooks"
-
-const ITEMS: QueryParamTabItem[] = [
-  { id: "all", label: "All", value: null },
-  { id: "expense", label: "Expense", value: "expense" },
-  { id: "income", label: "Income", value: "income" },
-]
-
-const TAB_OPTIONS: { defaultAliases: readonly string[] } = {
-  defaultAliases: ["*"],
-}
+import {
+  TRANSACTION_TYPE_ITEMS,
+  TRANSACTION_TYPE_PARAM,
+  TRANSACTION_TYPE_TAB_OPTIONS,
+} from "../transaction-type-filter"
 
 export function ActivityTransactionTypeTabs() {
-  const selectedKey = useQueryParamTabSelection("type", ITEMS, TAB_OPTIONS)
+  const selectedKey = useQueryParamTabSelection(
+    TRANSACTION_TYPE_PARAM,
+    TRANSACTION_TYPE_ITEMS,
+    TRANSACTION_TYPE_TAB_OPTIONS
+  )
 
   return (
     <QueryParamTabs
       aria-label="Transaction type"
       className="my-4 mb-12"
-      items={ITEMS}
-      param="type"
+      items={TRANSACTION_TYPE_ITEMS}
+      param={TRANSACTION_TYPE_PARAM}
       selectedKey={selectedKey}
     />
   )

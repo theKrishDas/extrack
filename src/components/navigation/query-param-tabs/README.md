@@ -24,7 +24,9 @@ Domain-specific rules (which query values mean “all”, how they map to Convex
 | --------------------------------------------------------- | --------------------------------------------------------------------------------------- |
 | [`buildQueryParamHref`](#buildqueryparamhref)             | Pure helper: build a URL for “set or remove this query key” while keeping other params. |
 | [`resolveQueryParamTabId`](#resolvequeryparamtabid)       | Pure helper: map `URLSearchParams` + tab config → which tab `id` is active.             |
+| [`resolveQueryParamValue`](#resolvequeryparamvalue)       | Pure helper: map raw query value + tab config → typed logical value with fallback.       |
 | [`useQueryParamTabSelection`](#usequeryparamtabselection) | Client hook: `useSearchParams()` + `resolveQueryParamTabId` (memoized).                 |
+| [`useQueryParamValue`](#usequeryparamvalue)               | Client hook: typed query value reader from same tab config (memoized).                   |
 | [`QueryParamTabs`](#queryparamtabs)                       | Client UI: renders a URL-synced tab bar (links) and **does not** render tab-panel content. |
 
 Selection logic stays **outside** `QueryParamTabs` so the same UI stays reusable and you never pass **functions** from a Server Component into a Client Component (not serializable in the App Router).
@@ -124,6 +126,21 @@ Maps the **current** value of `param` to a tab **`id`**:
 
 `defaultAliases` is for raw URL values that should behave like “no filter” (for example `["*"]` when the logical model allows `*` but you still omit `type` in links for “all”).
 
+### `resolveQueryParamValue`
+
+```ts
+function resolveQueryParamValue<
+  TItems extends readonly QueryParamTabValueItem[],
+  TFallback extends string,
+>(
+  raw: string | null | undefined,
+  items: TItems,
+  options: { fallback: TFallback; defaultAliases?: readonly string[] },
+): Exclude<TItems[number]["value"], null> | TFallback;
+```
+
+Use this when sibling components need a typed logical query value from the same tab config. This avoids duplicating parser logic and gives autocomplete from literal `items` (`as const`).
+
 ---
 
 ## `useQueryParamTabSelection`
@@ -141,6 +158,23 @@ function useQueryParamTabSelection(
 Calls `useSearchParams()` from `next/navigation` and returns `resolveQueryParamTabId(…)` inside `useMemo`. Pass the same `param` / `items` / `options` you use for data fetching so the list and the tabs stay in sync.
 
 **Stable `options`:** define objects like `{ defaultAliases: ["*"] }` in module scope or `as const` so `useMemo` does not churn every render.
+
+## `useQueryParamValue`
+
+**Client-only** — `@/components/navigation/query-param-tabs/hooks`.
+
+```ts
+function useQueryParamValue<
+  TItems extends readonly QueryParamTabValueItem[],
+  TFallback extends string,
+>(
+  param: string,
+  items: TItems,
+  options: { fallback: TFallback; defaultAliases?: readonly string[] },
+): Exclude<TItems[number]["value"], null> | TFallback;
+```
+
+Best practice: define `param`, `items`, and options once in a feature config module; use those in both tabs and sibling readers. This keeps URL-writing and URL-reading in sync and DRY.
 
 ---
 

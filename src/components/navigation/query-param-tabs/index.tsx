@@ -13,7 +13,7 @@ export type QueryParamTabItem = QueryParamTabValueItem & {
 
 export type QueryParamTabsProps = {
   param: string
-  items: QueryParamTabItem[]
+  items: readonly QueryParamTabItem[]
   /** Controlled selection — compute with `resolveQueryParamTabId` / `useQueryParamTabSelection` in the caller. */
   selectedKey: string
   "aria-label"?: string
