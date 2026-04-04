@@ -6,6 +6,7 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
+    "prod": "convex deploy --cmd 'bun run build'",
     "check-types": "tsc --noEmit",
     "check": "ultracite check",
     "fix": "ultracite fix",
