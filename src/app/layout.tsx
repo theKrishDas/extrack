@@ -1,12 +1,10 @@
+import { SpeedInsights } from "@vercel/speed-insights/next"
 import type { Metadata } from "next"
 import { Geist, Geist_Mono, Inter } from "next/font/google"
 import { Toaster } from "sonner"
-
-import { rnxRounded } from "../fonts"
-
-import "./globals.css"
-
 import Provider from "@/components/provider"
+import { rnxRounded } from "../fonts"
+import "./globals.css"
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -44,6 +42,7 @@ export default function RootLayout({
       <body className="flex min-h-dvh flex-col">
         <Provider>{children}</Provider>
         <Toaster />
+        <SpeedInsights />
       </body>
     </html>
   )
