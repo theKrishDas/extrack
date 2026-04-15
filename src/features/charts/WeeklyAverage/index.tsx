@@ -1,12 +1,21 @@
 "use client"
 
+import { useQuery } from "convex-helpers/react/cache"
 import { eachDayOfInterval, endOfToday, startOfDay, subDays } from "date-fns"
 import useMeasure from "react-use-measure"
+import { api } from "#/convex/_generated/api"
 import type { Colors } from "#lib/constants/colors"
 import type { TransactionTypes } from "#lib/constants/transaction-types"
+import { Spinner } from "@/components/loading/spinner"
 import { Spacer } from "@/components/ui/spacer"
 import { useCurrencyFormatter } from "@/hooks/useCurrencyFormatter"
 import { Chart, type ChartData } from "./chart"
+
+const types = ["income", "expense"] satisfies TransactionTypes[]
+
+function buildKey(date: string, type: TransactionTypes): string {
+  return `${date}:${type}`
+}
 
 export function WeeklyAverage() {
   const rangeEndDate = endOfToday()
@@ -16,15 +25,40 @@ export function WeeklyAverage() {
     end: rangeEndDate,
   })
 
-  // TODO: Replace dummy data before shipping
-  const data = dateRange.map((date) => {
-    return { date, value: Math.round(Math.random() * 100) + 8 }
-  }) satisfies ChartData[]
+  const transactionsInRange = useQuery(api.transaction.listByTimeframe, {
+    start: rangeStartDate.getTime(),
+    end: rangeEndDate.getTime(),
+  })
+  if (!transactionsInRange) return <Spinner />
+
+  /** transactions grouped by date: unique date and transaction-type */
+  const map = new Map<ReturnType<typeof buildKey>, number>()
+  for (const txn of transactionsInRange) {
+    const key = buildKey(new Date(txn.date).toDateString(), txn.type)
+    const bucket = map.get(key) ?? 0
+    const cents = bucket + txn.amount
+    map.set(key, cents)
+  }
+
+  const data = types.reduce(
+    (acc, type) => {
+      const entries: ChartData[] = []
+      acc[type] = entries
+      for (const date of dateRange) {
+        const key = buildKey(date.toDateString(), type)
+        const value = map.get(key) ?? 0
+        const entry = { date, value }
+        entries.push(entry)
+      }
+      return acc
+    },
+    {} as Record<TransactionTypes, ChartData[]>
+  )
 
   return (
     <div className="grid grid-cols-2 gap-2">
-      <WeeklyAverageCard data={data} type="expense" />
-      <WeeklyAverageCard data={data} type="income" />
+      <WeeklyAverageCard data={data.expense} type="expense" />
+      <WeeklyAverageCard data={data.income} type="income" />
     </div>
   )
 }
@@ -40,8 +74,8 @@ const WeeklyAverageCard = ({
   const sum = data.reduce((acc, d) => acc + d.value, 0)
   const average = Math.round(sum / data.length)
 
-  const formatter = useCurrencyFormatter()
-  const formattedAverage = formatter.format(average)
+  const formatter = useCurrencyFormatter({ maximumFractionDigits: 0 })
+  const formattedAverage = formatter.format(average / 100)
 
   const colors = {
     expense: "red",
