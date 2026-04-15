@@ -48,7 +48,7 @@ const Balance = () => {
   const delta = flowThisMonth - flowPrevMonth
 
   return (
-    <div className="flex h-110 flex-col items-center justify-center pb-18 text-center">
+    <div className="flex h-fit flex-col items-center justify-center pb-18 text-center">
       <NumberFlow
         className="font-bold text-6xl"
         format={{
