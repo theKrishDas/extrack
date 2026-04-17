@@ -7,8 +7,8 @@ export const currencyFormatOptions = {
   currency: CURRENCY,
   minimumFractionDigits: 0,
   maximumFractionDigits: 2,
-} as const
+} satisfies Intl.NumberFormatOptions
 
 /** Formats a number as a currency string using the default {@link currencyFormatOptions}. */
-export const useCurrencyFormatter = () =>
-  useNumberFormatter(currencyFormatOptions)
+export const useCurrencyFormatter = (opts: Intl.NumberFormatOptions = {}) =>
+  useNumberFormatter({ ...currencyFormatOptions, ...opts })
