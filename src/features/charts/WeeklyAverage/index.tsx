@@ -9,6 +9,7 @@ import type { TransactionTypes } from "#lib/constants/transaction-types"
 import { Spinner } from "@/components/loading/spinner"
 import { Spacer } from "@/components/ui/spacer"
 import { useCurrencyFormatter } from "@/hooks/useCurrencyFormatter"
+import { cn } from "@/lib/utils"
 import { Chart, type ChartData } from "./chart"
 
 const types = ["income", "expense"] satisfies TransactionTypes[]
@@ -99,6 +100,22 @@ const WeeklyAverageCard = ({
       }
     >
       <p className="text-lg leading-none">
+        <span className="mb-1 block">{label}</span>
+        <span className="flex items-baseline gap-1">
+          <span
+            className={cn(
+              "w-fit min-w-0 max-w-full truncate text-clip font-semibold text-(--chart-color) text-4xl",
+              formattedAverage.length > 4 && "text-2xl",
+              formattedAverage.length > 6 && "text-xl"
+            )}
+          >
+            {formattedAverage}
+          </span>
+          <span> Avg.</span>
+        </span>
+      </p>
+
+      <p className="hidden text-lg leading-none">
         <span className="mb-1 block">{label}</span>
         <span className="inline-block font-semibold text-(--chart-color) text-4xl">
           {formattedAverage}
