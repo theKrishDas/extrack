@@ -45,16 +45,16 @@ const Balance = () => {
   const delta = flowThisMonth - flowPrevMonth
 
   return (
-    <div className="flex h-fit flex-col items-center justify-center pb-18 text-center">
+    <div className="flex h-fit flex-col items-center justify-center text-center">
       <NumberFlow
-        className="font-bold text-6xl"
+        className="h-24 w-fit max-w-full font-bold text-6xl [&::part(fraction)]:text-[0.45em] [&::part(fraction)]:text-label-secondary"
         format={{
           style: "currency",
           currency: CURRENCY,
           trailingZeroDisplay: "stripIfInteger",
           maximumFractionDigits: 2,
         }}
-        style={{ "--number-flow-char-height": "1.2ch" } as CSSProperties}
+        style={{ "--number-flow-char-height": "100%" } as CSSProperties}
         value={currentBalance / 100}
       />
 
