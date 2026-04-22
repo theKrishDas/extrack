@@ -6,7 +6,7 @@ import useMeasure from "react-use-measure"
 import { api } from "#/convex/_generated/api"
 import type { Colors } from "#lib/constants/colors"
 import type { TransactionTypes } from "#lib/constants/transaction-types"
-import { Spinner } from "@/components/loading/spinner"
+import { Skeleton } from "@/components/ui/loading/skeleton"
 import { Spacer } from "@/components/ui/spacer"
 import { useCurrencyFormatter } from "@/hooks/useCurrencyFormatter"
 import { cn } from "@/lib/utils"
@@ -30,7 +30,13 @@ export function WeeklyAverage() {
     start: rangeStartDate.getTime(),
     end: rangeEndDate.getTime(),
   })
-  if (!transactionsInRange) return <Spinner />
+  if (!transactionsInRange)
+    return (
+      <div className="grid h-fit w-full grid-cols-2 gap-2">
+        <Skeleton className="corner-squircle aspect-square max-h-44 w-full rounded-3xl shadow-ios-md supports-[corner-shape:squircle]:rounded-4xl" />
+        <Skeleton className="corner-squircle aspect-square max-h-44 w-full rounded-3xl shadow-ios-md supports-[corner-shape:squircle]:rounded-4xl" />
+      </div>
+    )
 
   /** transactions grouped by date: unique date and transaction-type */
   const map = new Map<ReturnType<typeof buildKey>, number>()
