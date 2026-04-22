@@ -37,7 +37,7 @@ export function SpendingPace() {
   const income = totals.get("income") ?? 0
   const expense = totals.get("expense") ?? 0
 
-  const percentage = expense / income
+  const percentage = income / expense
   const usage = Math.min(percentage, 1)
   const formattedUsage = formatter.format(percentage)
 
