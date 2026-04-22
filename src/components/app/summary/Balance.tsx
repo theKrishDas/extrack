@@ -35,12 +35,9 @@ const Balance = () => {
     account: "*",
   })
 
-  if (!balancesCurrent) return <p>Loading balance...</p>
-  if (!balancesPrevious) return <p>Loading balance...</p>
-
-  const balanceAtStartOfCurrentMonth = balancesCurrent.balance
-  const currentBalance = balancesCurrent.currentBalance
-  const balanceAtStartOfPreviousMonth = balancesPrevious.balance
+  const balanceAtStartOfCurrentMonth = balancesCurrent?.balance ?? 0
+  const currentBalance = balancesCurrent?.currentBalance ?? 0
+  const balanceAtStartOfPreviousMonth = balancesPrevious?.balance ?? 0
 
   const flowThisMonth = currentBalance - balanceAtStartOfCurrentMonth
   const flowPrevMonth =
