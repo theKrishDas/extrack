@@ -121,14 +121,6 @@ const WeeklyAverageCard = ({
         </span>
       </p>
 
-      <p className="hidden text-lg leading-none">
-        <span className="mb-1 block">{label}</span>
-        <span className="inline-block font-semibold text-(--chart-color) text-4xl">
-          {formattedAverage}
-        </span>{" "}
-        <span className="text-base">Avg.</span>
-      </p>
-
       <Spacer className="h-2" />
 
       <div

@@ -51,7 +51,6 @@ export function Chart(props: ChartProps<{ data: ChartData[] }>) {
           fill="none"
           stroke="currentColor"
           strokeDasharray="2,6"
-          x2={width}
         />
 
         {/* --- Line Path (Trend) --- */}
