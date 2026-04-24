@@ -1,6 +1,6 @@
 "use client"
 
-import { Link } from "react-aria-components"
+import Link from "next/link"
 import { IoPersonCircle } from "react-icons/io5"
 
 export function SettingsButton() {
