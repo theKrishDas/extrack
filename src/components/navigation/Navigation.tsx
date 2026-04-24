@@ -1,8 +1,9 @@
 "use client"
 
 import { motion } from "motion/react"
+import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Link, Toolbar } from "react-aria-components"
+import { Toolbar } from "react-aria-components"
 import { Material } from "../material/material"
 import { buttonVariants } from "../ui/button"
 
