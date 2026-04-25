@@ -1,4 +1,4 @@
-import { v } from "convex/values"
+import { ConvexError, v } from "convex/values"
 import { vendorAccounts, vendorCategories } from "#lib/seed"
 import { internalMutation } from "./_generated/server"
 import { log } from "./lib/utils"
@@ -16,14 +16,14 @@ import { log } from "./lib/utils"
 export const onboardUser = internalMutation({
   args: { userId: v.string() },
   handler: async (ctx, { userId }) => {
-    // Check if user already has accounts to prevent duplicate onboarding
-    const existingAccount = await ctx.db
-      .query("accounts")
+    // Check if user already exists to prevent duplicate onboarding
+    const existingUser = await ctx.db
+      .query("user")
       .withIndex("by_owner", (q) => q.eq("ownerId", userId))
       .first()
 
-    if (existingAccount) {
-      log(`User ${userId} already onboarded, skipping`)
+    if (existingUser) {
+      log(`User ${userId} already onboarded, skipping onboarding`)
       return { success: false, reason: "already_onboarded" }
     }
 
@@ -60,8 +60,17 @@ export const onboardUser = internalMutation({
       Promise.all(categoryPromises),
     ])
 
-    // Set the first account as default
-    const defaultAccountId = accountIds[0]
+    // Set the first seeded account as default.
+    const defaultAccountId = accountIds.at(0)
+    if (!defaultAccountId) {
+      const expectedDefaultAccountName =
+        vendorAccounts.at(0)?.name ?? "the first vendor account"
+
+      throw new ConvexError(
+        `User onboarding failed for "${userId}": no default account was created. Check the vendor account seed data and ensure "${expectedDefaultAccountName}" is present.`
+      )
+    }
+
     // Create user settings with the default account
     await ctx.db.insert("user", {
       ownerId: userId,
