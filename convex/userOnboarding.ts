@@ -4,32 +4,33 @@ import { internalMutation } from "./_generated/server"
 import { log } from "./lib/utils"
 
 /**
- * Onboards a new user by creating default accounts and vendor categories.
+ * Creates the initial seeded data for a user.
  *
- * This function is called automatically when a new user is created via Clerk webhook.
- * It creates:
+ * This mutation is typically called after a new user is created via the Clerk
+ * webhook flow. It creates:
  * - 2 default accounts: "Main" (default) and "Cash"
  * - All vendor expense and income categories
  *
- * The function is idempotent - if the user already has accounts, it skips onboarding.
+ * The mutation is idempotent at the user-settings level: if a `user` row already
+ * exists for the owner, onboarding is skipped.
  */
 export const onboardUser = internalMutation({
   args: { userId: v.string() },
   handler: async (ctx, { userId }) => {
-    // Check if user already exists to prevent duplicate onboarding
-    const existingUser = await ctx.db
+    // A persisted user settings row means onboarding already ran.
+    const existingOnboardedUser = await ctx.db
       .query("user")
       .withIndex("by_owner", (q) => q.eq("ownerId", userId))
       .first()
 
-    if (existingUser) {
+    if (existingOnboardedUser) {
       log(`User ${userId} already onboarded, skipping onboarding`)
       return { success: false, reason: "already_onboarded" }
     }
 
     log(`Starting onboarding for user: ${userId}`)
 
-    // Create accounts from vendor data
+    // Seed default accounts from the shared vendor account list.
     const accountPromises = vendorAccounts.map((account) =>
       ctx.db.insert("accounts", {
         ownerId: userId,
@@ -42,7 +43,7 @@ export const onboardUser = internalMutation({
       })
     )
 
-    // Create categories from vendor data
+    // Seed built-in categories from the shared vendor category list.
     const categoryPromises = vendorCategories.map((category) =>
       ctx.db.insert("categories", {
         ownerId: userId,
@@ -54,7 +55,7 @@ export const onboardUser = internalMutation({
       })
     )
 
-    // Execute all insertions in parallel for better performance
+    // Insert both seed sets concurrently to keep onboarding fast.
     const [accountIds, categoryIds] = await Promise.all([
       Promise.all(accountPromises),
       Promise.all(categoryPromises),
@@ -71,7 +72,7 @@ export const onboardUser = internalMutation({
       )
     }
 
-    // Create user settings with the default account
+    // Persist the default account choice in the user settings row.
     await ctx.db.insert("user", {
       ownerId: userId,
       defaultAccount: defaultAccountId,
