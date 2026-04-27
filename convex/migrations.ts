@@ -17,6 +17,10 @@ export const migrations = new Migrations<DataModel>(components.migrations)
 
 type MigrationContext = GenericMutationCtx<DataModel>
 
+export const runMigrateUsers = migrations.runner(
+  internal.migrations.migrateUsers
+)
+
 export const migrateUsers = migrations.define({
   table: "migration_preference",
   batchSize: 1,
