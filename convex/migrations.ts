@@ -11,7 +11,7 @@ import { internalMutation, internalQuery } from "./_generated/server"
 
 const UNASSIGNED_CATEGORY_NAME = "Uncategorized" as const
 const MIGRATED_CATEGORY_COLOR = "gray" as const
-const MIGRATED_CATEGORY_ICON = "_" as const
+const MIGRATED_CATEGORY_ICON = "📦" as const
 
 export const migrations = new Migrations<DataModel>(components.migrations)
 
