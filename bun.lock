@@ -8,6 +8,7 @@
         "@ark-ui/react": "^5.34.1",
         "@base-ui/react": "^1.3.0",
         "@clerk/nextjs": "^6.39.0",
+        "@convex-dev/migrations": "^0.3.3",
         "@hookform/resolvers": "^5.2.2",
         "@internationalized/date": "^3.12.0",
         "@number-flow/react": "^0.5.14",
@@ -113,6 +114,8 @@
     "@clerk/shared": ["@clerk/shared@3.47.2", "", { "dependencies": { "csstype": "3.1.3", "dequal": "2.0.3", "glob-to-regexp": "0.4.1", "js-cookie": "3.0.5", "std-env": "^3.9.0", "swr": "2.3.4" }, "peerDependencies": { "react": "^18.0.0 || ~19.0.3 || ~19.1.4 || ~19.2.3 || ~19.3.0-0", "react-dom": "^18.0.0 || ~19.0.3 || ~19.1.4 || ~19.2.3 || ~19.3.0-0" }, "optionalPeers": ["react", "react-dom"] }, "sha512-dwUT27DKq3Gr9vn9lAfc/LSe79P1rKIib8/mTWA7ZEzY7XX2Yq5UnDMCMznYrI8oVLdJrCT4ypFXRgnH306Oew=="],
 
     "@clerk/types": ["@clerk/types@4.101.20", "", { "dependencies": { "@clerk/shared": "^3.47.2" } }, "sha512-MHvr1tGL5lwxD6zdzzixkHICbbZz/S1LChONKR52Qeu0yRGChZomPknsgqBMG9J3yNeyhaj0SWa5phQgQUk0lg=="],
+
+    "@convex-dev/migrations": ["@convex-dev/migrations@0.3.3", "", { "peerDependencies": { "convex": "^1.24.8" } }, "sha512-eUfqCBMjObr9sPCRL7V98CX58fViLVye7ZtYVCb0/6c6kOERZopbiQ/dWnF8NoxXg3bREr3Jb3VjZR9FjP96+A=="],
 
     "@edge-runtime/primitives": ["@edge-runtime/primitives@6.0.0", "", {}, "sha512-FqoxaBT+prPBHBwE1WXS1ocnu/VLTQyZ6NMUBAdbP7N2hsFTTxMC/jMu2D/8GAlMQfxeuppcPuCUk/HO3fpIvA=="],
 
