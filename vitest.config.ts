@@ -10,6 +10,7 @@ export default defineConfig({
   resolve: {
     alias: {
       "#lib": path.resolve(import.meta.dirname, "./lib"),
+      "#/convex": path.resolve(import.meta.dirname, "./convex"),
     },
   },
 })

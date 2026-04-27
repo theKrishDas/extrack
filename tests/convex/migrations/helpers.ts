@@ -2,10 +2,10 @@ import { runToCompletion } from "@convex-dev/migrations"
 import migrationsComponent from "@convex-dev/migrations/test"
 import type { FunctionReference } from "convex/server"
 import { convexTest, type TestConvex } from "convex-test"
+import { components } from "#/convex/_generated/api"
+import type { Doc, Id } from "#/convex/_generated/dataModel"
+import schema from "#/convex/schema"
 import type { TransactionTypes } from "#lib/constants/transaction-types"
-import { components } from "../../_generated/api"
-import type { Doc, Id } from "../../_generated/dataModel"
-import schema from "../../schema"
 
 export type MigrationTestConvex = TestConvex<typeof schema>
 

@@ -1,8 +1,8 @@
 import { ConvexError } from "convex/values"
 import { describe, expect, test } from "vitest"
+import { internal } from "#/convex/_generated/api"
+import type { Doc } from "#/convex/_generated/dataModel"
 import { vendorAccounts } from "#lib/seed"
-import { internal } from "../../_generated/api"
-import type { Doc } from "../../_generated/dataModel"
 import {
   computeExpectedNetFlow,
   createMigrationTest,
