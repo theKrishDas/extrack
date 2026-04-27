@@ -271,18 +271,18 @@ describe("migrations.migrateUser", () => {
       expect(taxiCategory).toMatchObject({
         pg_id: "legacy_taxi",
         color: "gray",
-        icon: "_",
+        icon: "📦",
         is_vendor: false,
       })
       expect(uncategorizedExpense).toMatchObject({
         is_vendor: false,
         color: "gray",
-        icon: "_",
+        icon: "📦",
       })
       expect(uncategorizedIncome).toMatchObject({
         is_vendor: false,
         color: "gray",
-        icon: "_",
+        icon: "📦",
       })
 
       const salaryTransaction = findTransactionByLegacyId(
