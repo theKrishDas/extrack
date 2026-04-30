@@ -24,7 +24,7 @@ export function BalanceTrend() {
   })
   const balance = useQuery(api.account.getBalance, { account: "*" })
 
-  if (!(transactions && balance))
+  if (transactions === undefined || balance === undefined)
     return (
       <div className="h-52 w-full p-4">
         <Spinner />
