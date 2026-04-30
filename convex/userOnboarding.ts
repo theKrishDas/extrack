@@ -1,6 +1,8 @@
 import { ConvexError, v } from "convex/values"
 import { vendorAccounts, vendorCategories } from "#lib/seed"
+import { internal } from "./_generated/api"
 import { internalMutation } from "./_generated/server"
+import { mutation } from "./functions"
 import { log } from "./lib/utils"
 
 /**
@@ -90,5 +92,31 @@ export const onboardUser = internalMutation({
       categoriesCreated: vendorCategories.length,
       totalRecords: results.length,
     }
+  },
+})
+
+/**
+ * Retries onboarding for the currently signed-in user.
+ *
+ * This client-callable mutation exists as a recovery path when the normal
+ * webhook-driven onboarding flow did not finish successfully. It resolves the
+ * authenticated user's Clerk subject and delegates to the internal
+ * `onboardUser` mutation.
+ *
+ * Throws a `ConvexError` with code `UNAUTHENTICATED` when no user session is
+ * present.
+ */
+export const retryOnboarding = mutation({
+  handler: async (ctx) => {
+    const identity = await ctx.auth.getUserIdentity()
+    if (!identity)
+      throw new ConvexError({
+        code: "UNAUTHENTICATED",
+        message: "Authentication required.",
+      })
+
+    await ctx.runMutation(internal.userOnboarding.onboardUser, {
+      userId: identity.subject,
+    })
   },
 })
