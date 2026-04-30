@@ -2,9 +2,17 @@
 "use client"
 
 import { useEffect } from "react"
+import { OnboardingRecovery } from "@/components/error/onboarding-recovery"
 import { Container } from "@/components/layout/container"
 import { Button } from "@/components/ui/button/animated-button"
 import { Spacer } from "@/components/ui/spacer"
+
+const hasErrorCode = (err: unknown, code: string): boolean => {
+  if (!err || typeof err !== "object") return false
+  const maybeData = (err as { data?: unknown }).data
+  if (!maybeData || typeof maybeData !== "object") return false
+  return (maybeData as { code?: unknown }).code === code
+}
 
 export default function Error({
   error,
@@ -16,6 +24,11 @@ export default function Error({
   useEffect(() => {
     console.error(error)
   }, [error])
+
+  // TODO: use global constants for these error-codes
+  if (hasErrorCode(error, "USER_NOT_STORED")) {
+    return <OnboardingRecovery onRecovered={reset} />
+  }
 
   return (
     <Container className="flex-1 px-4 pt-6">
