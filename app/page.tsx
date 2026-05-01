@@ -1,65 +1,154 @@
-import Image from "next/image";
+import type { Metadata } from "next";
+import { Fragment } from "react";
 
-export default function Home() {
+export const metadata: Metadata = {
+  title: "Scheduled maintenance",
+  robots: "noindex, nofollow",
+};
+
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
+function getDeploymentStartedAt() {
+  const deploymentId = process.env.VERCEL_DEPLOYMENT_ID ?? "local";
+  const globalState = globalThis as typeof globalThis & {
+    __xtrkDowntimeStartedAt?: Map<string, number>;
+  };
+
+  globalState.__xtrkDowntimeStartedAt ??= new Map();
+
+  if (!globalState.__xtrkDowntimeStartedAt.has(deploymentId)) {
+    globalState.__xtrkDowntimeStartedAt.set(deploymentId, Date.now());
+  }
+
+  return globalState.__xtrkDowntimeStartedAt.get(deploymentId) ?? Date.now();
+}
+
+function formatElapsedTime(startedAt: number) {
+  const elapsedMs = Math.max(0, Date.now() - startedAt);
+  const elapsedMinutes = Math.floor(elapsedMs / 60_000);
+
+  if (elapsedMinutes < 1) {
+    return "Less than a minute ago";
+  }
+
+  if (elapsedMinutes < 60) {
+    return `${elapsedMinutes} minute${elapsedMinutes === 1 ? "" : "s"} ago`;
+  }
+
+  const hours = Math.floor(elapsedMinutes / 60);
+  const minutes = elapsedMinutes % 60;
+
+  if (hours < 24) {
+    if (minutes === 0) {
+      return `${hours} hour${hours === 1 ? "" : "s"} ago`;
+    }
+
+    return `${hours} hour${hours === 1 ? "" : "s"} ${minutes} minute${minutes === 1 ? "" : "s"} ago`;
+  }
+
+  const days = Math.floor(hours / 24);
+  const remainingHours = hours % 24;
+
+  if (remainingHours === 0) {
+    return `${days} day${days === 1 ? "" : "s"} ago`;
+  }
+
+  return `${days} day${days === 1 ? "" : "s"} ${remainingHours} hour${remainingHours === 1 ? "" : "s"} ago`;
+}
+
+export default function MaintenancePage() {
+  const startedAtLabel = formatElapsedTime(getDeploymentStartedAt());
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+    <main className="min-h-screen bg-background text-foreground relative font-sans">
+      <div
+        className="absolute inset-0"
+        style={{
+          background:
+            "radial-gradient(circle at top left, color-mix(in oklab, var(--foreground) 8%, transparent), transparent 32%)",
+        }}
+      />
+      <div className="mx-auto relative flex min-h-screen w-full max-w-4xl items-center px-6 py-16 sm:px-10">
+        <section className="w-full">
+          <div className="space-y-10">
+            <div className="space-y-4">
+              <p
+                className="text-sm font-medium uppercase tracking-[0.22em]"
+                style={{
+                  color:
+                    "color-mix(in oklab, var(--foreground) 58%, transparent)",
+                }}
+              >
+                Extrack status
+              </p>
+              <h1 className="max-w-2xl text-4xl font-semibold tracking-tight sm:text-5xl">
+                Scheduled maintenance
+              </h1>
+              <p
+                className="max-w-xl text-base leading-7 sm:text-lg sm:leading-8"
+                style={{
+                  color:
+                    "color-mix(in oklab, var(--foreground) 68%, transparent)",
+                }}
+              >
+                We&apos;re updating our systems to serve you better. We&apos;ll
+                be back shortly.
+              </p>
+            </div>
+
+            <div
+              className="grid gap-4 border-y py-6 sm:grid-cols-[180px_minmax(0,1fr)] sm:gap-x-8"
+              style={{
+                borderColor:
+                  "color-mix(in oklab, var(--foreground) 10%, transparent)",
+              }}
             >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+              {[
+                ["Status", "Maintenance in progress"],
+                ["Expected duration", "30-45 minutes"],
+                ["Started", startedAtLabel],
+              ].map(([label, value]) => (
+                <Fragment key={label + value}>
+                  <div
+                    key={`${label}-label`}
+                    className="text-sm"
+                    style={{
+                      color:
+                        "color-mix(in oklab, var(--foreground) 58%, transparent)",
+                    }}
+                  >
+                    {label}
+                  </div>
+                  <div
+                    key={`${label}-value`}
+                    className="text-sm font-medium sm:text-base"
+                  >
+                    {value}
+                  </div>
+                </Fragment>
+              ))}
+            </div>
+
+            <div className="max-w-2xl space-y-3">
+              <h2 className="text-base font-semibold sm:text-lg">
+                What&apos;s happening
+              </h2>
+              <p
+                className="text-sm leading-7 sm:text-base"
+                style={{
+                  color:
+                    "color-mix(in oklab, var(--foreground) 68%, transparent)",
+                }}
+              >
+                We&apos;re migrating our database infrastructure to improve
+                performance and reliability. Your data is safe, and all accounts
+                will be fully restored once maintenance completes.
+              </p>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
   );
 }
