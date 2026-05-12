@@ -1,8 +1,4 @@
-import type { SVGProps } from "react"
-
-export interface IconProps extends SVGProps<SVGSVGElement> {
-  size?: string | number
-}
+import type { IconProps } from "./types"
 
 // Icon from MingCute Icon by MingCute Design - https://github.com/Richard9394/MingCute/blob/main/LICENSE
 export function MingcuteGithubFill({ size = "1em", ...props }: IconProps) {
