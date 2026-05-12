@@ -1,14 +1,16 @@
-export function Spinner(props: React.SVGProps<SVGSVGElement>) {
+import type { IconProps } from "../icons/types"
+
+export function Spinner(props: IconProps) {
   return <Icon {...props} />
 }
 
 // Icon from SVG Spinners by Utkarsh Verma - https://github.com/n3r4zzurr0/svg-spinners/blob/main/LICENSE
-export function Icon(props: React.SVGProps<SVGSVGElement>) {
+export function Icon({ size = "1em", ...props }: IconProps) {
   return (
     <svg
-      height="1em"
+      height={size}
       viewBox="0 0 24 24"
-      width="1em"
+      width={size}
       xmlns="http://www.w3.org/2000/svg"
       {...props}
     >
