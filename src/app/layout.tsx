@@ -26,6 +26,9 @@ export const metadata: Metadata = {
   title: "Extrack - Personal finance tracker",
   description:
     "Track spending, manage accounts, and stay on top of your personal finances with Extrack.",
+  icons: {
+    icon: "/favicons/favicon.ico",
+  },
 }
 
 export default function RootLayout({
