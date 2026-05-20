@@ -22,7 +22,7 @@ import { IoArrowDown, IoArrowUp } from "react-icons/io5"
 import { useBalanceOn } from "@/hooks/convex/balance"
 import { CURRENCY } from "@/lib/date-utils"
 
-const Balance = () => {
+const Balance = ({ showDelta }: { showDelta?: boolean }) => {
   const startOfCurrentMonth = startOfMonth(subMonths(new Date(), 0))
   const startOfPreviousMonth = startOfMonth(subMonths(new Date(), 1))
 
@@ -58,23 +58,25 @@ const Balance = () => {
         value={currentBalance / 100}
       />
 
-      <p className="flex items-center text-label-secondary [&_svg]:mr-1 [&_svg]:text-lg">
-        {delta < 0 ? (
-          <IoArrowDown color="var(--ios-red)" />
-        ) : (
-          <IoArrowUp color="var(--ios-green)" />
-        )}
-        <NumberFlow
-          className="mr-[0.5ch]"
-          format={{
-            style: "currency",
-            currency: CURRENCY,
-            trailingZeroDisplay: "stripIfInteger",
-          }}
-          value={Math.abs(delta) / 100}
-        />
-        from last month
-      </p>
+      {showDelta && (
+        <p className="flex items-center text-label-secondary [&_svg]:mr-1 [&_svg]:text-lg">
+          {delta < 0 ? (
+            <IoArrowDown color="var(--ios-red)" />
+          ) : (
+            <IoArrowUp color="var(--ios-green)" />
+          )}
+          <NumberFlow
+            className="mr-[0.5ch]"
+            format={{
+              style: "currency",
+              currency: CURRENCY,
+              trailingZeroDisplay: "stripIfInteger",
+            }}
+            value={Math.abs(delta) / 100}
+          />
+          from last month
+        </p>
+      )}
     </div>
   )
 }
