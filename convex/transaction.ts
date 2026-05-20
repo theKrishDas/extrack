@@ -8,19 +8,56 @@ import { v as vLib } from "#lib/validators"
 import { internal } from "./_generated/api"
 import type { Doc } from "./_generated/dataModel"
 import { getDoc } from "./lib/doc"
-import { userMutation, userQuery, zUserMutation } from "./lib/userFunctions"
+import {
+  userMutation,
+  userQuery,
+  zUserMutation,
+  zUserQuery,
+} from "./lib/userFunctions"
 import { zid } from "./lib/utils"
 import schema from "./schema"
 
-export const list = userQuery({
-  handler: async (ctx) => {
+/**
+ * Lists the authenticated user's transactions ordered by date.
+ *
+ * @param order - Sort order for the date index. Defaults to `"desc"`.
+ * @param limit - Max rows to return, or `"collect_all"` for all transactions.
+ * @returns The user's transactions in the requested order.
+ *
+ * @example
+ * ```ts
+ * const transactions = useQuery(api.transaction.list, {
+ *   limit: 20,
+ * })
+ * ```
+ *
+ * @example
+ * ```ts
+ * const transactions = useQuery(api.transaction.list, {
+ *   order: "asc",
+ *   limit: "collect_all",
+ * })
+ * ```
+ */
+export const list = zUserQuery({
+  args: z.object({
+    order: z.enum(["asc", "desc"]).default("desc"),
+    limit: z.union([
+      z.literal("collect_all"),
+      z.number().int().finite().min(1),
+    ]),
+  }),
+  handler: async (ctx, { limit, order }) => {
     const { user } = ctx
 
-    return await ctx.db
+    const q = ctx.db
       .query("transactions")
-      .withIndex("by_owner", (q) => q.eq("ownerId", user.ownerId))
-      .order("asc")
-      .collect()
+      .withIndex("by_date", (q) => q.eq("ownerId", user.ownerId))
+      .order(order)
+
+    if (limit === "collect_all") return await q.collect()
+
+    return await q.take(limit)
   },
 })
 
