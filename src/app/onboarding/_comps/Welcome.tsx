@@ -11,7 +11,7 @@ export function Welcome() {
             height={82}
             priority
             quality={100}
-            src="/favicon.png"
+            src="/appicon.png"
             width={82}
           />
         </div>
