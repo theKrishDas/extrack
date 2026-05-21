@@ -18,6 +18,7 @@
 import NumberFlow from "@number-flow/react"
 import { startOfMonth, subMonths } from "date-fns"
 import type { CSSProperties } from "react"
+import { HiOutlineMinus } from "react-icons/hi"
 import { IoArrowDown, IoArrowUp } from "react-icons/io5"
 import { useBalanceOn } from "@/hooks/convex/balance"
 import { CURRENCY } from "@/lib/date-utils"
@@ -60,11 +61,7 @@ const Balance = ({ showDelta }: { showDelta?: boolean }) => {
 
       {showDelta && (
         <p className="flex items-center text-label-secondary [&_svg]:mr-1 [&_svg]:text-lg">
-          {delta < 0 ? (
-            <IoArrowDown color="var(--ios-red)" />
-          ) : (
-            <IoArrowUp color="var(--ios-green)" />
-          )}
+          <DeltaIcon delta={delta} />
           <NumberFlow
             className="mr-[0.5ch]"
             format={{
@@ -79,6 +76,13 @@ const Balance = ({ showDelta }: { showDelta?: boolean }) => {
       )}
     </div>
   )
+}
+
+function DeltaIcon({ delta }: { delta: number }) {
+  if (delta === 0) return <HiOutlineMinus aria-hidden="true" />
+  if (delta < 0)
+    return <IoArrowDown aria-hidden="true" color="var(--ios-red)" />
+  return <IoArrowUp aria-hidden="true" color="var(--ios-green)" />
 }
 
 export default Balance
