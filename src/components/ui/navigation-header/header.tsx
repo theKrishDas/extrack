@@ -17,7 +17,7 @@ export interface HeaderProps {
  * @deprecated Use `PageHeader` from `@/components/navigation/page-header` instead.
  */
 export function Header({ title, srOnly = false, href = "" }: HeaderProps) {
-  const router = useRouter()
+  const { push } = useRouter()
 
   return (
     // NOTE: These heights are coming from button's height
@@ -41,7 +41,7 @@ export function Header({ title, srOnly = false, href = "" }: HeaderProps) {
         )}
         color="gray"
         isIconOnly
-        onPress={() => router.push(href, { scroll: false })}
+        onPress={() => push(href, { scroll: false })}
       >
         􀆉
       </Button>
