@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.1.0](https://github.com/thekrishdas/extrack/compare/v1.0.0...v1.1.0) (2026-05-22)
+
+
+### Features
+
+* **brand:** replace single favicon with multi-resolution favicon set ([0e0dfe6](https://github.com/thekrishdas/extrack/commit/0e0dfe6541dd99ba42fa5d645f3e5c35e7a8545e))
+* **convex:** Add limit and sort to transactions ([d250974](https://github.com/thekrishdas/extrack/commit/d2509741e460475517193d0b2da6c03cf6b8bb2a))
+* **dev:** add dynamic favicon component for development ([4349002](https://github.com/thekrishdas/extrack/commit/434900216e72ce5e1b1b24808efb5b4a2b4acd55))
+* **home:** Add loading and empty states to dashboard ([04ff37e](https://github.com/thekrishdas/extrack/commit/04ff37e18fcdd671759c5ca4fce2acfb916edf4e))
+* **onboarding:** add onboarding flow for new sign-ups ([3ef88cf](https://github.com/thekrishdas/extrack/commit/3ef88cf7d9e654dbf0792a5ba03d86b3dc8db20d)), closes [theKrishDas/extrack#59](https://github.com/theKrishDas/extrack/issues/59)
+* **pwa:** configure PWA manifest and app icons ([8c8322d](https://github.com/thekrishdas/extrack/commit/8c8322dac322d84d63b3cd63888f575cac0b3350))
+* **ui:** add shiny text animation component ([6218420](https://github.com/thekrishdas/extrack/commit/62184208aacd35c99ead81f14d9b977c71141d4f))
+* **ui:** Add splash screen component ([56cddbf](https://github.com/thekrishdas/extrack/commit/56cddbf96757b0790ddd43ebeaf217f71ed6aa50))
+
+
+### Bug Fixes
+
+* **summary:** show neutral icon for zero delta ([36fa53f](https://github.com/thekrishdas/extrack/commit/36fa53f7db33b86d448cf40dfc394b8adb7da7e2))
+
 ## 1.0.0 (2026-05-07)
 
 
