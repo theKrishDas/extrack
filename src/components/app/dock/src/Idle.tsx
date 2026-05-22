@@ -13,12 +13,12 @@ const IdleNav = () => {
 }
 
 function NavButton({ children, url }: { children: ReactNode; url: string }) {
-  const router = useRouter()
+  const { push } = useRouter()
   const pathname = usePathname().trim()
 
   function navigate(url: string) {
     if (url === pathname) return
-    router.push(url)
+    push(url)
   }
   return (
     <Button

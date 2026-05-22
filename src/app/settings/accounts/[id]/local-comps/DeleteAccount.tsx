@@ -12,13 +12,13 @@ import { Spacer } from "@/components/ui/spacer"
 export function DeleteAccount({ account }: { account: Doc<"accounts"> }) {
   const [open, setOpen] = useState(false)
   const deleteAccount = useMutation(api.account.delete)
-  const router = useRouter()
+  const { push } = useRouter()
 
   const onDelete = () => {
     deleteAccount({ id: account._id })
 
     setOpen(false)
-    router.push("/settings/accounts")
+    push("/settings/accounts")
   }
 
   return (

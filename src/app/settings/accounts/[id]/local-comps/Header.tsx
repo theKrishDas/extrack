@@ -20,7 +20,7 @@ export function Header({
   form: UseFormReturn<UpdateAccountSchemaType>
   onSubmit: (_: UpdateAccountSchemaType) => void
 }) {
-  const router = useRouter()
+  const { push } = useRouter()
   const href = "/settings/accounts" as const
   const variants: Variants = {
     initial: { filter: "blur(3px)", scale: 0, opacity: 0 },
@@ -47,7 +47,7 @@ export function Header({
             form.reset()
             return
           }
-          router.push(href, { scroll: false })
+          push(href, { scroll: false })
         }}
       >
         <AnimatePresence key={isEditing ? "T" : "F"} mode="sync">

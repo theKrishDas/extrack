@@ -7,7 +7,7 @@ import { Material } from "@/components/material/material"
 import { cn, wait } from "@/lib/utils"
 
 function Root({ children }: { children: React.ReactNode }) {
-  const router = useRouter()
+  const { push } = useRouter()
   const pathname = usePathname()
   const [tab, setTab] = useState<string>(pathname)
 
@@ -16,7 +16,7 @@ function Root({ children }: { children: React.ReactNode }) {
       onValueChange={async (v) => {
         setTab(v)
         await wait(200)
-        router.push(v)
+        push(v)
       }}
       render={<nav />}
       value={tab}

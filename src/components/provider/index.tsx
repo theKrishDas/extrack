@@ -22,14 +22,14 @@ const convex = new ConvexReactClient(process.env.NEXT_PUBLIC_CONVEX_URL || "", {
 })
 
 export default function Provider({ children }: { children: ReactNode }) {
-  const router = useRouter()
+  const { push } = useRouter()
 
   return (
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
       <ClerkProvider>
         <ConvexProviderWithClerk client={convex} useAuth={useAuth}>
           <ConvexQueryCacheProvider>
-            <RouterProvider navigate={router.push}>{children}</RouterProvider>
+            <RouterProvider navigate={push}>{children}</RouterProvider>
           </ConvexQueryCacheProvider>
         </ConvexProviderWithClerk>
       </ClerkProvider>
