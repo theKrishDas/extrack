@@ -9,7 +9,7 @@ export function SplashScreen() {
       >
         <AppIcon />
       </span>
-      <span className="sr-only">Loading...</span>
+      <span className="sr-only">Loading…</span>
     </div>
   )
 }
