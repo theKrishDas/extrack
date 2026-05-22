@@ -48,7 +48,7 @@ const FlowSummary = () => {
   /**
    * Render
    */
-  if (!summary) return <p>Loading charts...</p>
+  if (!summary) return <p>Loading charts…</p>
 
   return <Summary data={summary} />
 }

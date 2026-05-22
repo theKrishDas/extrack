@@ -47,7 +47,7 @@ const TransactionSummary = () => {
     accounts: [],
   })
 
-  if (!summary) return <p>Loading transaction summary...</p>
+  if (!summary) return <p>Loading transaction summary…</p>
 
   /*
    * Using the util function to format the sub-summary
