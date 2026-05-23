@@ -75,6 +75,34 @@ body {
   );
 }
 
+/* Sonner notification toaster: content-sized pills, no 356px track */
+[data-sonner-toaster].sonner-notification {
+  width: auto !important;
+}
+
+[data-sonner-toaster].sonner-notification [data-sonner-toast] {
+  left: 50%;
+  right: auto;
+  width: fit-content;
+  max-width: calc(100vw - 32px);
+  transform: translateX(-50%) var(--y);
+}
+
+[data-sonner-toaster].sonner-notification
+  [data-sonner-toast][data-swiping="true"] {
+  transform: translateX(-50%) var(--y) translateY(var(--swipe-amount-y, 0px))
+    translateX(var(--swipe-amount-x, 0px));
+}
+
+@media (max-width: 600px) {
+  [data-sonner-toaster].sonner-notification {
+    left: 50% !important;
+    right: auto !important;
+    transform: translateX(-50%) !important;
+    width: auto !important;
+  }
+}
+
 /* Tailwind v4 — iOS elevation tokens */
 @theme {
   /* Low — cards, inputs */
