@@ -9,6 +9,7 @@ import { api } from "#/convex/_generated/api"
 import type { Id } from "#/convex/_generated/dataModel"
 import type { TransactionTypes } from "#lib/constants/transaction-types"
 import { type NewTransactionSchemaType, newTransactionSchema } from "../schema"
+import { showTransactionToast } from "../transaction-toast"
 import { useAppForm } from "./form-context"
 
 export function useNewTransactionForm(
@@ -74,21 +75,43 @@ export function useNewTransactionForm(
     } as unknown as z.input<typeof newTransactionSchema>,
     onSubmit: ({ value: data }) => {
       const parsedData = data as NewTransactionSchemaType
-      createTransaction({
+
+      const category = context?.categories.find(
+        (cat) => cat._id === parsedData.category
+      )
+
+      // Start the mutation but don't block
+      const mutationPromise = createTransaction({
         amount: parsedData.amount * 100, // dollars to cents
         category: parsedData.category as Id<"categories">,
         account: parsedData.account as Id<"accounts">,
         date: parsedData.date,
         type: parsedData.type,
         note: parsedData.note,
-      }).catch((err) => {
-        toast.error("Failed to add transaction", {
-          description:
-            err instanceof ConvexError ? err.data.message : "Unknown err",
-        })
       })
 
+      // Run afterSubmit immediately without waiting
       afterSubmit?.(parsedData)
+
+      // Wait for mutation to determine toast type
+      mutationPromise
+        .then(() => {
+          showTransactionToast({
+            type: parsedData.type,
+            amount: parsedData.amount,
+            categoryName: category?.name ?? "Unknown",
+            emoji: category?.icon ?? "❓",
+            color: category?.color ?? "red",
+          })
+        })
+        .catch((err) => {
+          toast.error(`Failed to add ${parsedData.type}`, {
+            description:
+              err instanceof ConvexError
+                ? err.data.message
+                : "Unknown error occurred",
+          })
+        })
     },
   })
 
