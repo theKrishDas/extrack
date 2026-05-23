@@ -23,7 +23,9 @@ export function OnboardingRecovery({
       await Promise.all([retryOnboarding(), wait(1500)]) // Artificial delay of atleast 1500 ms
       onRecovered?.()
     } catch {
-      toast.error("Setup failed, please try again.")
+      toast.error("Setup failed, please try again.", {
+        toasterId: "default",
+      })
     } finally {
       setLoading(false)
     }

@@ -63,7 +63,7 @@ export default function RootLayout({
     >
       <body className="flex min-h-dvh flex-col">
         <Provider>{children}</Provider>
-        <Toaster />
+        <Toaster id="default" position="bottom-right" />
         <SpeedInsights />
       </body>
     </html>

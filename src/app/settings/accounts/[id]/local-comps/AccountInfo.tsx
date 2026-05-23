@@ -65,6 +65,7 @@ export default function AccountInfo() {
       toast.error("Failed to update account", {
         description:
           err instanceof ConvexError ? err.data.message : "Unknown err",
+        toasterId: "default",
       })
     })
     setEditing(false)

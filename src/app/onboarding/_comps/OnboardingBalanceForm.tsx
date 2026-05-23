@@ -72,7 +72,9 @@ export function OnboardingBalanceForm({
       push("/")
     } catch {
       setLoading("idle")
-      toast.error("We couldn't save your balance. Please try again.")
+      toast.error("We couldn't save your balance. Please try again.", {
+        toasterId: "default",
+      })
     }
   }
 
