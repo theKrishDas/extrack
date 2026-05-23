@@ -64,6 +64,11 @@ export default function RootLayout({
       <body className="flex min-h-dvh flex-col">
         <Provider>{children}</Provider>
         <Toaster id="default" position="bottom-right" />
+        <Toaster
+          className="sonner-notification"
+          id="notification"
+          position="top-center"
+        />
         <SpeedInsights />
       </body>
     </html>
