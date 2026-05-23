@@ -41,9 +41,13 @@ export function ProfileSettings() {
   const copyUserId = async () => {
     try {
       await navigator.clipboard.writeText(user.id)
-      toast.success("Copied Clerk user ID")
+      toast.success("Copied Clerk user ID", {
+        toasterId: "default",
+      })
     } catch {
-      toast.error("Could not copy User ID")
+      toast.error("Could not copy User ID", {
+        toasterId: "default",
+      })
     }
   }
 
@@ -53,7 +57,9 @@ export function ProfileSettings() {
       await signOut({ redirectUrl: "/sign-in" })
     } catch {
       setIsSigningOut(false)
-      toast.error("Could not sign out")
+      toast.error("Could not sign out", {
+        toasterId: "default",
+      })
     }
   }
 

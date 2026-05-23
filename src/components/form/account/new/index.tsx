@@ -43,6 +43,7 @@ export function Form({ afterSumbmit }: { afterSumbmit?: () => void }) {
       toast.error("Failed to create account", {
         description:
           err instanceof ConvexError ? err.data.message : "Unknown err",
+        toasterId: "default",
       })
     })
   }
