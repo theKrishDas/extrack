@@ -146,8 +146,8 @@ const SectionHeader = ({
   return (
     <Comp
       className={cn(
-        "InsetListSectionHeader w-full px-4 pt-6 pb-1.5",
-        visuallyHidden && "sr-only",
+        "InsetListSectionHeader",
+        visuallyHidden ? "sr-only" : "w-full px-4 pt-6 pb-1.5",
         className
       )}
       {...rest}
