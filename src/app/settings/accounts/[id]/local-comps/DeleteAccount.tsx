@@ -1,9 +1,10 @@
 import { useMutation } from "convex/react"
+import { ConvexError } from "convex/values"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
+import { toast } from "sonner"
 import { api } from "#/convex/_generated/api"
 import type { Doc } from "#/convex/_generated/dataModel"
-
 import { Button } from "@/components/ui/button/animated-button"
 import { Drawer } from "@/components/ui/drawer/drawer-v2"
 import { List } from "@/components/ui/list-v2"
@@ -15,7 +16,15 @@ export function DeleteAccount({ account }: { account: Doc<"accounts"> }) {
   const { push } = useRouter()
 
   const onDelete = () => {
-    deleteAccount({ id: account._id })
+    deleteAccount({ id: account._id }).catch((err) => {
+      toast.error("Failed to delete account", {
+        toasterId: "default",
+        description:
+          err instanceof ConvexError
+            ? err.data.message
+            : "Unknown error occurred. Please try again.",
+      })
+    })
 
     setOpen(false)
     push("/settings/accounts")
