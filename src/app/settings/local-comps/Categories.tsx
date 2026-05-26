@@ -28,6 +28,11 @@ import {
 } from "@/lib/schema/categories"
 import { cn, sanitizeName } from "@/lib/utils"
 
+/**
+ * @deprecated Use the categories settings components under
+ * `src/app/settings/categories/_comps` instead. This legacy component is kept
+ * temporarily for compatibility and will be removed.
+ */
 export function Categories() {
   const categories = useQuery(api.category.list)
 
