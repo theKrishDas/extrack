@@ -4,7 +4,6 @@ import { format } from "date-fns"
 import { Drawer } from "vaul"
 import { api } from "#/convex/_generated/api"
 import { DataTable, type DataType } from "@/app/(index)/local-comps/DataTable"
-import { Button as AnimatedButton } from "@/components/ui/button/animated-button"
 import { ConfirmButton } from "@/components/ui/confirm-button"
 import { useCurrencyFormatter } from "@/hooks/useCurrencyFormatter"
 import { cn } from "@/lib/utils"
@@ -74,10 +73,7 @@ function Comp({
             data={data}
           />
 
-          <div className="flex flex-row-reverse gap-2">
-            <AnimatedButton className="flex-1" color="gray" isDisabled>
-              Edit
-            </AnimatedButton>
+          <div className="mt-4 flex">
             <ConfirmButton
               className="flex-1"
               onConfirm={() => {
