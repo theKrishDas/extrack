@@ -3,8 +3,23 @@ import type { ComponentProps } from "react"
 
 import { cn } from "@/lib/utils"
 
-export function Emoji({ className, ...rest }: ComponentProps<typeof ark.p>) {
+export function Emoji({
+  className,
+  "aria-label": ariaLabel,
+  "aria-hidden": ariaHidden,
+  ...rest
+}: ComponentProps<typeof ark.span>) {
   return (
-    <ark.p className={cn("font-rnx-rounded text-white", className)} {...rest} />
+    <ark.span
+      aria-hidden={ariaHidden ?? (ariaLabel ? undefined : true)}
+      aria-label={ariaLabel}
+      className={cn(
+        "ui-emoji",
+        "select-none font-rnx-rounded text-white leading-none tracking-[0]",
+        className
+      )}
+      data-ui="emoji"
+      {...rest}
+    />
   )
 }
