@@ -10,7 +10,7 @@ import { Spacer } from "@/components/ui/spacer"
 import { cn } from "@/lib/utils"
 
 const THEME_OPTIONS = [
-  { label: "Auto", value: "system" },
+  { label: "System", value: "system" },
   { label: "Dark", value: "dark" },
   { label: "Light", value: "light" },
 ] as const
