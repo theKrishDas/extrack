@@ -22,6 +22,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart"
+import { Separator } from "@/components/ui/separator"
 import { CURRENCY } from "@/lib/date-utils"
 import { cn } from "@/lib/utils"
 
@@ -123,8 +124,7 @@ const Summary = ({
         </p>
       </div>
 
-      {/* TODO: Use Separator component here */}
-      <div className="mt-3 mb-4 w-full border-b border-b-separator-opaque mix-blend-color-dodge" />
+      <Separator className="mt-3 mb-4" noMargin useBlendig />
 
       <div className="grid grid-cols-3 md:grid-cols-5">
         {metrics.map((item) => {
