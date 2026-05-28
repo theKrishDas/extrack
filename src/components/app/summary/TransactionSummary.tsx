@@ -24,7 +24,6 @@ const TransactionSummary = () => {
   /*
    * Getting the right dates for the timeframes
    */
-  // TODO: Remove the override controle when testing is done
   const today = startOfToday()
   const frameStart = startOfWeek(today)
   const frameEnd = endOfWeek(today)
