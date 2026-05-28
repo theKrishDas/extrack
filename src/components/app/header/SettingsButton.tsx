@@ -17,26 +17,10 @@ export function SettingsButton() {
   if (!(isMounted && isLoaded && isSignedIn && user)) return null
 
   return (
-    <Link
-      className="size-8"
-      href="/settings"
-      style={
-        // TODO: extract these options to somewhere reasonable
-        {
-          WebkitUserDrag: "none",
-          userDrag: "none",
-          WebkitTouchCallout: "none",
-          cursor: "default",
-          userSelect: "none",
-          msUserSelect: "none",
-          WebkitUserSelect: "none",
-          MozUserSelect: "none",
-        } as React.CSSProperties
-      }
-    >
+    <Link className="no-drag **:no-drag size-8" href="/settings">
       <Avatar.Root
         aria-hidden="true"
-        className="inline-flex size-8 select-none items-center justify-center overflow-hidden rounded-full bg-background-primary-elevated align-middle font-normal text-label-secondary text-sm leading-none"
+        className="inline-flex size-8 items-center justify-center overflow-hidden rounded-full bg-background-primary-elevated align-middle font-normal text-label-secondary text-sm leading-none"
       >
         <Avatar.Image
           className="size-full object-cover"

@@ -23,17 +23,6 @@ type AnchorListBoxItemRenderProps = Extract<
   { href?: unknown }
 >
 
-const LIST_BOX_ITEM_STYLE = {
-  WebkitUserDrag: "none",
-  userDrag: "none",
-  WebkitTouchCallout: "none",
-  cursor: "default",
-  userSelect: "none",
-  msUserSelect: "none",
-  WebkitUserSelect: "none",
-  MozUserSelect: "none",
-} as React.CSSProperties
-
 function isAnchorRenderProps(
   props: ListBoxItemRenderProps
 ): props is AnchorListBoxItemRenderProps & { href: string } {
@@ -102,6 +91,7 @@ function renderInsetListLinkItem({
 
   return (
     <ListBoxItem
+      className="no-drag"
       href={href}
       id={id}
       render={(domProps) => {
@@ -115,7 +105,6 @@ function renderInsetListLinkItem({
         }
         return <InsetList.Item {...domProps} />
       }}
-      style={LIST_BOX_ITEM_STYLE}
       target={target}
       textValue={textValue}
     >
@@ -205,6 +194,7 @@ function renderSettingsItem(option: SettingsOption) {
             target: option.external ? "_blank" : "_self",
           }
         : {})}
+      className="no-drag"
       render={(domProps) => {
         if (isAnchorRenderProps(domProps)) {
           const { href: linkHref, ...linkProps } = domProps
@@ -216,7 +206,6 @@ function renderSettingsItem(option: SettingsOption) {
         }
         return <InsetList.Item {...domProps} />
       }}
-      style={LIST_BOX_ITEM_STYLE}
       textValue={option.label}
     >
       <InsetList.ItemLeading>

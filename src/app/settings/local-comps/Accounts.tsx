@@ -64,15 +64,8 @@ function AccountItems(props: { account: Doc<"accounts">; isDefault: boolean }) {
   return (
     <List.Item asChild>
       <Link
-        className="cursor-auto data-pressed:bg-fill-tertiary"
+        className="no-drag data-pressed:bg-fill-tertiary"
         href={`/settings/accounts/${slug}`}
-        style={
-          {
-            WebkitUserDrag: "none",
-            userDrag: "none",
-            WebkitTouchCallout: "none",
-          } as CSSProperties
-        }
       >
         <List.Image>
           <Emoji className="text-xl">{account.icon}</Emoji>
