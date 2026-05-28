@@ -60,7 +60,7 @@ export default defineSchema({
   }).index("by_user_id", ["user_id"]),
 
   migration_category: defineTable({
-    id: v.string(), // TODO: rename this to pg_id
+    id: v.string(),
     user_id: v.string(),
     name: v.string(),
     is_expense: v.boolean(),
@@ -69,7 +69,7 @@ export default defineSchema({
     .index("by_user_id", ["user_id"]),
 
   migration_transax: defineTable({
-    id: v.string(), // TODO: rename this to pg_id
+    id: v.string(),
     user_id: v.string(),
     amount: v.number(),
     label: v.optional(v.string()),
