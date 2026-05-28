@@ -67,10 +67,7 @@ export function AccountField({
                   id={acc._id}
                   isDisabled={!acc.is_active}
                 >
-                  <Emoji
-                    aria-hidden={true}
-                    className="mr-3 flex items-center gap-3"
-                  >
+                  <Emoji className="mr-3 flex items-center gap-3">
                     {acc.icon}
                   </Emoji>
                   <span className="font-medium">{acc.name}</span>

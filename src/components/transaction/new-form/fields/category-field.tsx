@@ -66,7 +66,6 @@ export function CategoryField({
                   id={cat._id}
                 >
                   <Emoji
-                    aria-hidden={true}
                     className={cn(
                       "mr-3 flex items-center gap-3"
                       // Color swatch before the icon
