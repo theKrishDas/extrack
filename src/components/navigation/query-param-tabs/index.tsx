@@ -57,7 +57,7 @@ export function QueryParamTabs({
           return (
             <Tab
               className={cn(
-                "react-aria-Tab relative inline-grid h-full w-full cursor-default touch-none select-none place-content-center rounded-full font-medium text-label-primary text-sm focus:outline-none focus-visible:outline-none",
+                "react-aria-Tab no-drag relative inline-grid h-full w-full place-content-center rounded-full font-medium text-label-primary text-sm focus:outline-none focus-visible:outline-none",
                 "outline-ios-blue data-focus-visible:z-1 data-focus-visible:outline-3",
                 "data-selected:font-semibold",
                 // --- separator ---
@@ -74,13 +74,6 @@ export function QueryParamTabs({
                 ) : (
                   <div {...domProps} />
                 )
-              }
-              style={
-                {
-                  WebkitUserDrag: "none",
-                  userDrag: "none",
-                  WebkitTouchCallout: "none",
-                } as React.CSSProperties
               }
             >
               {({ isSelected }) => (
