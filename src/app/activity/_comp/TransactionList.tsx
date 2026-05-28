@@ -119,10 +119,7 @@ function Item(props: {
       )}
       onPress={onPress}
     >
-      <Emoji
-        aria-hidden={true}
-        className="mr-3 transition-scale duration-130 group-data-pressed/ListItem:scale-85"
-      >
+      <Emoji className="mr-3 transition-scale duration-130 group-data-pressed/ListItem:scale-85">
         {txn.category.icon}
       </Emoji>
       <div className="relative flex h-full flex-1 items-center">
