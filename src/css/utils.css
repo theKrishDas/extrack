@@ -1,3 +1,10 @@
 @utility corner-squircle {
   corner-shape: squircle;
 }
+
+@utility no-drag {
+  -webkit-user-drag: none;
+  -webkit-touch-callout: none;
+  cursor: default;
+  user-select: none;
+}
