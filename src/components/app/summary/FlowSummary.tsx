@@ -124,7 +124,7 @@ const Summary = ({
         </p>
       </div>
 
-      <Separator className="mt-3 mb-4" noMargin useBlendig />
+      <Separator className="mt-3 mb-4" noMargin useBlending />
 
       <div className="grid grid-cols-3 md:grid-cols-5">
         {metrics.map((item) => {

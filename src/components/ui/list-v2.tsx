@@ -31,7 +31,7 @@ function Item({ className, ...rest }: ComponentProps<typeof ark.div>) {
     <ark.div
       className={cn(
         "ListItem",
-        "group/item flex h-13 w-full gap-1 bg-fill-opaque px-4 first:rounded-t-[1.625rem] last:rounded-b-[1.625rem] first:[&_[role='separator']]:bg-fill-opaque",
+        "group/item flex h-13 w-full gap-1 bg-fill-opaque px-4 first:rounded-t-[1.625rem] last:rounded-b-[1.625rem] first:**:[[role='separator']]:bg-fill-opaque",
         className
       )}
       {...rest}
@@ -71,7 +71,7 @@ function Content({
       className={cn("ListContent", "flex h-full w-full flex-col", className)}
       {...rest}
     >
-      <Separator noMargin orientation="horizontal" useBlendig />
+      <Separator noMargin orientation="horizontal" useBlending />
       {children}
     </ark.div>
   )
