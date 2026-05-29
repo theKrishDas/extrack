@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.2.0](https://github.com/thekrishdas/extrack/compare/v1.1.0...v1.2.0) (2026-05-29)
+
+### Features
+
+Got it. Here are the reworded points:
+
+- **ui:** add toast notification for transaction creation ([ff0e3f8](https://github.com/thekrishdas/extrack/commit/ff0e3f8164f4ff5c94b7330307de0ef56bc40bf5))
+- **ui:** categories settings now has a segmented control to switch between Expense and Income categories ([995285d](https://github.com/thekrishdas/extrack/commit/995285db5b5c2dcf59def3b5e270ab55d2c22379))
+- **ui:** show a toast notification when a transaction fails to save ([a25b58b](https://github.com/thekrishdas/extrack/commit/a25b58bb6f2e4611ea0df32a953f528463ab17e4))
+- **ui:** top header settings button now shows your profile picture instead of a generic icon ([b4c04d9](https://github.com/thekrishdas/extrack/commit/b4c04d99a35f00b5dbffb1c1881e8c255051f153))
+
+### Bug Fixes
+
+- **appearance:** rename "Auto" to "System" in theme switcher ([bf5d787](https://github.com/thekrishdas/extrack/commit/bf5d787b221b32f0c1277b3808859e96b69643f3)), closes [theKrishDas/extrack#74](https://github.com/theKrishDas/extrack/issues/74)
+- **emoji:** improve accessibility and semantic markup ([aa5a060](https://github.com/thekrishdas/extrack/commit/aa5a06069c67099fe3969b4334d776ae9ac6c6bc)), closes [theKrishDas/extrack#75](https://github.com/theKrishDas/extrack/issues/75)
+- **inset-list:** prevent horizontal scroll with visuallyHidden ([4704ecc](https://github.com/thekrishdas/extrack/commit/4704ecc2ff6983877a392ecb727c6fa57cc067ea))
+- **toasts:** route app toasts through default toaster ([12efc48](https://github.com/thekrishdas/extrack/commit/12efc485b238a9dde7fdc4450016bd62dc9a89c6))
+- **ui:** show error toast when account deletion fails ([124a376](https://github.com/thekrishdas/extrack/commit/124a37646b756c70c0a766335192fb797abd98f5))
+
 ## [1.1.0](https://github.com/thekrishdas/extrack/compare/v1.0.0...v1.1.0) (2026-05-22)
 
 
