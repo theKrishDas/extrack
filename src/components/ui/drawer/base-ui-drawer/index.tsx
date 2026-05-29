@@ -21,7 +21,7 @@ const Content = ({
           "max-h-[80vh] rounded-2xl bg-background-primary-elevated",
           "pb-[env(safe-area-inset-bottom,0px)]", // prevent content from being hidden behind iPhone home indicator
           "rounded-3xl supports-[corner-shape:squircle]:rounded-[3.25rem] supports-[corner-shape:squircle]:[corner-shape:superellipse(1.8)]",
-          "touch-auto overflow-y-auto overscroll-contain",
+          "touch-auto overflow-y-auto overscroll-contain outline-none",
           "transform-[translateY(var(--drawer-swipe-movement-y))]",
           "transition-transform duration-450 ease-[cubic-bezier(0.32,0.72,0,1)]",
           "data-starting-style:transform-[translateY(calc(100%+var(--spacing)*1.5))]",
@@ -32,7 +32,7 @@ const Content = ({
       >
         <div className="mx-auto mt-1.25 mb-4 h-1.25 w-9 rounded-full bg-gray-300" />
         <DrawerPrimitive.Content
-          className={cn("mx-auto w-full max-w-lg", className)}
+          className={cn("mx-auto w-full max-w-lg outline-none", className)}
           {...rest}
         />
       </DrawerPrimitive.Popup>
