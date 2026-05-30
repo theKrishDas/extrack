@@ -43,6 +43,12 @@
     "enabled": true,
     "rules": {
       "recommended": true,
+      "correctness": {
+        "noUnusedImports": {
+          "level": "error",
+          "fix": "none"
+        }
+      },
       "suspicious": {
         "noUnknownAtRules": "off",
         "noConsole": {
