@@ -80,7 +80,7 @@ function Comp({
                 onOpenChange(false)
                 removeTransaction({ id: txn._id })
               }}
-              restVariants={{ color: "gray" }}
+              restVariants={{ color: "red" }}
             />
           </div>
         </Drawer.Content>
