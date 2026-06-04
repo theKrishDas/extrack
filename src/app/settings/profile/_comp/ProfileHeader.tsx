@@ -1,7 +1,7 @@
 import { Avatar } from "@base-ui/react/avatar"
 import { cn } from "@/lib/utils"
 
-const PROFILE_IMAGE_SIZE = 104
+const AVATAR_IMAGE_SIZE = 104
 const AVATAR_FALLBACK_DELAY_MS = 600
 
 export function ProfileHeader({
@@ -31,19 +31,23 @@ export function ProfileHeader({
       <div className="relative flex flex-col items-center text-center">
         <Avatar.Root
           className={cn(
-            "relative mb-4 inline-flex size-26 items-center justify-center overflow-hidden bg-[color-mix(in_oklab,var(--ios-blue)_16%,var(--fill-tertiary))] align-middle font-semibold text-3xl text-label-primary leading-none ring-1 ring-black/5 backdrop-blur-sm",
-            "supports-[corner-shape:squircle]:corner-squircle rounded-3xl supports-[corner-shape:squircle]:rounded-[3rem]"
+            "relative mb-4 inline-flex size-26 items-center justify-center overflow-hidden bg-background-primary-elevated align-middle font-semibold text-3xl text-label-primary leading-none shadow-md ring-1 ring-black/5 backdrop-blur-sm",
+            "supports-[corner-shape:squircle]:corner-squircle rounded-3xl supports-[corner-shape:squircle]:rounded-[3rem]",
+
+            // outline ring for readability
+            "after:absolute after:inset-0 after:mix-blend-overlay after:ring-2 after:ring-white/20 after:ring-inset after:content-['']",
+            "supports-[corner-shape:squircle]:after:corner-squircle after:rounded-3xl supports-[corner-shape:squircle]:after:rounded-[3rem]"
           )}
         >
           <Avatar.Image
             alt={`${displayName} profile photo`}
             className="size-full object-cover"
-            height={PROFILE_IMAGE_SIZE}
+            height={AVATAR_IMAGE_SIZE}
             src={imageUrl}
-            width={PROFILE_IMAGE_SIZE}
+            width={AVATAR_IMAGE_SIZE}
           />
           <Avatar.Fallback
-            className="flex size-full items-center justify-center"
+            className="flex size-full items-center justify-center text-label-secondary"
             delay={AVATAR_FALLBACK_DELAY_MS}
           >
             {initials}
