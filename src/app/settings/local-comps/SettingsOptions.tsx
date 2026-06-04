@@ -13,7 +13,11 @@ import {
 import { InsetList } from "@/components/ui/inset-list"
 import { Skeleton } from "@/components/ui/loading/skeleton"
 import { getInitials } from "@/components/user/helpers"
+import { cn } from "@/lib/utils"
 import { type SettingsOption, settingsConfig } from "./config"
+
+const AVATAR_IMAGE_SIZE = 60
+const AVATAR_FALLBACK_DELAY_MS = 600
 
 type ListBoxItemRenderProps = Parameters<
   NonNullable<React.ComponentProps<typeof ListBoxItem>["render"]>
@@ -142,15 +146,27 @@ function renderProfileItem({
                 className="size-full rounded-full bg-fill-primary"
               />
             ) : (
-              <Avatar.Root className="grid size-full place-items-center overflow-hidden rounded-full bg-ios-purple font-semibold text-white text-xs">
+              <Avatar.Root
+                className={cn(
+                  "relative grid size-full place-items-center overflow-hidden rounded-full bg-background-primary-elevated font-semibold text-white text-xs",
+
+                  // outline ring for readability
+                  "after:absolute after:inset-0 after:rounded-full after:ring-2 after:ring-separator-opaque/15 after:ring-inset after:content-['']"
+                )}
+              >
                 <Avatar.Image
                   alt="User avatar"
                   className="size-full object-cover"
-                  height={60}
+                  height={AVATAR_IMAGE_SIZE}
                   src={imageUrl}
-                  width={60}
+                  width={AVATAR_IMAGE_SIZE}
                 />
-                <Avatar.Fallback>{getInitials(fullName)}</Avatar.Fallback>
+                <Avatar.Fallback
+                  className="flex size-full items-center justify-center text-label-secondary text-lg"
+                  delay={AVATAR_FALLBACK_DELAY_MS}
+                >
+                  {getInitials(fullName)}
+                </Avatar.Fallback>
               </Avatar.Root>
             )}
           </InsetList.ItemMedia>
