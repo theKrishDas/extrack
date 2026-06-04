@@ -6,6 +6,9 @@ import Link from "next/link"
 import { useEffect, useState } from "react"
 import { getInitials } from "@/components/user/helpers"
 
+const AVATAR_IMAGE_SIZE = 32
+const AVATAR_FALLBACK_DELAY_MS = 600
+
 export function SettingsButton() {
   const [isMounted, setIsMounted] = useState(false)
   const { user, isSignedIn, isLoaded } = useUser()
@@ -20,17 +23,17 @@ export function SettingsButton() {
     <Link className="no-drag **:no-drag size-8" href="/settings">
       <Avatar.Root
         aria-hidden="true"
-        className="inline-flex size-8 items-center justify-center overflow-hidden rounded-full bg-background-primary-elevated align-middle font-normal text-label-secondary text-sm leading-none"
+        className="inline-flex size-8 items-center justify-center overflow-hidden rounded-full bg-background-primary-elevated align-middle font-normal text-label-secondary text-sm leading-none shadow-ios-md outline-2 outline-white/15"
       >
         <Avatar.Image
           className="size-full object-cover"
-          height="32"
+          height={AVATAR_IMAGE_SIZE}
           src={user.imageUrl}
-          width="32"
+          width={AVATAR_IMAGE_SIZE}
         />
         <Avatar.Fallback
           className="flex size-full items-center justify-center text-sm"
-          delay={600}
+          delay={AVATAR_FALLBACK_DELAY_MS}
         >
           {getInitials(user.fullName)}
         </Avatar.Fallback>
