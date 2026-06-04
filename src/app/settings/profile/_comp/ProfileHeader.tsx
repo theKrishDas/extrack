@@ -1,7 +1,8 @@
-import Image from "next/image"
+import { Avatar } from "@base-ui/react/avatar"
 import { cn } from "@/lib/utils"
 
 const PROFILE_IMAGE_SIZE = 104
+const AVATAR_FALLBACK_DELAY_MS = 600
 
 export function ProfileHeader({
   displayName,
@@ -28,27 +29,26 @@ export function ProfileHeader({
       <div className="mask-[linear-gradient(to_right,transparent,black_46%,black_54%,transparent)] absolute inset-x-0 top-24 h-px bg-ios-blue opacity-12 dark:opacity-8" />
 
       <div className="relative flex flex-col items-center text-center">
-        <div
+        <Avatar.Root
           className={cn(
-            "relative mb-4 overflow-hidden ring-1 ring-black/5",
+            "relative mb-4 inline-flex size-26 items-center justify-center overflow-hidden bg-[color-mix(in_oklab,var(--ios-blue)_16%,var(--fill-tertiary))] align-middle font-semibold text-3xl text-label-primary leading-none ring-1 ring-black/5 backdrop-blur-sm",
             "supports-[corner-shape:squircle]:corner-squircle rounded-3xl supports-[corner-shape:squircle]:rounded-[3rem]"
           )}
         >
-          {imageUrl ? (
-            <Image
-              alt={`${displayName} profile photo`}
-              className="size-26 object-cover"
-              height={PROFILE_IMAGE_SIZE}
-              src={imageUrl}
-              unoptimized
-              width={PROFILE_IMAGE_SIZE}
-            />
-          ) : (
-            <div className="inline-grid size-26 place-content-center bg-[color-mix(in_oklab,var(--ios-blue)_16%,var(--fill-tertiary))] font-semibold text-3xl text-label-primary">
-              {initials}
-            </div>
-          )}
-        </div>
+          <Avatar.Image
+            alt={`${displayName} profile photo`}
+            className="size-full object-cover"
+            height={PROFILE_IMAGE_SIZE}
+            src={imageUrl}
+            width={PROFILE_IMAGE_SIZE}
+          />
+          <Avatar.Fallback
+            className="flex size-full items-center justify-center"
+            delay={AVATAR_FALLBACK_DELAY_MS}
+          >
+            {initials}
+          </Avatar.Fallback>
+        </Avatar.Root>
 
         <h2 className="max-w-full truncate font-semibold text-3xl tracking-tight">
           {displayName}
