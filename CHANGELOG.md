@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.3.0](https://github.com/thekrishdas/extrack/compare/v1.2.0...v1.3.0) (2026-06-05)
+
+### Features
+
+- **hooks:** add controllable state hook ([9246a90](https://github.com/thekrishdas/extrack/commit/9246a90))
+
+### Bug Fixes
+
+- **ui:** make delete button red to fix low-contrast appearance ([5fbc07e](https://github.com/thekrishdas/extrack/commit/5fbc07e))
+
+### Internal
+
+- **ci(biome):** enforce unused import detection without auto-fix ([f1c09f9](https://github.com/thekrishdas/extrack/commit/f1c09f9))
+- **header:** extract avatar constants and improve styling ([1bdbc7c](https://github.com/thekrishdas/extrack/commit/1bdbc7c))
+- **profile:** replace custom avatar with Base UI Avatar component ([6ab679f](https://github.com/thekrishdas/extrack/commit/6ab679f))
+- **user:** extract avatar fallback delay to shared constant ([c3edbbf](https://github.com/thekrishdas/extrack/commit/c3edbbf))
+
 ## [1.2.0](https://github.com/thekrishdas/extrack/compare/v1.1.0...v1.2.0) (2026-05-29)
 
 ### Features
