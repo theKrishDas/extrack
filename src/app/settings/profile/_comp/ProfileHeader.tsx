@@ -1,8 +1,8 @@
 import { Avatar } from "@base-ui/react/avatar"
+import { AVATAR_FALLBACK_DELAY_MS } from "@/components/user/helpers"
 import { cn } from "@/lib/utils"
 
 const AVATAR_IMAGE_SIZE = 104
-const AVATAR_FALLBACK_DELAY_MS = 600
 
 export function ProfileHeader({
   displayName,

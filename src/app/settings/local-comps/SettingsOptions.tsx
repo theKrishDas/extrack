@@ -12,12 +12,14 @@ import {
 } from "react-aria-components"
 import { InsetList } from "@/components/ui/inset-list"
 import { Skeleton } from "@/components/ui/loading/skeleton"
-import { getInitials } from "@/components/user/helpers"
+import {
+  AVATAR_FALLBACK_DELAY_MS,
+  getInitials,
+} from "@/components/user/helpers"
 import { cn } from "@/lib/utils"
 import { type SettingsOption, settingsConfig } from "./config"
 
 const AVATAR_IMAGE_SIZE = 60
-const AVATAR_FALLBACK_DELAY_MS = 600
 
 type ListBoxItemRenderProps = Parameters<
   NonNullable<React.ComponentProps<typeof ListBoxItem>["render"]>

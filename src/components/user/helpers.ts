@@ -10,3 +10,5 @@ export const getInitials = (fullName: string | null | undefined) => {
     .join("")
     .toUpperCase()
 }
+
+export const AVATAR_FALLBACK_DELAY_MS = 600
