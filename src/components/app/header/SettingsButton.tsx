@@ -4,10 +4,12 @@ import { Avatar } from "@base-ui/react/avatar"
 import { useUser } from "@clerk/nextjs"
 import Link from "next/link"
 import { useEffect, useState } from "react"
-import { getInitials } from "@/components/user/helpers"
+import {
+  AVATAR_FALLBACK_DELAY_MS,
+  getInitials,
+} from "@/components/user/helpers"
 
 const AVATAR_IMAGE_SIZE = 32
-const AVATAR_FALLBACK_DELAY_MS = 600
 
 export function SettingsButton() {
   const [isMounted, setIsMounted] = useState(false)
