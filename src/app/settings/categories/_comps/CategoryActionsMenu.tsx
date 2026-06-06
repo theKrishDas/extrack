@@ -18,6 +18,7 @@ import { api } from "#/convex/_generated/api"
 import type { Doc } from "#/convex/_generated/dataModel"
 import { type Colors, colors } from "#lib/constants/colors"
 import { limit } from "#lib/constants/constraints"
+import { colorToCSSVar } from "#lib/utils/colors"
 import { Spinner } from "@/components/loading/spinner"
 import { Button } from "@/components/ui/button/animated-button"
 import { ActionDrawer, DrawerV2 as Drawer } from "@/components/ui/drawer"
@@ -229,8 +230,7 @@ function SelectColor({ form }: { form: UseFormReturn<NewCategorySchemaType> }) {
               key={color}
               style={
                 {
-                  "--swatch-color":
-                    color === "gray" ? "var(--gray-1)" : `var(--ios-${color})`,
+                  "--swatch-color": colorToCSSVar(color),
                 } as React.CSSProperties
               }
             />
