@@ -23,3 +23,26 @@
   cursor: default;
   user-select: none;
 }
+
+@utility checkerboard {
+  background-color: var(--checkerboard-bg, #e5e7eb);
+  background-image:
+    linear-gradient(45deg, var(--checkerboard-fg, #d1d5db) 25%, transparent 25%),
+    linear-gradient(
+      -45deg,
+      var(--checkerboard-fg, #d1d5db) 25%,
+      transparent 25%
+    ),
+    linear-gradient(45deg, transparent 75%, var(--checkerboard-fg, #d1d5db) 75%),
+    linear-gradient(
+      -45deg,
+      transparent 75%,
+      var(--checkerboard-fg, #d1d5db) 75%
+    );
+  background-size: 16px 16px;
+  background-position:
+    0 0,
+    0 8px,
+    8px -8px,
+    -8px 0px;
+}
