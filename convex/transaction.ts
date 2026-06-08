@@ -61,6 +61,25 @@ export const list = zUserQuery({
   },
 })
 
+/**
+ * Lists the authenticated user's transactions for a single category.
+ *
+ * @param categoryId - Category ID to filter transactions by.
+ * @returns Transactions owned by the authenticated user that belong to the category.
+ */
+export const listByCategory = userQuery({
+  args: { categoryId: v.id("categories") },
+  handler: async (ctx, { categoryId }) => {
+    const { user } = ctx
+    return await ctx.db
+      .query("transactions")
+      .withIndex("by_category", (q) =>
+        q.eq("ownerId", user.ownerId).eq("category", categoryId)
+      )
+      .collect()
+  },
+})
+
 export const get = userQuery({
   args: { id: v.id("transactions") },
   handler: async (ctx, { id }) => await ctx.db.get(id),
