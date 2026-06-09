@@ -1,3 +1,6 @@
+"use client"
+
+import dynamic from "next/dynamic"
 import { useState } from "react"
 import { Button as RacButton } from "react-aria-components"
 import type { Doc } from "#/convex/_generated/dataModel"
@@ -5,6 +8,11 @@ import { colorToCSSVar } from "#lib/utils/colors"
 import { Emoji } from "@/components/ui/emoji"
 import { InsetList } from "@/components/ui/inset-list"
 import { CategoryDrawer } from "./CategoryDrawer"
+
+const EditCategoryDrawer = dynamic(
+  () => import("./EditCategoryDrawer").then((mod) => mod.EditCategoryDrawer),
+  { ssr: false }
+)
 
 export function CategoryList({
   categories,
@@ -14,6 +22,8 @@ export function CategoryList({
   const [detailsOpen, setDetailsOpen] = useState<boolean>(false)
   const [activeCategory, setActiveCategory] =
     useState<Doc<"categories"> | null>(null)
+
+  const [editOpen, setEditOpen] = useState<boolean>(false)
 
   return (
     <>
@@ -40,10 +50,20 @@ export function CategoryList({
         category={activeCategory}
         onEdit={() => {
           setDetailsOpen(false)
+          setEditOpen(true)
         }}
         open={detailsOpen}
         setOpen={setDetailsOpen}
       />
+
+      {activeCategory && (
+        <EditCategoryDrawer
+          afterEdit={() => setEditOpen(false)}
+          category={activeCategory}
+          onOpenChange={(v) => setEditOpen(v)}
+          open={editOpen}
+        />
+      )}
     </>
   )
 }
