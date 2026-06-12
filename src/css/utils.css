@@ -1,5 +1,20 @@
+/**
+ * @deprecated Use `squircle` instead.
+ */
 @utility corner-squircle {
   corner-shape: squircle;
+}
+
+@utility squircle {
+  @supports (corner-shape: squircle) {
+    corner-shape: squircle;
+  }
+}
+
+@utility squircle-rounded-* {
+  @supports (corner-shape: squircle) {
+    border-radius: --value(--radius-*);
+  }
 }
 
 @utility no-drag {
