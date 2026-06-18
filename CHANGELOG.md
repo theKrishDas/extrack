@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.4.0](https://github.com/thekrishdas/extrack/compare/v1.3.0...v1.4.0) (2026-06-18)
+
+
+### Features
+
+* **convex:** Add category-specific transaction listing ([91dd929](https://github.com/thekrishdas/extrack/commit/91dd929912bbdf0c3964585788b82e2345aab853)), closes [theKrishDas/extrack#87](https://github.com/theKrishDas/extrack/issues/87)
+* **css:** add checkerboard utility class ([68c26d5](https://github.com/thekrishdas/extrack/commit/68c26d56ae667d39b923832180632ddf921c02d2)), closes [theKrishDas/extrack#88](https://github.com/theKrishDas/extrack/issues/88)
+* **drawer:** add experimental dynamic drawer component ([60e94fc](https://github.com/thekrishdas/extrack/commit/60e94fc6c46e6a6c1cc2404f8f03a2f8a7f507fb)), closes [theKrishDas/extrack#82](https://github.com/theKrishDas/extrack/issues/82)
+* **icons:** Add transaction type icon component ([7f10c3e](https://github.com/thekrishdas/extrack/commit/7f10c3e7d0fc5b7393424b3b6dd39d690b570b84)), closes [theKrishDas/extrack#86](https://github.com/theKrishDas/extrack/issues/86)
+* **settings:** Add detailed category management UI ([7e0e57d](https://github.com/thekrishdas/extrack/commit/7e0e57da31a6e80f19346e365a7589836882e24e)), closes [theKrishDas/extrack#93](https://github.com/theKrishDas/extrack/issues/93)
+* **settings:** add edit category drawer ([05ec8f3](https://github.com/thekrishdas/extrack/commit/05ec8f3f95c1d43bffba865c7d0fc1f74def1a97)), closes [theKrishDas/extrack#93](https://github.com/theKrishDas/extrack/issues/93)
+* **ui:** add color-to-CSS-var utility ([db3a764](https://github.com/thekrishdas/extrack/commit/db3a764ad9596a3be359ec0e54b6a67b508d98be)), closes [theKrishDas/extrack#92](https://github.com/theKrishDas/extrack/issues/92)
+
 ## [1.3.0](https://github.com/thekrishdas/extrack/compare/v1.2.0...v1.3.0) (2026-06-05)
 
 ### Features
